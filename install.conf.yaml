@@ -14,6 +14,7 @@
     ~/.zshrc: zsh/.zshrc
     ~/.oh-my-zsh: zsh/.oh-my-zsh
     ~/.conky: 
+    ~/.gitconfig:
 
 - shell:
   - git submodule sync --recursive

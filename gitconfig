@@ -1,0 +1,24 @@
+[alias]
+    update-submodules = submodule update --init --recursive
+	upgrade-submodules = submodule update --init --remote
+
+[diff]
+	mnemonicPrefix = true
+	wordRegex = "[^[:space:]]|([[:alnum:]]|UTF_8_GUARD)+"
+	compactionHeuristic = true
+
+[color]
+	ui = auto
+
+[color "grep"]
+	match = cyan bold
+	selected = blue
+	context = normal
+	filename = magenta
+	linenumber = green
+	separator = yellow
+	function = blue
+
+# Allow local customizations in the .gitconfig_local file
+[include]
+	path = ~/.gitconfig_local
