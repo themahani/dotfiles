@@ -3,7 +3,7 @@
         "ccls": {
           "command": "ccls",
           "args": ["--log-file=/tmp/ccls.log", "-v=1"],
-          "filetypes": ["c", "cc", "cpp", "c++", "objc", "objcpp"],
+          "filetypes": ["c", "cc", "cpp", "c++", "objc", "objcpp, h, hpp"],
           "rootPatterns": [".ccls", "compile_commands.json"],
           "initializationOptions": {
              "cache": {

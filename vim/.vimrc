@@ -316,8 +316,12 @@ set wildmenu            " visual autocomplete for command menu
 set mouse+=a            " A necessary evil, mouse support
 set splitbelow          " Open new vertical split bottom
 set splitright          " Open new horizontal splits right
-set scrolloff=5        " Keep cursor in approximately the middle of the screen
+set scrolloff=5         " Keep cursor in approximately the middle of the screen
 set ttyfast             " Improve redrawing
+set signcolumn=auto     " Set the sign column to disappear when no signs to show for gitgutter and CoC
+
+" Press Space to turn off highlighting and clear any message already displayed.
+:nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>
 
 " Spaces & Tabs
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
