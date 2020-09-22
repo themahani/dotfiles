@@ -310,7 +310,6 @@ set number				" Show Line Numbers
 set rnu					" set relative line numbering
 set showcmd             " show command in bottom bar
 set cursorline          " highlight current line
-filetype indent on      " load filetype-specific indent files
 filetype plugin on      " load filetype specific plugin files
 set wildmenu            " visual autocomplete for command menu
 set mouse+=a            " A necessary evil, mouse support
@@ -329,6 +328,8 @@ set tabstop=4       " number of visual spaces per TAB
 set softtabstop=4   " number of spaces in tab when editing
 set shiftwidth=4    " Insert 4 spaces on a tab
 set expandtab       " tabs are spaces, mainly because of python
+
+filetype indent on      " load filetype-specific indent files
 
 " vimtex
 let g:tex_flavor = "latex"
