@@ -129,3 +129,10 @@ alias sudo='sudo '
 
 # Virtual Env Local Directory
 export PATH=$PATH:/home/phoenix/.local/bin/
+
+
+# Tor Proxy:
+alias tor-restart="sudo systemctl restart tor.service; journalctl -exfu tor"
+
+alias tor-log="journalctl -exfu tor"
+

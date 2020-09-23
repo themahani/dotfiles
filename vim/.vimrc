@@ -319,6 +319,13 @@ set scrolloff=5         " Keep cursor in approximately the middle of the screen
 set ttyfast             " Improve redrawing
 set signcolumn=auto     " Set the sign column to disappear when no signs to show for gitgutter and CoC
 
+" Set PEP 8 guidelines for python filetypes
+" if (&filetype = "python|pytho3")
+"     set colorcolumn=80
+"     hl ColorColumn termbg=cyan, guibg=DarkMagenta
+" endif
+
+
 " Press Space to turn off highlighting and clear any message already displayed.
 :nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>
 
