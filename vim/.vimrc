@@ -118,7 +118,7 @@ let g:lightline = {
       \ 'colorscheme': 'onehalfdark',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'kite-stat','CocStatusDiag', 'currentfunction', 'readonly', 'filename', 'modified', 'fugitive'] ],
+      \             ['CocStatusDiag', 'currentfunction', 'readonly', 'filename', 'modified', 'fugitive'] ],
       \   'right': [ [ 'lineinfo' ],
       \              [ 'percent' ],
       \              [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_infos', 'linter_ok', 'filetype', 'fileencoding'] ]
@@ -126,7 +126,6 @@ let g:lightline = {
       \ 'component_function': {
       \   'CocStatusDiag': 'StatusDiagnostic',
       \   'currentfunction': 'CocCurrentFunction',
-      \   'kite-stat': 'kite#statusline',
       \   'filename': 'LightlineFilename'
       \ },
       \ }
@@ -203,13 +202,13 @@ nnoremap <Leader>f :NERDTreeFind<CR>
 
 
 " ************ Kite ***********
-set completeopt+=menuone   " show the popup menu even when there is only 1 match
-set completeopt+=noinsert  " don't insert any text until user chooses a match
-set completeopt-=longest   " don't insert the longest common text
+" set completeopt+=menuone   " show the popup menu even when there is only 1 match
+" set completeopt+=noinsert  " don't insert any text until user chooses a match
+" set completeopt-=longest   " don't insert the longest common text
 
-let g:kite_tab_complete=1 " Insert completion with <Tab> as well!
+" let g:kite_tab_complete=1 " Insert completion with <Tab> as well!
 
-autocmd CompleteDone * if !pumvisible() | pclose | endif "Close preview window after completion inserted!
+" autocmd CompleteDone * if !pumvisible() | pclose | endif "Close preview window after completion inserted!
 
 "Conquer of Completion
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -318,23 +317,19 @@ set splitright          " Open new horizontal splits right
 set scrolloff=5         " Keep cursor in approximately the middle of the screen
 set ttyfast             " Improve redrawing
 set signcolumn=auto     " Set the sign column to disappear when no signs to show for gitgutter and CoC
+set autochdir           " Set the cwd to whatever file is in view. Necessary for omni completion
 
-" Set PEP 8 guidelines for python filetypes
-" if (&filetype = "python|pytho3")
-"     set colorcolumn=80
-"     hl ColorColumn termbg=cyan, guibg=DarkMagenta
-" endif
-
+nnoremap <silent> <leader> <space>      " Set <leader> mapping to <space>
 
 " Press Space to turn off highlighting and clear any message already displayed.
-:nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>
+nnoremap <silent> ' :nohlsearch<Bar>:echo<CR>
 
 " Spaces & Tabs
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set tabstop=4       " number of visual spaces per TAB
-set softtabstop=4   " number of spaces in tab when editing
-set shiftwidth=4    " Insert 4 spaces on a tab
-set expandtab       " tabs are spaces, mainly because of python
+set tabstop=4           " number of visual spaces per TAB
+set softtabstop=4       " number of spaces in tab when editing
+set shiftwidth=4        " Insert 4 spaces on a tab
+set expandtab           " tabs are spaces, mainly because of python
 
 filetype indent on      " load filetype-specific indent files
 
