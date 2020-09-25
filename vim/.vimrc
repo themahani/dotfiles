@@ -319,7 +319,7 @@ set ttyfast             " Improve redrawing
 set signcolumn=auto     " Set the sign column to disappear when no signs to show for gitgutter and CoC
 set autochdir           " Set the cwd to whatever file is in view. Necessary for omni completion
 
-nnoremap <silent> <leader> <space>      " Set <leader> mapping to <space>
+let mapleader="<Space>"    " remap the Leader key to <Space>
 
 " Press Space to turn off highlighting and clear any message already displayed.
 nnoremap <silent> ' :nohlsearch<Bar>:echo<CR>
