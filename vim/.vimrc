@@ -55,6 +55,8 @@ Plug 'mhinz/vim-startify'             " Better start screen
 Plug 'scrooloose/nerdtree'			  " File Explorer
 Plug 'jackguo380/vim-lsp-cxx-highlight'         " CXX Syntax Highlight for CoC.vim
 Plug 'luochen1990/rainbow'              " Rainbow parentheses
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'                 " Both for fzf fuzzy search
 
 
 " Git GUI
@@ -200,6 +202,14 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 nnoremap <Leader>n :NERDTreeToggle<CR>
 nnoremap <Leader>f :NERDTreeFind<CR>
 
+" *************** FZF file search ***************
+" [Buffers] Jump to the existing window if possible
+let g:fzf_buffers_jump = 1
+
+" [[B]Commits] Customize the options used by 'git log':
+let g:fzf_commits_log_options = '--graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr"'
+
+nnoremap <C-p> :GFiles <CR>
 
 " ************ Kite ***********
 " set completeopt+=menuone   " show the popup menu even when there is only 1 match
