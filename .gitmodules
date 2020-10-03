@@ -17,3 +17,39 @@
 [submodule "vim/.vim/plugged/vim-matchup"]
 	path = vim/.vim/plugged/vim-matchup
 	url = https://github.com/andymass/vim-matchup
+[submodule "vim/.vim/plugged/ale"]
+	path = vim/.vim/plugged/ale
+	url = https://github.com/w0rp/ale.git
+[submodule "vim/.vim/plugged/colorizer"]
+	path = vim/.vim/plugged/colorizer
+	url = https://github.com/chrisbra/colorizer.git
+[submodule "vim/.vim/plugged/jellybeans.vim"]
+	path = vim/.vim/plugged/jellybeans.vim
+	url = https://github.com/nanotech/jellybeans.vim.git
+[submodule "vim/.vim/plugged/ansible-vim"]
+	path = vim/.vim/plugged/ansible-vim
+	url = https://github.com/pearofducks/ansible-vim.git
+[submodule "vim/.vim/plugged/auto-pairs"]
+	path = vim/.vim/plugged/auto-pairs
+	url = https://github.com/jiangmiao/auto-pairs.git
+[submodule "vim/.vim/plugged/ayu-vim"]
+	path = vim/.vim/plugged/ayu-vim
+	url = https://github.com/ayu-theme/ayu-vim.git
+[submodule "vim/.vim/plugged/coc.nvim"]
+	path = vim/.vim/plugged/coc.nvim
+	url = https://github.com/neoclide/coc.nvim.git
+[submodule "vim/.vim/plugged/gruvbox"]
+	path = vim/.vim/plugged/gruvbox
+	url = https://github.com/morhetz/gruvbox.git
+[submodule "vim/.vim/plugged/indentline"]
+	path = vim/.vim/plugged/indentline
+	url = https://github.com/yggdroot/indentline.git
+[submodule "vim/.vim/plugged/lightline-ale"]
+	path = vim/.vim/plugged/lightline-ale
+	url = https://github.com/maximbaz/lightline-ale.git
+[submodule "vim/.vim/plugged/lightline-gruvbox.vim"]
+	path = vim/.vim/plugged/lightline-gruvbox.vim
+	url = https://github.com/shinchu/lightline-gruvbox.vim.git
+[submodule "vim/.vim/plugged/lightline.vim"]
+	path = vim/.vim/plugged/lightline.vim
+	url = https://github.com/itchyny/lightline.vim.git

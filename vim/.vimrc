@@ -25,11 +25,7 @@ Plug 'jiangmiao/auto-pairs'                         " Auto pairs for Vim...
 " Color Schemes
 Plug 'sonph/onehalf', {'rtp': 'vim/'}
 Plug 'rakr/vim-one'
-Plug 'joshdick/onedark.vim'
-Plug 'tomasr/molokai'
-Plug 'jacoborus/tender.vim'
 Plug 'ayu-theme/ayu-vim'
-Plug 'nanotech/jellybeans.vim'
 Plug 'morhetz/gruvbox'
 Plug 'shinchu/lightline-gruvbox.vim'
 
@@ -61,7 +57,7 @@ Plug 'junegunn/fzf.vim'                 " Both for fzf fuzzy search
 
 " Git GUI
 " Plug 'airblade/vim-gitgutter'         " Git gutter
-Plug 'tpope/vim-fugitive'			  " Git Interface
+Plug 'tpope/vim-fugitive'			    " Git Interface
 Plug 'xuyuanp/nerdtree-git-plugin'
 
 " Syntactic language support
@@ -76,12 +72,11 @@ Plug 'glench/vim-jinja2-syntax'        " Jinja2 support
 Plug 'lervag/vimtex'                   " Latex support
 Plug 'pearofducks/ansible-vim'         " Ansible support
 Plug 'mechatroner/rainbow_csv'         " CSV color coding
-Plug 'ap/vim-css-color'                " CSS colors
-Plug 'frazrepo/vim-rainbow'                " Rainbow parentheses
+" Plug 'ap/vim-css-color'                " CSS colors
 Plug 'vim-pandoc/vim-pandoc'           " Pandoc support
 Plug 'vim-pandoc/vim-pandoc-syntax'    " Pandoc syntax
 Plug 'chrisbra/colorizer'              " Colorize color codes
-Plug 'liuchengxu/vista.vim'
+" Plug 'liuchengxu/vista.vim'
 " Plug 'vim-python/python-syntax'
 
 
