@@ -101,6 +101,7 @@ alias pvpnc="sudo protonvpn c"
 alias pvpnd="sudo protonvpn d"
 alias pvpns="protonvpn s"
 alias pvpnr="sudo protonvpn r"
+alias pvpn="sudo protonvpn"
 
 ##############################################################
 ##################### Custom Definitions #####################
@@ -135,4 +136,3 @@ export PATH=$PATH:/home/phoenix/.local/bin/
 alias tor-restart="sudo systemctl restart tor.service; journalctl -exfu tor"
 
 alias tor-log="journalctl -exfu tor"
-
