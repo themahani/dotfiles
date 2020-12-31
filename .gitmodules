@@ -92,3 +92,6 @@
 [submodule "vim/.vim/plugged/vim-one"]
 	path = vim/.vim/plugged/vim-one
 	url = https://github.com/rakr/vim-one.git
+[submodule "zsh-completions"]
+	path = zsh-completions
+	url = https://github.com/zsh-users/zsh-completions
