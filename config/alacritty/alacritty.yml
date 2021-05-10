@@ -82,7 +82,7 @@ font:
     style: Italic
 
   # Point size
-  size: 13.0
+  size: 9.0
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
@@ -397,7 +397,7 @@ hide_cursor_when_typing: false
 #   - Block
 #   - Underline
 #   - Beam
-cursor_style: Underline
+cursor_style: Block
 
 # If this is `true`, the cursor will be rendered as a hollow box when the
 # window is not focused.
