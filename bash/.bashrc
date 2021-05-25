@@ -46,3 +46,5 @@ export PATH=$PATH:/home/phoenix/.local/bin/
 
 
 
+# Firefox on wayland
+export MOZ_ENABLE_WAYLAND=1
