@@ -122,9 +122,6 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-# Tor Browser
-export PATH=/home/phoenix/Apps/tor-browser_en-US/Browser/:$PATH
-
 # Use aliases in Sudo as well...
 alias sudo='sudo '
 
