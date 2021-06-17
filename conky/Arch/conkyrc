@@ -86,7 +86,7 @@ ${color ff928e}${goto 130}${voffset 50}Net
 ${color FFFFFF}${goto 130}${downspeed wlp3s0}
 ${color FFFFFF}${goto 130}${upspeed wlp3s0}
 
-${color ff928e}${font Neuropolitical:size=8}${alignr}${nodename}
-${color ff928e}${font Neuropolitical:size=8}${alignr}Kernel: ${kernel}
+${color ff0000}${font Neuropolitical:size=8}${alignr}${nodename}
+${color ff0000}${font Neuropolitical:size=8}${alignr}Kernel: ${kernel}
 ${hr}
 ]];
