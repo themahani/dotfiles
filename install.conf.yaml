@@ -13,7 +13,6 @@
     ~/.vimrc: vim/.vimrc
     ~/.zshrc: zsh/.zshrc
     ~/.oh-my-zsh: zsh/.oh-my-zsh
-    ~/.conky: 
     ~/.gitconfig:
     ~/.config:
       glob: true
