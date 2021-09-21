@@ -57,7 +57,7 @@ Plug 'junegunn/fzf.vim'                 " Both for fzf fuzzy search
 
 " Git GUI
 " Plug 'airblade/vim-gitgutter'         " Git gutter
-Plug 'tpope/vim-fugitive'			    " Git Interface
+" Plug 'tpope/vim-fugitive'			    " Git Interface
 Plug 'xuyuanp/nerdtree-git-plugin'
 
 " Syntactic language support
