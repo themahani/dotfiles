@@ -95,3 +95,6 @@
 [submodule "zsh-completions"]
 	path = zsh-completions
 	url = https://github.com/zsh-users/zsh-completions
+[submodule "dotfiles-2.0"]
+	path = dotfiles-2.0
+	url = https://github.com/Axarva/dotfiles-2.0.git
