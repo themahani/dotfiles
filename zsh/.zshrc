@@ -68,7 +68,7 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-syntax-highlighting zsh-completions vi-mode archlinux colored-man-pages)
+plugins=(git zsh-syntax-highlighting zsh-completions zsh-autosuggestions vi-mode archlinux colored-man-pages)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -97,11 +97,6 @@ export ARCHFLAGS="-arch x86_64"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias pvpnc="sudo protonvpn c"
-alias pvpnd="sudo protonvpn d"
-alias pvpns="protonvpn s"
-alias pvpnr="sudo protonvpn r"
-alias pvpn="sudo protonvpn"
 
 ##############################################################
 ##################### Custom Definitions #####################
