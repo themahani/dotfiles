@@ -1,20 +1,10 @@
 {
     "languageserver": {
-        "ccls": {
-          "command": "ccls",
-          "args": ["--log-file=/tmp/ccls.log", "-v=1"],
-          "filetypes": ["c", "cc", "cpp", "c++", "objc", "objcpp, h, hpp"],
-          "rootPatterns": [".ccls", "compile_commands.json"],
-          "initializationOptions": {
-             "cache": {
-               "directory": "/tmp/ccls"
-             },
-             "client": {
-              "snippetSupport": true
-             },
-            "highlight": { "lsRanges" : true
-            }
-           }
-        }
-    }
+      "clangd": {
+        "command": "clangd",
+        "rootPatterns": ["compile_flags.txt", "compile_commands.json"],
+        "filetypes": ["c", "cc", "cpp", "c++", "objc", "objcpp"]
+      }
+    },
+    "python.pythonPath": "/usr/local/bin/coc-conda-pyright"
 }
