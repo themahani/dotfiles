@@ -128,3 +128,6 @@ export PATH=$PATH:/home/phoenix/.local/bin/
 alias tor-restart="sudo systemctl restart tor.service; journalctl -exfu tor"
 
 alias tor-log="journalctl -exfu tor"
+
+# Firefox on wayland
+MOZ_ENABLE_WAYLAND=1
