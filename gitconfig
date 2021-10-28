@@ -27,3 +27,5 @@
 	name = Ali Mahani
 [core]
 	editor = vim
+[credential]
+	helper = store
