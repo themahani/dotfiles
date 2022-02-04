@@ -352,7 +352,7 @@ schemes:
 colors: *OneHalfDark
 
 # Background opacity
-background_opacity : 1.0
+window.opacity : 1.0
 # Mouse bindings
 #
 # Available fields:
