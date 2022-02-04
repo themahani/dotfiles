@@ -131,3 +131,10 @@ alias tor-log="journalctl -exfu tor"
 
 # Firefox on wayland
 MOZ_ENABLE_WAYLAND=1
+
+# protonvpn
+alias pvpn="protonvpn-cli"
+alias pvpnc="protonvpn-cli c"
+alias pvpncc="protonvpn-cli c --cc"
+alias pvpns="protonvpn-cli s"
+alias pvpnd="protonvpn-cli d"
