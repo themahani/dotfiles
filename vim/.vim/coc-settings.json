@@ -1,10 +1,10 @@
 {
     "languageserver": {
-      "clangd": {
+    "clangd": {
         "command": "clangd",
         "rootPatterns": ["compile_flags.txt", "compile_commands.json"],
         "filetypes": ["c", "cc", "cpp", "c++", "objc", "objcpp"]
-      }
+        }
     },
     "python.pythonPath": "/usr/local/bin/coc-conda-pyright"
 }
