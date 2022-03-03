@@ -14,10 +14,10 @@
     ~/.zshrc: zsh/.zshrc
     ~/.oh-my-zsh: zsh/.oh-my-zsh
     ~/.gitconfig:
+    ~/.tmux.conf:
     ~/.config:
       glob: true
       path: config/*
 
 - shell:
   - git submodule sync --recursive
- 
