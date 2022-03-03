@@ -15,7 +15,7 @@ set $mod Mod4
 # workspace_layout tabbed <stacking|tabbed>
 
 # Configure border style <normal|1pixel|pixel xx|none|pixel>
-default_border pixel 1
+default_border pixel 5
 default_floating_border normal
 
 # Hide borders
@@ -87,8 +87,8 @@ bindsym $mod+Ctrl+m exec terminal -e 'alsamixer'
 ################################################################################################
 
 # Screen brightness controls
-# bindsym XF86MonBrightnessUp exec "xbacklight -inc 10; notify-send 'brightness up'"
-# bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send 'brightness down'"
+bindsym XF86MonBrightnessUp exec "xbacklight -inc 10; notify-send 'brightness up'"
+bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send 'brightness down'"
 
 
 # change focus
@@ -259,13 +259,15 @@ exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id nitrogen --restore; sleep 1; picom -b
 exec --no-startup-id nm-applet
 exec --no-startup-id mailspring
-exec --no-startup-id discord
+# exec --no-startup-id discord
+exec --no-startup-id persepolis
 # exec --no-startup-id xautolock -time 10 -locker blurlock
 # exec_always --no-startup-id ff-theme-util
 # exec_always --no-startup-id fix_xcursor
 exec_always --no-startup-id "xset r rate 200 30;"
 exec_always --no-startup-id "setxkbmap -layout us,ir"
-exec_always --no-startup-id "setxkbmap -option 'grp:win_space_toggle'"
+exec_always --no-startup-id "setxkbmap -option 'grp:alt_shift_toggle'"
+exec --no-startup-id "gxkb"  # keyboad layout indicator
 
 # don't follow mouse for focus
 
@@ -317,7 +319,7 @@ bindsym $mod+m bar mode toggle
 
 # Set inner/outer gaps
 gaps inner 14
-gaps outer -2
+gaps outer 5
 
 # Additionally, you can issue commands with the following syntax. This is useful to bind keys to changing the gap size.
 # gaps inner|outer current|all set|plus|minus <px>
