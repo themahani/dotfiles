@@ -11,14 +11,11 @@ Two categories
 - EasyScreenCast
 - Gnome 4x UI Improvements
 - Iranian Persian Calendar
-- Just Perfection (?)
-- Native Window Placement
-- Removable Drive Menu
 - Sound Input & Output Device Chooser
-- System Monitor
+- System Monitor / system-monitor-next
 - Tray Icons: Reloaded
 - User Themes
 - X11 Gestures
 
 ### Built-In
-- AppIndicator and KStatusNotifierItem Support
+- Native Window Placement
