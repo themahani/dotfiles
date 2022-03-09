@@ -95,3 +95,6 @@
 [submodule "zsh-completions"]
 	path = zsh-completions
 	url = https://github.com/zsh-users/zsh-completions
+[submodule "vim/.vim/plugged/vimtex"]
+	path = vim/.vim/plugged/vimtex
+	url = https://github.com/lervag/vimtex.git
