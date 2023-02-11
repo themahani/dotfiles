@@ -121,7 +121,7 @@ unset __conda_setup
 alias sudo='sudo '
 
 # Virtual Env Local Directory
-export PATH=$PATH:/home/phoenix/.local/bin/
+export PATH=$PATH:/home/ali/.local/bin/
 
 
 # Tor Proxy:
