@@ -2,7 +2,7 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/home/ali/.oh-my-zsh"
+export ZSH="/home/themahani/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -68,7 +68,7 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-syntax-highlighting zsh-autosuggestions vi-mode archlinux colored-man-pages)
+plugins=(git zsh-autosuggestions vi-mode colored-man-pages)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -139,4 +139,3 @@ else
 fi
 unset __conda_setup
 # <<< conda initialize <<<
-
