@@ -1,21 +1,11 @@
 # Gnome Specifications and Customizations
-Here I record my customizations of gnome.
-
-## Extensions
-Two categories
-
-### Manually Installed
-- BaBar Task Bar
+- AppIndicator and KStatusNotifierItem Support
 - Caffeine
 - Dash to Dock
-- EasyScreenCast
-- Gnome 4x UI Improvements
 - Iranian Persian Calendar
-- Sound Input & Output Device Chooser
-- System Monitor / system-monitor-next
+- Space Bar
+- TopIconsFix
 - Tray Icons: Reloaded
 - User Themes
+- Vitals
 - X11 Gestures
-
-### Built-In
-- Native Window Placement
