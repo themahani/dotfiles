@@ -1,9 +1,12 @@
-cursor_style = "Block"
-custom_cursor_colors = true
-hide_cursor_when_typing = false
-live_config_reload = true
-"window.dynamic_title" = true
-"window.opacity" = 1.0
+# cursor_style = "Block"
+# custom_cursor_colors = true
+# hide_cursor_when_typing = false
+# live_config_reload = true
+# "window.dynamic_title" = true
+# "window.opacity" = 1.0
+import = [
+    "./theme/themes/ayu_dark.toml"
+]
 
 [bell]
 animation = "EaseOutExpo"
@@ -41,7 +44,7 @@ COLORTERM = "truecolor"
 TERM = "xterm-256color"
 
 [font]
-scale_with_dpi = true
+# scale_with_dpi = true
 size = 14.0
 
 [font.bold]
@@ -595,189 +598,12 @@ mods = "Control|Shift"
 action = "PasteSelection"
 mouse = "Middle"
 
-[mouse.double_click]
-threshold = 300
+# [mouse.double_click]
+# threshold = 300
 
-[mouse.triple_click]
-threshold = 300
+# [mouse.triple_click]
+# threshold = 300
 
-[schemes."Ayu Mirage".bright]
-black = "#686868"
-blue = "#5CCFE6"
-cyan = "#95E6CB"
-green = "#A6CC70"
-magenta = "#FFEE99"
-red = "#F27983"
-white = "#FFFFFF"
-yellow = "#FFCC66"
-
-[schemes."Ayu Mirage".normal]
-black = "#191E2A"
-blue = "#73D0FF"
-cyan = "#95E6CB"
-green = "#BAE67E"
-magenta = "#FFD580"
-red = "#FF3333"
-white = "#C7C7C7"
-yellow = "#FFA759"
-
-[schemes."Ayu Mirage".primary]
-background = "#202734"
-foreground = "#CBCCC6"
-
-[schemes.Darkside.bright]
-black = "#666666"
-blue = "#387CD3"
-cyan = "#3D97E2"
-green = "#77B869"
-magenta = "#957BBE"
-red = "#E05A4F"
-white = "#BABABA"
-yellow = "#EFD64B"
-
-[schemes.Darkside.normal]
-black = "#000000"
-blue = "#1C98E8"
-cyan = "#1C98E8"
-green = "#68C256"
-magenta = "#8E69C9"
-red = "#E8341C"
-white = "#BABABA"
-yellow = "#F2D42C"
-
-[schemes.Darkside.primary]
-background = "#222324"
-foreground = "#BABABA"
-
-[schemes.Darktooth.bright]
-black = "#32302f"
-blue = "#83a598"
-cyan = "#3fd7e5"
-green = "#b8bb26"
-magenta = "#d3869b"
-red = "#fb4933"
-white = "#ffffc8"
-yellow = "#fabd2f"
-
-[schemes.Darktooth.dim]
-black = "#1d2021"
-blue = "#2b3c44"
-cyan = "#205161"
-green = "#232b0f"
-magenta = "#4e3d45"
-red = "#421e1e"
-white = "#f4e8ba"
-yellow = "#4d3b27"
-
-[schemes.Darktooth.normal]
-black = "#282828"
-blue = "#076678"
-cyan = "#00a7af"
-green = "#79740e"
-magenta = "#8f3f71"
-red = "#9d0006"
-white = "#fdf4c1"
-yellow = "#b57614"
-
-[schemes.Darktooth.primary]
-background = "#282828"
-foreground = "#fdf4c1"
-
-[schemes.Gruvbox_Dark.bright]
-black = "#928374"
-blue = "#83a598"
-cyan = "#8ec07c"
-green = "#b8bb26"
-magenta = "#d3869b"
-red = "#fb4934"
-white = "#ebdbb2"
-yellow = "#fabd2f"
-
-[schemes.Gruvbox_Dark.normal]
-black = "#282828"
-blue = "#458588"
-cyan = "#689d6a"
-green = "#98971a"
-magenta = "#b16286"
-red = "#cc241d"
-white = "#a89984"
-yellow = "#d79921"
-
-[schemes.Gruvbox_Dark.primary]
-background = "#282828"
-foreground = "#ebdbb2"
-
-[schemes.Gruvbox_Light.bright]
-black = "#928374"
-blue = "#076678"
-cyan = "#427b58"
-green = "#79740e"
-magenta = "#8f3f71"
-red = "#9d0006"
-white = "#3c3836"
-yellow = "#b57614"
-
-[schemes.Gruvbox_Light.normal]
-black = "#fbf1c7"
-blue = "#458588"
-cyan = "#689d6a"
-green = "#98971a"
-magenta = "#b16286"
-red = "#cc241d"
-white = "#7c6f64"
-yellow = "#d79921"
-
-[schemes.Gruvbox_Light.primary]
-background = "#fbf1c7"
-foreground = "#3c3836"
-
-[schemes.OneHalfDark.bright]
-black = "0x282c34"
-blue = "0x61afef"
-cyan = "0x56b6c2"
-green = "0x98c379"
-magenta = "0xc678dd"
-red = "0xe06c75"
-white = "0xdcdfe4"
-yellow = "0xe5c07b"
-
-[schemes.OneHalfDark.normal]
-black = "0x282c34"
-blue = "0x61afef"
-cyan = "0x56b6c2"
-green = "0x98c379"
-magenta = "0xc678dd"
-red = "0xe06c75"
-white = "0xdcdfe4"
-yellow = "0xe5c07b"
-
-[schemes.OneHalfDark.primary]
-background = "0x282c34"
-foreground = "0xdcdfe4"
-
-[schemes.OneHalfLight.bright]
-black = "0x383a42"
-blue = "0x0184bc"
-cyan = "0x0997b3"
-green = "0x50a14f"
-magenta = "0xa626a4"
-red = "0xe45649"
-white = "0xfafafa"
-yellow = "0xc18401"
-
-[schemes.OneHalfLight.normal]
-black = "0x383a42"
-blue = "0x0184bc"
-cyan = "0x0997b3"
-green = "0x50a14f"
-magenta = "0xa626a4"
-red = "0xe45649"
-white = "0xfafafa"
-yellow = "0xc18401"
-
-[schemes.OneHalfLight.primary]
-background = "0xfafafa"
-foreground = "0x383a42"
 
 [scrolling]
 history = 10000

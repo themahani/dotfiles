@@ -98,3 +98,6 @@
 [submodule "vim/.vim/plugged/vimtex"]
 	path = vim/.vim/plugged/vimtex
 	url = https://github.com/lervag/vimtex.git
+[submodule "config/alacritty/theme"]
+	path = config/alacritty/theme
+	url = https://github.com/alacritty/alacritty-theme
