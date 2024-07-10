@@ -5,8 +5,8 @@
 # "window.dynamic_title" = true
 # "window.opacity" = 1.0
 import = [
-    # "./theme/catppuccin-mocha.toml"
-    "./theme/catppuccin-machiato.toml"
+    "./theme/catppuccin-mocha.toml"
+    # "./theme/catppuccin-machiato.toml"
 ]
 
 [bell]
