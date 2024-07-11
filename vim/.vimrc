@@ -23,11 +23,7 @@ Plug 'honza/vim-snippets'                           " snippet support that integ
 Plug 'jiangmiao/auto-pairs'                         " Auto pairs for Vim...
 
 " Color Schemes
-Plug 'sonph/onehalf', {'rtp': 'vim/'}
-Plug 'rakr/vim-one'
-Plug 'ayu-theme/ayu-vim'
-Plug 'morhetz/gruvbox'
-Plug 'shinchu/lightline-gruvbox.vim'
+Plug 'catppuccin/vim', { 'as': 'catppuccin' }
 
 
 " Text Manipulation
@@ -112,7 +108,7 @@ endfunction
 
 
 let g:lightline = {
-      \ 'colorscheme': 'onehalfdark',
+            \ 'colorscheme': 'catppuccin_mocha',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             ['CocStatusDiag', 'currentfunction', 'readonly', 'filename', 'modified', 'fugitive'] ],
@@ -150,40 +146,16 @@ nmap <silent> ]a <Plug>(ale_next_wrap)
 
 "*********** Interface ColorScheme *************
 " "==> OneHalf Colors : Dark/Light
+" syntax on
+" set termguicolors
+" set t_Co=256
+" set cursorline
+" colorscheme onehalfdark
+
+" Catppuccin Colorscheme
 syntax on
 set termguicolors
-set t_Co=256
-set cursorline
-colorscheme onehalfdark
-
-" ==> Molokai Colors
-" let g:molokai_original = 1
-" colorscheme molokai
-
-" "==> Ayu Colors
-" let ayucolor="mirage"   " for dark version of theme
-" colorscheme ayu
-
-"==> Grvbox Dark Colors
-" set bg=dark
-" colorscheme gruvbox
-
-" " ==> Tender Colors
-" if (has("termguicolors"))
-"  set termguicolors
-" endif
-
-" syntax on
-" colorscheme tender
-
-" "==> OneDark Colors
-" syntax on
-" colorscheme onedark
-
-" "==> VimOne Colors
-" set background=dark       " for the dark version
-" let g:one_allow_italics = 1 " I love italic for comments
-" colorscheme one
+colorscheme catppuccin_mocha
 
 
 " ********** Rainbow Parentheses ***********
