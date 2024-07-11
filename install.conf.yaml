@@ -9,12 +9,19 @@
     ~/.bash_profile: bash/.bash_profile
     ~/.bashrc: bash/.bashrc
     ~/.dotfiles: ''
-    ~/.vim: vim/.vim
+    # VIm configs
+    ~/.vim:
+      glob: true
+      path: vim/.vim/*
     ~/.vimrc: vim/.vimrc
+    # Zsh configs
     ~/.zshrc: zsh/.zshrc
     ~/.oh-my-zsh: zsh/.oh-my-zsh
+    # Git
     ~/.gitconfig:
+    # tmux
     ~/.tmux.conf:
+    # General configs
     ~/.config:
       glob: true
       path: config/*
