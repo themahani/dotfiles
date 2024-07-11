@@ -101,3 +101,6 @@
 [submodule "config/alacritty/theme"]
 	path = config/alacritty/theme
 	url = https://github.com/alacritty/alacritty-theme
+[submodule "vim/.vim/plugged/catppuccin"]
+	path = vim/.vim/plugged/catppuccin
+	url = https://github.com/catppuccin/vim.git
