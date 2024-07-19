@@ -3,6 +3,10 @@ vim.cmd("set tabstop=4")
 vim.cmd("set softtabstop=4")
 vim.cmd("set shiftwidth =4")
 
+-- Map the leader keybinding to <space>
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
+
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -23,22 +27,28 @@ vim.opt.rtp:prepend(lazypath)
 -- Make sure to setup `mapleader` and `maplocalleader` before
 -- loading lazy.nvim so that mappings are correct.
 -- This is also a good place to setup other settings (vim.opt)
-vim.g.mapleader = " "
-vim.g.maplocalleader = "\\"
 
 -- Setup lazy.nvim
-require("lazy").setup({
-  spec = {
-    -- add your plugins here
-    { "catppuccin/nvim", name = "catppuccin", priority = 1000 } -- colorscheme to use on nvim
-  },
-  -- Configure any other settings here. See the documentation for more details.
-  -- colorscheme that will be used when installing plugins.
-  install = { colorscheme = { "habamax" } },
-  -- automatically check for plugin updates
-  checker = { enabled = true },
+require("lazy").setup("plugins")
+
+-- Setup telescope for fuzzy find file searches
+local builtin = require("telescope.builtin")
+vim.keymap.set('n', '<C-p>', builtin.find_files, {})
+vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
+
+-- Setup treesitter for Neovim
+local treesitter_config = require("nvim-treesitter.configs")
+treesitter_config.setup({
+    ensure_installed = {"lua", "javascript", "c", "python", "vimdoc"},
+    sync_install = false,
+    highlight = { enable = true },
+    indent = { enable = true },
 })
 
+-- Setup Neotree
+vim.keymap.set('n', '<C-n>', ':Neotree filesystem reveal left<CR>', {})
+
+
+-- Set the colorscheme for nvim
 require("catppuccin").setup()
 vim.cmd.colorscheme "catppuccin"
-
