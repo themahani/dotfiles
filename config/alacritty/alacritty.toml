@@ -49,7 +49,7 @@ TERM = "xterm-256color"
 size = 14.0
 
 [font.bold]
-family = "Hack"
+family = "Hack Nerd Font"
 style = "Bold"
 
 [font.glyph_offset]
@@ -57,11 +57,11 @@ x = 0
 y = 0
 
 [font.italic]
-family = "Hack"
+family = "Hack Nerd Font"
 style = "Italic"
 
 [font.normal]
-family = "Hack"
+family = "Hack Nerd Font"
 style = "Regular"
 
 [font.offset]
