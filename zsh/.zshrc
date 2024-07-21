@@ -5,39 +5,39 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# load zgen
-source "${HOME}/.zgen/zgen.zsh"
+# load antigen
+source "${HOME}/.antigen.zsh"
 
-# if the init scipt doesn't exist
-if ! zgen saved; then
-    echo "Creating a zgen save"
+# Load the oh-my-zsh's library
+antigen use oh-my-zsh
 
-    zgen oh-my-zsh
+antigen bundles <<EOBUNDLES
+    # Bundles from the default repo (robbyrussell's oh-my-zsh)
+    git
+    sudo
+    archlinux
+    command-not-found
 
-    # plugins
-    zgen oh-my-zsh plugins/git
-    zgen oh-my-zsh plugins/sudo
-    zgen oh-my-zsh plugins/archlinux
-    zgen oh-my-zsh plugins/command-not-found
-    zgen load zsh-users/zsh-syntax-highlighting
-    zgen load zsh-users/zsh-autosuggestions
-    zgen load romkatv/powerlevel10k powerlevel10k   # zsh theme
+    # Zsh syntax highlighting
+    zsh-users/zsh-syntax-highlighting
 
-    # bulk load
-    zgen loadall <<EOPLUGINS
-        zsh-users/zsh-history-substring-search
-EOPLUGINS
-    # ^ can't indent this EOPLUGINS
+    # Fish-like auto suggestions
+    zsh-users/zsh-autosuggestions
 
-    # completions
-    zgen load zsh-users/zsh-completions src
+    # Extra zsh completions
+    zsh-users/zsh-completions
+EOBUNDLES
 
-    # theme
-    zgen oh-my-zsh themes/arrow
+# Load the theme
+antigen theme romkatv/powerlevel10k
 
-    # save all to init script
-    zgen save
-fi
+# Tell antigen that you're done
+antigen apply
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('/home/ali/Apps/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
@@ -53,5 +53,3 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
