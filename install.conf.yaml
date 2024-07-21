@@ -16,7 +16,7 @@
     ~/.vimrc: vim/.vimrc
     # Zsh configs
     ~/.zshrc: zsh/.zshrc
-    ~/.oh-my-zsh: zsh/.oh-my-zsh
+    ~/.zgen: zsh/zgen
     # Git
     ~/.gitconfig:
     # tmux
