@@ -10,6 +10,7 @@ alias ll='ls -l'
 alias ls='ls --color=auto'
 PS1='[\u@\h \W]\$ '
 
+alias vi="vim"
 
 # Use aliases in Sudo as well...
 alias sudo='sudo '
