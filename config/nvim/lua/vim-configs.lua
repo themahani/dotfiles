@@ -28,7 +28,7 @@ vim.opt.inccommand = "split" -- Preview substitutions live
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
-vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>") -- Set keymap to remove hightlights
+vim.keymap.set("n", "'", "<cmd>nohlsearch<CR>") -- Set keymap to remove hightlights
 
 -- # Configs for  nvim colors
 vim.opt.termguicolors = true
