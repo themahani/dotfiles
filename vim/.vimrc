@@ -20,7 +20,6 @@ call plug#begin('~/.vim/plugged')
 Plug 'neoclide/coc.nvim', {'branch': 'release'}     " CoC Complition API for Vim!
 Plug 'andys8/vscode-jest-snippets'                  " VSCode Snippets Extension from Github
 Plug 'honza/vim-snippets'                           " snippet support that integrates with CoC
-Plug 'jiangmiao/auto-pairs'                         " Auto pairs for Vim...
 
 " Color Schemes
 Plug 'catppuccin/vim', { 'as': 'catppuccin' }
@@ -39,7 +38,6 @@ Plug 'tpope/vim-speeddating'          " Dates in vim
 
 " GUI enhancements
 Plug 'yggdroot/indentline'            " Shows indentation levels
-Plug 'tpope/vim-eunuch'               " Unix helpers
 Plug 'machakann/vim-highlightedyank'  " Highlight yanks
 Plug 'andymass/vim-matchup'           " Highlight corresponding blocks e.g. if - fi in bash
 Plug 'itchyny/lightline.vim'		  " Better Status Bar
