@@ -8,3 +8,6 @@ More instructions available in the `@dotbot` repository.
 - To also clone the submodules, us the `--recursive` tag when cloning.
 - After the installation of nvidia drivers and intel drivers, run the following command as root:\
 `cp etc/X11/xorg.conf /etc/X11/xorg.conf`
+
+## To-Do
+- [ ] Setup nvim to close if `neo-tree.nvim` is the only buffer open
