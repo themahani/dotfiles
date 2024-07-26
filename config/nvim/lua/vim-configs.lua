@@ -23,7 +23,8 @@ vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.undofile = true
 
 -- Setup search visuals
-vim.opt.hlsearch = false
+vim.opt.hlsearch = true
+vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.opt.incsearch = true
 
 -- Setup nvim colors
