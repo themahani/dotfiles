@@ -186,9 +186,8 @@ return {
                 map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
 
                 -- Mapping to format current buffer
-                vim.keymap.set("n", "<leader>gf", vim.lsp.buf.format, {})
+                vim.keymap.set("n", "<leader>fb", vim.lsp.buf.format, { desc = "[F]ormat Current [B]uffer" })
             end
-            })
-
+        })
     end
 }
