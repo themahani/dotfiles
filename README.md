@@ -10,12 +10,12 @@ More instructions available in the `@dotbot` repository.
 `cp etc/X11/xorg.conf /etc/X11/xorg.conf`
 
 ### Neovim
-After a clean install, on the first launch of `neovim`, the `lazy.nvim` plugin will install all the packages.\
-Same goes for `mason` which is the packages manager for the LSP. If not, you can run the `:MasonInstallAll` command \
+After a clean install, on the first launch of `neovim`, the `lazy.nvim` plugin will install all the packages.
+Same goes for `mason` which is the packages manager for the LSP. If not, you can run the `:MasonInstallAll` command 
 in neovim to install all preconfigured packages.
 
 ### Fonts
-A lot of the terminal tools use **Nerd Fonts**. So please have them installed. \
+A lot of the terminal tools use **Nerd Fonts**. So please have them installed. 
 You can choose the font you like in the configuration files.
 
 ## To-Do
