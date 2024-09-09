@@ -76,9 +76,9 @@ return {
         }
         local ensure_installed = vim.tbl_keys(servers or {})
         vim.list_extend(ensure_installed, {
-            -- "stylua",   -- Used to format Lua code
-            -- "isort",    -- Sort imports for Python
-            -- "black",    -- Formatter for Python
+            stylua = {},   -- Used to format Lua code
+            isort = {},    -- Sort imports for Python
+            black = {},    -- Formatter for Python
         })
 
         require("mason-lspconfig").setup({
