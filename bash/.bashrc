@@ -17,6 +17,7 @@ alias sudo='sudo '
 
 # Virtual Env Local Directory
 export PATH=$PATH:/home/ali/.local/bin/
+export PATH=$PATH:/home/ali/.cargo/bin/
 
 # Ruby Gem local directory
 export PATH=$PATH:/home/ali/.local/share/gem/ruby/3.0.0/bin
