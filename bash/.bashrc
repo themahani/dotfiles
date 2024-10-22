@@ -28,14 +28,14 @@ export PATH=$PATH:/home/ali/.local/share/gem/ruby/3.0.0/bin
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/ali/Apps/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+__conda_setup="$('/home/ali/Apps/miniforge3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/home/ali/Apps/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/ali/Apps/anaconda3/etc/profile.d/conda.sh"
+    if [ -f "/home/ali/Apps/miniforge3/etc/profile.d/conda.sh" ]; then
+        . "/home/ali/Apps/miniforge3/etc/profile.d/conda.sh"
     else
-        export PATH="/home/ali/Apps/anaconda3/bin:$PATH"
+        export PATH="/home/ali/Apps/miniforge3/bin:$PATH"
     fi
 fi
 unset __conda_setup
