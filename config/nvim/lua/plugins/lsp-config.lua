@@ -58,6 +58,7 @@ return {
             html = {},
             cssls = {},
             markdown_oxide = {},
+            texlab = {},
 
             lua_ls = {
                 -- cmd = {...},

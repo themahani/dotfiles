@@ -41,6 +41,8 @@ antigen apply
 # Get rid of the `vi` command
 alias vi="vim"
 
+alias lg="lazygit"
+
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
