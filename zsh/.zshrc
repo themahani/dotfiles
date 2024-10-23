@@ -57,8 +57,20 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-# load bashrc configs
-source ~/.bashrc
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/ali/Apps/miniforge3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/ali/Apps/miniforge3/etc/profile.d/conda.sh" ]; then
+        . "/home/ali/Apps/miniforge3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/ali/Apps/miniforge3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
 
-# To customize prompt, run `p10k configure` or edit ~/dotfiles/zsh/.p10k.zsh.
-[[ ! -f ~/dotfiles/zsh/.p10k.zsh ]] || source ~/dotfiles/zsh/.p10k.zsh
+# load bashrc configs
+# source ~/.bashrc
