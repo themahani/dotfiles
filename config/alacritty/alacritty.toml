@@ -1,13 +1,3 @@
-# cursor_style = "Block"
-# custom_cursor_colors = true
-# hide_cursor_when_typing = false
-# "window.dynamic_title" = true
-# "window.opacity" = 1.0
-import = [
-    "./theme/themes/catppuccin_macchiato.toml",
-]
-
-live_config_reload = true
 
 [bell]
 animation = "EaseOutExpo"
@@ -625,3 +615,15 @@ lines = 24
 [window.padding]
 x = 10
 y = 10
+
+[general]
+
+live_config_reload = true
+# cursor_style = "Block"
+# custom_cursor_colors = true
+# hide_cursor_when_typing = false
+# "window.dynamic_title" = true
+# "window.opacity" = 1.0
+import = [
+    "./theme/themes/catppuccin_macchiato.toml",
+]
