@@ -42,6 +42,7 @@ antigen apply
 alias vi="vim"
 
 alias lg="lazygit"
+alias ld="lazydocker"
 
 
 # >>> conda initialize >>>

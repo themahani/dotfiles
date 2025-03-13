@@ -63,7 +63,7 @@ vim.g.have_nerd_font = true -- Tell nvim that you have nerd fonts enabled.
 vim.opt.wrap = false -- Disable line wrap
 vim.opt.mouse = "a" -- Enable mouse mode. Can help with resizing splits
 vim.opt.showmode = false -- Don't show the mode, since it's already in the status line
-vim.opt.clipboard = "unnamedplus" -- Sync clipboard between OS and Nvim
+-- vim.opt.clipboard = "unnamedplus" -- Sync clipboard between OS and Nvim
 vim.opt.timeoutlen = 800 -- Set mapped sequence wait time in milliseconds
 vim.opt.cursorline = true -- Show which line your cursor is on
 
