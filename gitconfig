@@ -26,7 +26,7 @@
 	email = ali.a.mahani@zoho.com
 	name = Ali Mahani
 [core]
-	editor = vim
+	editor = nvim
 [credential]
 	helper = store
 [pull]
