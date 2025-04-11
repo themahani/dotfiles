@@ -59,6 +59,7 @@ return {
             cssls = {},
             markdown_oxide = {},
             texlab = {},
+            tailwindcss = {},
 
             lua_ls = {
                 -- cmd = {...},
