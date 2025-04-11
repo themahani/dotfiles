@@ -44,6 +44,7 @@ alias vi="vim"
 alias lg="lazygit"
 alias ld="lazydocker"
 
+export PATH=$PATH:/snap/bin
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
