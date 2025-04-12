@@ -53,12 +53,16 @@ return {
         -- Servers to ensure_installed with their configs
         local servers = {
             clangd = {},
-            -- gopls = {},
             pyright = {},
             html = {},
             cssls = {},
             markdown_oxide = {},
             texlab = {},
+            tailwindcss = {},
+            biome = {},
+            black = {},    -- Formatter for Python
+            prettier = {}, -- Formatter for javascript / typescript
+            stylua = {},   -- Formatter for Lua
 
             lua_ls = {
                 -- cmd = {...},
@@ -76,21 +80,17 @@ return {
             },
         }
         local ensure_installed = vim.tbl_keys(servers or {})
-        vim.list_extend(ensure_installed, {
-            stylua = {},   -- Used to format Lua code
-            isort = {},    -- Sort imports for Python
-            black = {},    -- Formatter for Python
-        })
 
-        require("mason-lspconfig").setup({
+        require("mason-tool-installer").setup({
             ensure_installed = ensure_installed,
             handlers = {
                 function(server_name) -- default handler (optional)
                     require("lspconfig")[server_name].setup {
-                        capabilities = capabilities
+                        capabilities = capabilities,
                     }
                 end,
             },
+            automatic_installation = true
         })
 
         local cmp_select = { behavior = cmp.SelectBehavior.Select }
