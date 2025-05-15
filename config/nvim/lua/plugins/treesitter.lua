@@ -5,11 +5,16 @@ return {
         -- Setup treesitter for Neovim
         local treesitter_config = require("nvim-treesitter.configs")
         treesitter_config.setup({
-            ensure_installed = {"lua", "javascript", "c", "python", "vimdoc"},
+            ensure_installed = {
+                "lua", "javascript",  "tsx",  "toml",
+                "yaml", "json", "css", "html",
+                "c", "python", "vimdoc"
+            },
             auto_install = true,
             sync_install = false,
             highlight = { enable = true },
             indent = { enable = true },
+            autotag = { enable = true },
         })
     end
 }
