@@ -24,8 +24,8 @@ return {
         python = { 'black' },
       },
       format_on_save = {
-        async = true,
-        timeout_ms = 1000,
+        async = false,
+        timeout_ms = 2000,
         lsp_fallback = true,
       },
     }
