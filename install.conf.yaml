@@ -3,12 +3,12 @@
       create: true
       relink: true
 
-- clean: ['~', '~/.config']
+- clean: ["~", "~/.config"]
 
 - link:
     ~/.bash_profile: bash/.bash_profile
     ~/.bashrc: bash/.bashrc
-    ~/.dotfiles: ''
+    ~/.dotfiles: ""
     # VIm configs
     ~/.vim:
       glob: true
@@ -21,12 +21,10 @@
     ~/.p10k.zsh: zsh/.p10k.zsh
     # Git
     ~/.gitconfig:
-    # tmux
-    ~/.tmux.conf:
     # General configs
     ~/.config:
       glob: true
       path: config/*
 
 - shell:
-  - git submodule sync --recursive
+    - git submodule sync --recursive
