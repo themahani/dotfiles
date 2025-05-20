@@ -71,3 +71,5 @@ unset __conda_setup
 
 # load bashrc configs
 # source ~/.bashrc
+
+. "$HOME/.local/bin/env"

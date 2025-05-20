@@ -31,3 +31,7 @@
 	helper = store
 [pull]
 	rebase = false
+[init]
+	defaultBranch = main
+[maintenance]
+	repo = /home/ali/Code/research/ml_force_research/ml-force
