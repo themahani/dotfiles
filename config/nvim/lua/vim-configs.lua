@@ -38,11 +38,10 @@ vim.opt.splitright = true -- New vertical split to right
 vim.opt.splitbelow = true -- New horizontal split to below
 
 -- # Faster window movement in nvim
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
-
+vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" })
+vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })
+vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
+vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
 
 -- # Configs for Yank
 -- Highlight when yanking (copying) text
@@ -52,7 +51,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "Highlight when yanking (copying) text",
 	group = vim.api.nvim_create_augroup("nvim-highlight-yank", { clear = true }),
 	callback = function()
-		vim.highlight.on_yank({
+		vim.hl.on_yank({
 			opts = {
 				higroup = "Visual",
 				timeout = 300, -- Set the timeout of the highlight
@@ -62,7 +61,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 })
 
 -- # Misc
-vim.opt.scrolloff = 8 -- Number of screen lines to keep above/below cursor
+vim.opt.scrolloff = 4 -- Number of screen lines to keep above/below cursor
 vim.opt.signcolumn = "yes" -- Keep the sign column on by default
 vim.opt.isfname:append("@-@")
 vim.opt.updatetime = 50 -- Faster update rate for neovim
@@ -74,4 +73,4 @@ vim.opt.showmode = false -- Don't show the mode, since it's already in the statu
 vim.opt.timeoutlen = 800 -- Set mapped sequence wait time in milliseconds
 vim.opt.cursorline = true -- Show which line your cursor is on
 
-vim.keymap.set('n', ';', ":")   -- Map ; to : for easier access to vim cmd
+vim.keymap.set("n", ";", ":") -- Map ; to : for easier access to vim cmd
