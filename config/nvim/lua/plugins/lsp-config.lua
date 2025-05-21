@@ -53,7 +53,12 @@ return {
       html = {},
       cssls = {},
       markdown_oxide = {},
-      texlab = {},
+      texlab = {
+        build = { onSave = true },
+        formatterLineLength = 80,
+        completion = { matcher = "fuzzy-ignore-case" }, -- fuzzy[-ignore-case], prefix[-ignore-case]
+        experimental = { followPackageLinks = true },
+      },
       tailwindcss = {},
       biome = {},
       black = {}, -- Formatter for Python
@@ -77,8 +82,8 @@ return {
     }
     local ensure_installed = vim.tbl_keys(servers or {})
 
+    -- Set up server configs for nvim-lspconfig and nvim-cmp
     local lsp_cmp_setup = function(servers)
-      local server_names = vim.tbl_keys(servers or {})
       for server_name, server_config in pairs(servers) do
         vim.lsp.enable(server_name)
         vim.lsp.config(server_name, server_config)
