@@ -60,7 +60,10 @@ return {
         experimental = { followPackageLinks = true },
       },
       tailwindcss = {},
-      biome = {},
+      eslint = {
+        autoFixOneSave = true,
+        format = { enable = true },
+      }, -- LSP for Web Dev
       black = {}, -- Formatter for Python
       prettier = {}, -- Formatter for javascript / typescript
       stylua = {}, -- Formatter for Lua
@@ -144,7 +147,7 @@ return {
       -- update_in_insert = true,
       float = {
         focusable = true,
-        style = "minimal",
+        style = "compact",
         border = "rounded",
         source = "always",
         header = "",
