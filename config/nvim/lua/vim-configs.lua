@@ -48,16 +48,16 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper win
 --  Try it with `yap` in normal mode
 --  See `:help vim.highlight.on_yank()`
 vim.api.nvim_create_autocmd("TextYankPost", {
-	desc = "Highlight when yanking (copying) text",
-	group = vim.api.nvim_create_augroup("nvim-highlight-yank", { clear = true }),
-	callback = function()
-		vim.hl.on_yank({
-			opts = {
-				higroup = "Visual",
-				timeout = 300, -- Set the timeout of the highlight
-			},
-		})
-	end,
+  desc = "Highlight when yanking (copying) text",
+  group = vim.api.nvim_create_augroup("nvim-highlight-yank", { clear = true }),
+  callback = function()
+    vim.hl.on_yank({
+      opts = {
+        higroup = "Visual",
+        timeout = 300, -- Set the timeout of the highlight
+      },
+    })
+  end,
 })
 
 -- # Misc
