@@ -18,7 +18,6 @@
     ~/.zshrc: zsh/.zshrc
     ~/.zgen: zsh/zgen
     ~/.antigen.zsh: zsh/antigen.zsh
-    ~/.p10k.zsh: zsh/.p10k.zsh
     # Git
     ~/.gitconfig:
     # General configs

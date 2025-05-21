@@ -69,7 +69,3 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-# load bashrc configs
-# source ~/.bashrc
-
-. "$HOME/.local/bin/env"
