@@ -60,10 +60,20 @@ return {
         experimental = { followPackageLinks = true },
       },
       tailwindcss = {},
-      eslint = {
-        autoFixOneSave = true,
-        format = { enable = true },
-      }, -- LSP for Web Dev
+      eslint = { -- Linter and Formatter for Web Dev
+        settings = {
+          eslint = {
+            autoFixOneSave = true,
+            format = { enable = true },
+          },
+        },
+        capabilities = capabilities,
+      },
+      ["typescript-language-server"] = { -- LSP for js and ts
+        cmd = { "typescript-language-server", "--stdio" },
+        filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+        capabilities = capabilities,
+      },
       black = {}, -- Formatter for Python
       prettier = {}, -- Formatter for javascript / typescript
       stylua = {}, -- Formatter for Lua
