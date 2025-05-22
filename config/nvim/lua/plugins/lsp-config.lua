@@ -54,10 +54,14 @@ return {
       cssls = {},
       markdown_oxide = {},
       texlab = {
-        build = { onSave = true },
-        formatterLineLength = 80,
-        completion = { matcher = "fuzzy-ignore-case" }, -- fuzzy[-ignore-case], prefix[-ignore-case]
-        experimental = { followPackageLinks = true },
+        settings = {
+          texlab = {
+            build = { onSave = true },
+            formatterLineLength = 80,
+            completion = { matcher = "fuzzy-ignore-case" }, -- fuzzy[-ignore-case], prefix[-ignore-case]
+            experimental = { followPackageLinks = true },
+          },
+        },
       },
       tailwindcss = {},
       eslint = { -- Linter and Formatter for Web Dev
@@ -67,12 +71,19 @@ return {
             format = { enable = true },
           },
         },
-        capabilities = capabilities,
+        -- capabilities = capabilities,
       },
       ["typescript-language-server"] = { -- LSP for js and ts
         cmd = { "typescript-language-server", "--stdio" },
-        filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
-        capabilities = capabilities,
+        filetypes = {
+          "javascript",
+          "javascriptreact",
+          "javascript.jsx",
+          "typescript",
+          "typescriptreact",
+          "typescript.tsx",
+        },
+        -- capabilities = capabilities,
       },
       black = {}, -- Formatter for Python
       prettier = {}, -- Formatter for javascript / typescript
@@ -99,7 +110,8 @@ return {
     local lsp_cmp_setup = function(servers)
       for server_name, server_config in pairs(servers) do
         vim.lsp.enable(server_name)
-        vim.lsp.config(server_name, server_config)
+        local extended_server_config = vim.tbl_extend("error", { capabilities = capabilities }, server_config)
+        vim.lsp.config(server_name, extended_server_config)
       end
     end
 
