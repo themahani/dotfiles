@@ -17,6 +17,7 @@ The installation depends on you having the following applications
   - `npm`
   - `rust` and `cargo` (in some OS variants, these are separate packages)
   - `texlab` and `latexmk` (for the latex LSP server and build)
+  - `lazygit` for the `lazygit.nvim` plugin
 - **Tmux**:
   - `tmux`
 - JetBrains Mono Nerd Font ( installation method depends on your OS and package manager )
