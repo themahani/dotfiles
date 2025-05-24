@@ -19,7 +19,7 @@
     ~/.zgen: zsh/zgen
     ~/.antigen.zsh: zsh/antigen.zsh
     # Git
-    ~/.gitconfig:
+    ~/.gitconfig: git/gitconfig
     # General configs
     ~/.config:
       glob: true

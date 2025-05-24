@@ -19,9 +19,6 @@
 	separator = yellow
 	function = blue
 
-# Allow local customizations in the .gitconfig_local file
-[include]
-	path = ~/.gitconfig_local
 [user]
 	email = ali.a.mahani@zoho.com
 	name = Ali Mahani
@@ -31,7 +28,11 @@
 	helper = store
 [pull]
 	rebase = false
+[merge]
+    ff = false
 [init]
 	defaultBranch = main
-[maintenance]
-	repo = /home/ali/Code/research/ml_force_research/ml-force
+
+# Allow local customizations in the .gitconfig_local file
+[include]
+	path = ~/.gitconfig_local
