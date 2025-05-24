@@ -24,12 +24,16 @@
 	name = Ali Mahani
 [core]
 	editor = nvim
+
 [credential]
 	helper = store
+
 [pull]
 	rebase = false
+
 [merge]
-    ff = false
+    ff = false  # Make new commit for each merge
+
 [init]
 	defaultBranch = main
 
