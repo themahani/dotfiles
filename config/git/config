@@ -1,6 +1,7 @@
 [alias]
     update-submodules = submodule update --init --recursive
 	upgrade-submodules = submodule update --init --remote
+    mnf = merge --no-ff
 
 [diff]
 	mnemonicPrefix = true
@@ -30,9 +31,6 @@
 
 [pull]
 	rebase = false
-
-[merge]
-    ff = false  # Make new commit for each merge
 
 [init]
 	defaultBranch = main
