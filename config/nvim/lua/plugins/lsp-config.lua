@@ -9,41 +9,87 @@ return {
     "williamboman/mason-lspconfig.nvim",
     "WhoIsSethDaniel/mason-tool-installer.nvim",
 
-    -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
-    -- used for completion, annotations and signatures of Neovim apis
     {
-      "folke/lazydev.nvim",
-      ft = "lua",
-      opts = {
-        library = {
-          -- Load luvit types when the `vim.uv` word is found
-          { path = "luvit-meta/library", words = { "vim%.uv" } },
-        },
+      "saghen/blink.cmp",
+      -- optional: provides snippets for the snippet source
+      dependencies = {
+        "echasnovski/mini.snippets",
+        config = function()
+          require("mini.snippets").setup({})
+        end,
       },
-    },
-    { "Bilal2453/luvit-meta", lazy = true },
 
-    -- Extend capabilities for lspconfig
-    "hrsh7th/nvim-cmp",
-    "hrsh7th/cmp-nvim-lsp",
-    "hrsh7th/cmp-buffer",
-    "hrsh7th/cmp-path",
-    "hrsh7th/cmp-cmdline",
-    -- Snippets for cmp
-    "L3MON4D3/LuaSnip",
-    "saadparwaiz1/cmp_luasnip",
-    "j-hui/fidget.nvim",
+      -- use a release tag to download pre-built binaries
+      version = "1.*",
+      -- AND/OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
+      -- build = 'cargo build --release',
+
+      ---@module 'blink.cmp'
+      ---@type blink.cmp.Config
+      opts = {
+        -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
+        -- 'super-tab' for mappings similar to vscode (tab to accept)
+        -- 'enter' for enter to accept
+        -- 'none' for no mappings
+        --
+        -- All presets have the following mappings:
+        -- C-space: Open menu or open docs if already open
+        -- C-n/C-p or Up/Down: Select next/previous item
+        -- C-e: Hide menu
+        -- C-k: Toggle signature help (if signature.enabled = true)
+        --
+        -- See :h blink-cmp-config-keymap for defining your own keymap
+        keymap = { preset = "enter" },
+
+        appearance = {
+          -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
+          -- Adjusts spacing to ensure icons are aligned
+          nerd_font_variant = "mono",
+        },
+
+        completion = {
+          documentation = {
+            auto_show = true,
+            auto_show_delay_ms = 500,
+            window = { border = "single" },
+          },
+          menu = {
+            border = "single",
+          },
+        },
+
+        signature = {
+          enabled = true,
+          window = { border = "single" },
+        },
+
+        snippets = { preset = "mini_snippets" }, -- Add mini_snippets to sources for snippets
+
+        -- Default list of enabled providers defined so that you can extend it
+        -- elsewhere in your config, without redefining it, due to `opts_extend`
+        sources = {
+          default = { "lsp", "path", "snippets", "buffer" },
+        },
+
+        -- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
+        -- You may use a lua implementation instead by using `implementation = "lua"` or fallback to the lua implementation,
+        -- when the Rust fuzzy matcher is not available, by using `implementation = "prefer_rust"`
+        --
+        -- See the fuzzy documentation for more information
+        fuzzy = { implementation = "prefer_rust_with_warning" },
+      },
+      opts_extend = { "sources.default" },
+    },
   },
 
   -- Configs for LSP
   config = function()
-    local cmp = require("cmp")
-    local cmp_lsp = require("cmp_nvim_lsp")
+    local blink_cmp = require("blink.cmp")
+    local blink_capabilities = blink_cmp.get_lsp_capabilities({}, false)
     -- Extend the capabilities of nvim lsp using cmp
     local capabilities =
-      vim.tbl_deep_extend("force", {}, vim.lsp.protocol.make_client_capabilities(), cmp_lsp.default_capabilities())
+      vim.tbl_deep_extend("force", {}, vim.lsp.protocol.make_client_capabilities(), blink_capabilities)
 
-    require("fidget").setup({})
     require("mason").setup({})
 
     -- Servers to ensure_installed with their configs
@@ -71,7 +117,6 @@ return {
             format = { enable = true },
           },
         },
-        -- capabilities = capabilities,
       },
       ["typescript-language-server"] = { -- LSP for js and ts
         cmd = { "typescript-language-server", "--stdio" },
@@ -83,7 +128,6 @@ return {
           "typescriptreact",
           "typescript.tsx",
         },
-        -- capabilities = capabilities,
       },
       black = {}, -- Formatter for Python
       prettier = {}, -- Formatter for javascript / typescript
@@ -104,66 +148,21 @@ return {
         },
       },
     }
+    -- Auto install all the configured servers
     local ensure_installed = vim.tbl_keys(servers or {})
-
+    require("mason-tool-installer").setup({
+      ensure_installed = ensure_installed,
+      automatic_installation = true,
+    })
     -- Set up server configs for nvim-lspconfig and nvim-cmp
-    local lsp_cmp_setup = function(servers)
-      for server_name, server_config in pairs(servers) do
+    local lsp_cmp_setup = function(server_configs)
+      for server_name, server_config in pairs(server_configs) do
         vim.lsp.enable(server_name)
         local extended_server_config = vim.tbl_extend("error", { capabilities = capabilities }, server_config)
         vim.lsp.config(server_name, extended_server_config)
       end
     end
-
     lsp_cmp_setup(servers)
-
-    require("mason-tool-installer").setup({
-      ensure_installed = ensure_installed,
-      automatic_installation = true,
-    })
-
-    local cmp_select = { behavior = cmp.SelectBehavior.Select }
-
-    -- Setup the completion engine
-    cmp.setup({
-      snippet = {
-        -- REQUIRED - you must specify a snippet engine
-        expand = function(args)
-          -- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-          require("luasnip").lsp_expand(args.body) -- For `luasnip` users.
-          -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
-          -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
-          vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
-
-          -- For `mini.snippets` users:
-          -- local insert = MiniSnippets.config.expand.insert or MiniSnippets.default_insert
-          -- insert({ body = args.body }) -- Insert at cursor
-          -- cmp.resubscribe({ "TextChangedI", "TextChangedP" })
-          -- require("cmp.config").set_onetime({ sources = {} })
-        end,
-      },
-      window = {
-        completion = cmp.config.window.bordered(),
-        documentation = cmp.config.window.bordered(),
-      },
-      mapping = cmp.mapping.preset.insert({
-        ["<C-p>"] = cmp.mapping.select_prev_item(cmp_select),
-        ["<C-n>"] = cmp.mapping.select_next_item(cmp_select),
-        ["<C-y>"] = cmp.mapping.confirm({ select = true }),
-        ["<C-Space>"] = cmp.mapping.complete(),
-        ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-        ["<C-f>"] = cmp.mapping.scroll_docs(4),
-        ["<C-e>"] = cmp.mapping.abort(),
-        ["<CR>"] = cmp.mapping.confirm({ select = true }),
-      }),
-
-      sources = cmp.config.sources({
-        { name = "nvim_lsp" },
-        { name = "luasnip" }, -- For luasnip users.
-      }, {
-        { name = "buffer" },
-      }),
-    })
 
     vim.diagnostic.config({
       -- update_in_insert = true,
@@ -229,6 +228,10 @@ return {
         -- WARN: This is not Goto Definition, this is Goto Declaration.
         --  For example, in C this would take you to the header.
         map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+
+        map("K", function()
+          vim.lsp.buf.hover({ border = "single" })
+        end, "Hover LSP info")
 
         -- Mapping to format current buffer
         vim.keymap.set("n", "<leader>fb", vim.lsp.buf.format, { desc = "[F]ormat Current [B]uffer" })
