@@ -32,7 +32,6 @@ return {
         "markdown",
         "markdown_inline",
         "dockerfile",
-        "",
       },
       auto_install = true,
       sync_install = false,
