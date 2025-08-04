@@ -7,7 +7,3 @@
 	path = config/alacritty/theme
 	url = https://github.com/alacritty/alacritty-theme
 	branch = master
-[submodule "config/tmux/plugins/tpm"]
-	path = config/tmux/plugins/tpm
-	url = https://github.com/tmux-plugins/tpm
-	branch = master
