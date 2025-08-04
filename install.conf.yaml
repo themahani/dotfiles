@@ -22,7 +22,9 @@
       glob: true
       path: config/*
     ~/.tmux.conf: tmux/tmux.conf
-    ~/.tmux/plugins: tmux/plugins
+    ~/.tmux/plugins:
+      glob: true
+      path: tmux/plugins/*
 
 - shell:
     - git submodule update --recursive --init
