@@ -16,13 +16,13 @@
     ~/.vimrc: vim/.vimrc
     # Zsh configs
     ~/.zshrc: zsh/.zshrc
-    ~/.zgen: zsh/zgen
     ~/.antigen.zsh: zsh/antigen.zsh
     # General configs
     ~/.config:
       glob: true
       path: config/*
-    ~/.tmux: tmux
+    ~/.tmux.conf: tmux/tmux.conf
+    ~/.tmux/plugins: tmux/plugins
 
 - shell:
     - git submodule update --recursive --init
