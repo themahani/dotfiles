@@ -16,7 +16,7 @@
     ~/.vimrc: vim/.vimrc
     # Zsh configs
     ~/.zshrc: zsh/.zshrc
-    ~/.antigen.zsh: zsh/antigen.zsh
+    ~/.antigen.zsh: zsh/antigen/antigen.zsh
     # General configs
     ~/.config:
       glob: true
