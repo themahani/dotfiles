@@ -1,0 +1,59 @@
+{
+    // -------------------------------------------------------------------------
+    // Global settings
+    // -------------------------------------------------------------------------
+    "include": [
+      "$HOME/.config/waybar/Modules",
+      "$HOME/.config/waybar/ModulesWorkspaces",
+      "$HOME/.config/waybar/ModulesCustom",
+      "$HOME/.config/waybar/ModulesGroups",
+      "$HOME/.config/waybar/UserModules",
+  ],
+    "layer": "top",
+    "position": "top",
+    "height": 42,
+    "spacing": 4,
+
+    // -------------------------------------------------------------------------
+    // Modules
+    // -------------------------------------------------------------------------
+    "modules-left": ["group/power", "tray", "hyprland/window"],
+    "modules-center": ["hyprland/workspaces#simple", "mpris", "clock#2"],
+    "modules-right": [
+        "idle_inhibitor", "custom/swaync", "custom/keyboard_layout", "custom/separator#line",
+        "cpu", "memory", "disk", "power-profiles-daemon", "custom/separator#line", 
+        "group/laptop", "pulseaudio", "pulseaudio#microphone", "custom/separator#line",
+        "network", "bluetooth"],
+
+    // -------------------------------------------------------------------------
+    // Module Details
+    // -------------------------------------------------------------------------
+
+
+    "hyprland/workspaces#simple": {
+        "dynamic-workspaces": true,
+        "format": "{icon}",
+        "on-click": "activate",
+        "format-icons": {
+            "default": "",
+            "active": "",
+            "empty": ""
+        }
+    },
+
+    "custom/gpu": {
+        "format": " GPU:{}%",
+        "exec": "~/.config/waybar/scripts/gpu.sh",
+        "return-type": "json",
+        "on-click": "kitty -e nvtop"
+    },
+
+    "custom/keyboard_layout": {
+      "format": "{icon} {text}",
+      "icon": "",
+      "exec": "hyprctl -j devices | jq -r '.keyboards[] | select(.main == true) | .active_keymap' | cut -c 1-3 | tr 'a-z' 'A-Z'",
+      "on-click": "hyprctl switchxkblayout at-translated-set-2-keyboard next",
+      "interval": 1,
+      "tooltip": true,
+    },
+}
