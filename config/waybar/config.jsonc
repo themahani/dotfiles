@@ -21,7 +21,7 @@
     "modules-center": ["hyprland/workspaces#simple", "mpris", "clock#2"],
     "modules-right": [
         "idle_inhibitor", "custom/swaync", "custom/keyboard_layout", "custom/separator#line",
-        "cpu", "memory", "disk", "custom/gpu", "custom/separator#line", 
+        "cpu", "memory", "disk", "power-profiles-daemon", "custom/separator#line", 
         "group/laptop", "pulseaudio", "pulseaudio#microphone", "custom/separator#line",
         "network", "bluetooth"],
 
