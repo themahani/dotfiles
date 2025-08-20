@@ -33,7 +33,7 @@ listview {
   spacing: 20px;
   padding: 10px;
   columns: 6;
-  lines: 2;
+  lines: 1;
   flow: horizontal;
   fixed-width: true;
   fixed-height: true;
