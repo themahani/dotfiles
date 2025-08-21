@@ -23,11 +23,16 @@ done
 # Show the rofi menu and get the selected wallpaper
 SELECTION=$(echo -en "$MENU" | rofi -dmenu -i -show-icons -theme "$ROFI_CONFIG_DIR/config-wallpaper.rasi")
 
+load_wallpaper() {
+    pidof hyprpaper || hyprpaper    # Make sure hyprpaper is active (can help fix crashes)
+    hyprctl hyprpaper preload "$CURRENT_WALLPAPER"
+    hyprctl hyprpaper reload ",$CURRENT_WALLPAPER"
+    hyprctl hyprpaper unload unused
+}
+
 # If a wallpaper was selected, set it with swww
 if [ -n "$SELECTION" ]; then
     SELECTED_WALLPAPER="$WALLPAPER_DIR/$SELECTION"
     ln -sf "$SELECTED_WALLPAPER" "$CURRENT_WALLPAPER"   # Create symlink
-    hyprctl hyprpaper preload "$CURRENT_WALLPAPER"
-    hyprctl hyprpaper reload ",$CURRENT_WALLPAPER"
-    hyprctl hyprpaper unload unused
+    load_wallpaper
 fi
