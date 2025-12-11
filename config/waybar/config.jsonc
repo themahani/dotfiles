@@ -17,7 +17,7 @@
     // -------------------------------------------------------------------------
     // Modules
     // -------------------------------------------------------------------------
-    "modules-left": ["group/power", "tray", "hyprland/window"],
+    "modules-left": ["tray", "hyprland/window"],
     "modules-center": ["hyprland/workspaces#simple", "mpris", "clock#full"],
     "modules-right": [
         "idle_inhibitor", "custom/swaync", "custom/keyboard_layout", "custom/separator#line",
