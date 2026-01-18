@@ -24,10 +24,7 @@ done
 SELECTION=$(echo -en "$MENU" | rofi -dmenu -i -show-icons -theme "$ROFI_CONFIG_DIR/config-wallpaper.rasi")
 
 load_wallpaper() {
-    pidof hyprpaper || hyprpaper    # Make sure hyprpaper is active (can help fix crashes)
-    hyprctl hyprpaper preload "$CURRENT_WALLPAPER"
-    hyprctl hyprpaper reload ",$CURRENT_WALLPAPER"
-    hyprctl hyprpaper unload unused
+    killall hyprpaper && hyprpaper    # Make sure hyprpaper is active (can help fix crashes)
 }
 
 # If a wallpaper was selected, set it with swww
