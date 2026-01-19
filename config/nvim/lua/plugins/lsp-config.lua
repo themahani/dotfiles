@@ -109,15 +109,6 @@ return {
           },
         },
       },
-      tailwindcss = {},
-      eslint = { -- Linter and Formatter for Web Dev
-        settings = {
-          eslint = {
-            autoFixOneSave = true,
-            format = { enable = true },
-          },
-        },
-      },
       ["typescript-language-server"] = { -- LSP for js and ts
         cmd = { "typescript-language-server", "--stdio" },
         filetypes = {
