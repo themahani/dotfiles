@@ -25,6 +25,9 @@
     ~/.tmux/plugins:
       glob: true
       path: tmux/plugins/*
+    ~/.irssi:
+      glob: true
+      path: irssi/*
 
 - shell:
     - git submodule update --recursive --init
