@@ -1,10 +1,11 @@
 return {
   "nvim-treesitter/nvim-treesitter",
+  lazy = false,
   build = ":TSUpdate",
   config = function()
     -- Setup treesitter for Neovim
-    local treesitter_config = require("nvim-treesitter.configs")
-    treesitter_config.setup({
+    local treesitter = require("nvim-treesitter")
+    treesitter.setup({
       ensure_installed = {
         -- Vim / Neovim
         "lua",
@@ -32,6 +33,7 @@ return {
         "markdown",
         "markdown_inline",
         "dockerfile",
+        "latex",
       },
       auto_install = true,
       sync_install = false,
