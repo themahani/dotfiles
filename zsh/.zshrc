@@ -79,7 +79,3 @@ alias vi="nvim"
 alias lg="lazygit"
 alias ld="lazydocker"
 
-# Integrate pyenv into zsh
-export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init - zsh)"
