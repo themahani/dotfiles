@@ -1,5 +1,5 @@
 # BEGIN_KITTY_THEME
-# Ayu
+# Tokyo Night Moon
 include current-theme.conf
 # END_KITTY_THEME
 
@@ -8,4 +8,23 @@ font_family JetBrainsMono Nerd Font
 bold_font           auto
 italic_font         auto
 bold_italic_font    auto
-font_size 14.0
+font_size 13.0
+
+# Cursor configs
+cursor_shape beam
+cursor_shape_unfocused hollow
+
+# Window configs
+draw_minimal_borders yes
+hide_window_decorations yes
+
+# Tab bar configs
+tab_bar_edge bottom
+tab_bar_style powerline
+tab_powerline_style round
+tab_bar_align left
+
+# UI configs
+background_opacity 0.95
+
+map ctrl+shift+k close_shared_ssh_connections
