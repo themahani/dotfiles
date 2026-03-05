@@ -15,6 +15,9 @@ ZSH_HIGHLIGHT_STYLES[string]="fg=green"
 ZSH_HIGHLIGHT_STYLES[reserved-word]="fg=blue"
 ZSH_HIGHLIGHT_STYLES[comment]="fg=8" # Same subtle grey as autosuggestions
 
+# zsh-vi-mode configs
+ZVM_SYSTEM_CLIPBOARD_ENABLED=true
+
 
 antigen use oh-my-zsh
 
@@ -23,6 +26,9 @@ antigen bundles <<EOBUNDLES
     git
     sudo
     archlinux
+
+    # Vi/Vim mode
+    jeffreytse/zsh-vi-mode
 
     # Zsh syntax highlighting
     zsh-users/zsh-syntax-highlighting
