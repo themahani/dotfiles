@@ -74,3 +74,18 @@ vim.opt.timeoutlen = 800 -- Set mapped sequence wait time in milliseconds
 vim.opt.cursorline = true -- Show which line your cursor is on
 
 vim.keymap.set("n", ";", ":") -- Map ; to : for easier access to vim cmd
+
+-- require("tokyonight").setup({
+--   -- use the night style
+--   style = "night",
+--   -- disable italic for functions
+--   styles = {
+--     functions = {}
+--   },
+--   -- Change the "hint" color to the "orange" color, and make the "error" color bright red
+--   on_colors = function(colors)
+--     colors.hint = colors.orange
+--     colors.error = "#ff0000"
+--   end
+-- })
+-- vim.cmd.colorscheme("tokyonight")

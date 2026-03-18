@@ -26,6 +26,5 @@ return {
         },
       },
     })
-    vim.cmd.colorscheme("catppuccin")
   end,
 } -- colorscheme to use on nvim
