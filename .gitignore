@@ -3,3 +3,4 @@ tmux/plugins/*
 !tmux/plugins/tpm
 **/mpd/state
 **/mpd/database
+config/DankMaterialShell/themes

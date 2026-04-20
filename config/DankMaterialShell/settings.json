@@ -1,8 +1,21 @@
 {
-  "currentThemeName": "dynamic",
-  "currentThemeCategory": "dynamic",
-  "customThemeFile": "",
-  "registryThemeVariants": {},
+  "currentThemeName": "custom",
+  "currentThemeCategory": "registry",
+  "customThemeFile": "/home/ali/.config/DankMaterialShell/themes/catppuccin/theme.json",
+  "registryThemeVariants": {
+    "amoledBlack": {
+      "dark": {
+        "flavor": "black",
+        "accent": "turquoise"
+      }
+    },
+    "catppuccin": {
+      "dark": {
+        "flavor": "mocha",
+        "accent": "sapphire"
+      }
+    }
+  },
   "matugenScheme": "scheme-rainbow",
   "runUserMatugenTemplates": true,
   "matugenTargetMonitor": "",
@@ -435,7 +448,7 @@
       "spacing": 4,
       "innerPadding": 4,
       "bottomGap": 0,
-      "transparency": 0.5,
+      "transparency": 0,
       "widgetTransparency": 1,
       "squareCorners": false,
       "noBackground": false,
@@ -447,15 +460,15 @@
       "gothCornerRadiusOverride": false,
       "gothCornerRadiusValue": 12,
       "borderEnabled": false,
-      "borderColor": "surfaceText",
+      "borderColor": "secondary",
       "borderOpacity": 1,
       "borderThickness": 1,
-      "widgetOutlineEnabled": true,
+      "widgetOutlineEnabled": false,
       "widgetOutlineColor": "primary",
-      "widgetOutlineOpacity": 0.56,
-      "widgetOutlineThickness": 2,
-      "fontScale": 1,
-      "iconScale": 1,
+      "widgetOutlineOpacity": 0.5,
+      "widgetOutlineThickness": 1,
+      "fontScale": 1.25,
+      "iconScale": 1.25,
       "autoHide": false,
       "autoHideDelay": 250,
       "showOnWindowsOpen": false,
