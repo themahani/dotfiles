@@ -142,7 +142,7 @@
   "maxWorkspaceIcons": 3,
   "workspaceAppIconSizeOffset": 2,
   "groupWorkspaceApps": true,
-  "workspaceFollowFocus": true,
+  "workspaceFollowFocus": false,
   "showOccupiedWorkspacesOnly": false,
   "reverseScrolling": false,
   "dwlShowAllTags": false,
@@ -335,7 +335,7 @@
   "lockScreenShowSystemIcons": true,
   "lockScreenShowTime": true,
   "lockScreenShowDate": true,
-  "lockScreenShowProfileImage": true,
+  "lockScreenShowProfileImage": false,
   "lockScreenShowPasswordField": true,
   "lockScreenShowMediaPlayer": true,
   "lockScreenPowerOffMonitorsOnLock": false,
@@ -346,7 +346,7 @@
   "u2fMode": "or",
   "lockScreenActiveMonitor": "all",
   "lockScreenInactiveColor": "#000000",
-  "lockScreenNotificationMode": 2,
+  "lockScreenNotificationMode": 0,
   "hideBrightnessSlider": false,
   "notificationTimeoutLow": 5000,
   "notificationTimeoutNormal": 5000,
@@ -433,17 +433,39 @@
         "weather"
       ],
       "rightWidgets": [
-        "systemTray",
-        "clipboard",
-        "cpuUsage",
+        {
+          "id": "systemTray",
+          "enabled": true
+        },
+        {
+          "id": "keyboard_layout_name",
+          "enabled": true
+        },
+        {
+          "id": "clipboard",
+          "enabled": true
+        },
+        {
+          "id": "cpuUsage",
+          "enabled": true
+        },
         {
           "id": "memUsage",
           "enabled": true,
           "showSwap": true
         },
-        "notificationButton",
-        "battery",
-        "controlCenterButton"
+        {
+          "id": "notificationButton",
+          "enabled": true
+        },
+        {
+          "id": "battery",
+          "enabled": true
+        },
+        {
+          "id": "controlCenterButton",
+          "enabled": true
+        }
       ],
       "spacing": 4,
       "innerPadding": 4,
