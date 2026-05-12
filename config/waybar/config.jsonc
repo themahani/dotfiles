@@ -18,7 +18,7 @@
     // Modules
     // -------------------------------------------------------------------------
     "modules-left": ["tray", "hyprland/window"],
-    "modules-center": ["hyprland/workspaces#simple", "mpris", "clock#full"],
+    "modules-center": ["hyprland/workspaces#simple", "mpris", "clock#simple"],
     "modules-right": [
         "idle_inhibitor", "custom/swaync", "custom/keyboard_layout", "custom/separator#line",
         "cpu", "memory", "disk", "power-profiles-daemon", "custom/separator#line", 
@@ -30,15 +30,15 @@
     // -------------------------------------------------------------------------
 
 
-    "clock#full": {
+    "clock#simple": {
     "format": "󰃭 {:%a %b %d |  %I:%M %p}", // AM PM format
     "format-alt": " {:%I:%M %p}",
     "tooltip": false,
     },
 
     "hyprland/workspaces#simple": {
-        "dynamic-workspaces": true,
-        "all-outputs": false,
+        "dynamic-workspaces": false,
+        "all-outputs": true,
         "active-only": false,
         "format": "{name} {icon}",
         "sort-by-number": true,
