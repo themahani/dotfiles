@@ -37,8 +37,8 @@
     },
 
     "hyprland/workspaces#simple": {
-        "dynamic-workspaces": false,
-        "all-outputs": true,
+        "dynamic-workspaces": true,
+        "all-outputs": false,
         "active-only": false,
         "format": "{name} {icon}",
         "sort-by-number": true,
