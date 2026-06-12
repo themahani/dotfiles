@@ -3,20 +3,17 @@ return {
   "neovim/nvim-lspconfig",
   dependencies = {
     { -- Mason must be loaded before its dependants
-      "williamboman/mason.nvim",
+      "mason-org/mason.nvim",
       config = true,
     },
-    "williamboman/mason-lspconfig.nvim",
+    "mason-org/mason-lspconfig.nvim",
     "WhoIsSethDaniel/mason-tool-installer.nvim",
 
     {
       "saghen/blink.cmp",
       -- optional: provides snippets for the snippet source
       dependencies = {
-        "echasnovski/mini.snippets",
-        config = function()
-          require("mini.snippets").setup({})
-        end,
+        "rafamadriz/friendly-snippets",
       },
 
       -- use a release tag to download pre-built binaries
@@ -98,7 +95,7 @@ return {
       pyright = {},
       html = {},
       cssls = {},
-      markdown_oxide = {},
+      marksman = {},
       texlab = {
         settings = {
           texlab = {

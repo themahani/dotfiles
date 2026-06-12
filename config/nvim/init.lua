@@ -17,6 +17,7 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Load vim configs
 require("vim-configs")
+require("vim._core.ui2").enable({})
 
 -- Setup lazy.nvim
 require("lazy").setup("plugins")

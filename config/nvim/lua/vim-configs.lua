@@ -88,4 +88,4 @@ vim.keymap.set("n", ";", ":") -- Map ; to : for easier access to vim cmd
 --     colors.error = "#ff0000"
 --   end
 -- })
--- vim.cmd.colorscheme("tokyonight")
+vim.cmd.colorscheme("catppuccin")
