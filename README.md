@@ -49,14 +49,7 @@ Ater installing the configs, some apps require your manual intervention to set u
 - **Vim**: Run the vim command `:PlugInstall`, (for more command options and fancy maneuvers visit [vim-plug](https://github.com/junegunn/vim-plug))
 - **Kitty**: Nothing to do here, just run the app and do your thing. :)
 
-## To-Do
-
-- [x] Setup nvim to auto close if `neo-tree.nvim` is the only buffer open
-- [ ] add option to choose the nerd font on install.
-
-## Special Thanks
-
-I sincerely thank the creators of these wonderful apps and all their collaborators. You all matter.
+## Credits
 
 My configurations for neovim were inspired by many that are available on github, at this point I have lost count of how many configurations I've
 looked into. So if you have a dotfiles repo, thank you :)
