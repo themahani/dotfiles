@@ -1,42 +1,47 @@
 return {
   "stevearc/conform.nvim",
-  event = { "BufReadPre", "BufNewFile" },
-
-  config = function()
+  event = { "BufWritePre" },
+  cmd = { "ConformInfo" },
+  dependencies = { "mason-org/mason.nvim" }, -- Ensure mason is loaded
+  opts = {
+    formatters_by_ft = {
+      lua = { "stylua" },
+      python = { "black" },
+      javascript = { "prettier" },
+      typescript = { "prettier" },
+      javascriptreact = { "prettier" },
+      typescriptreact = { "prettier" },
+      json = { "prettier" },
+      html = { "prettier" },
+      css = { "prettier" },
+      markdown = { "prettier" },
+    },
+    format_on_save = {
+      timeout_ms = 500,
+      lsp_format = "fallback",
+    },
+  },
+  config = function(_, opts)
     local conform = require("conform")
+    conform.setup(opts)
 
-    --NOTE:MANUALLY INSTALL FORMATTER VIA MASON! DONT MAKE MASON CONFIG MESSY (ALSO BREAKING UPDATES IS A THING !)
-    conform.setup({
-      formatters_by_ft = {
-        javascript = { "prettier" },
-        typescript = { "prettier" },
-        javascriptreact = { "prettier" },
-        typescriptreact = { "prettier" },
-        svelte = { "prettier" },
-        css = { "prettier" },
-        html = { "prettier" },
-        json = { "prettier" },
-        yaml = { "prettier" },
-        markdown = { "prettier" },
-        graphql = { "prettier" },
-        liquid = { "prettier" },
-        lua = { "stylua" },
-        python = { "black", "isort" },
-      },
-      format_on_save = {
-        async = false,
-        timeout_ms = 2000,
-        lsp_fallback = true,
-      },
-    })
+    -- Native Mason check to ensure formatters are installed
+    local mr = require("mason-registry")
+    local formatters = { "stylua", "black", "prettier" }
 
-    vim.keymap.set({ "n", "v" }, "<leader>ff", function()
+    for _, tool in ipairs(formatters) do
+      local p = mr.get_package(tool)
+      if not p:is_installed() then
+        p:install()
+      end
+    end
+
+    -- Manual format keybind
+    vim.keymap.set("n", "<leader>fb", function()
       conform.format({
-        lsp_fallback = true,
-        async = false,
-        timeout_ms = 1000,
+        lsp_format = "fallback",
+        async = true,
       })
-      vim.cmd.write()
-    end, { desc = "Format file or range (in visual mode)" })
+    end, { desc = "[F]ormat Current [B]uffer" })
   end,
 }
