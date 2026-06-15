@@ -9,6 +9,11 @@ return {
     git = { enabled = true },
     indent = {
       enabled = true,
+      indent = {
+        only_scope = false,
+        only_current = false,
+      },
+      scope = { enabled = true },
     },
     input = { enabled = true },
     notifier = {

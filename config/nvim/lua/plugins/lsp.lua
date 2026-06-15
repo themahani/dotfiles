@@ -7,11 +7,41 @@ return {
       config = true, -- Automatically runs require("mason").setup()
     },
     "mason-org/mason-lspconfig.nvim",
+    {
+      "saghen/blink.cmp",
+      dependencies = { "rafamadriz/friendly-snippets" }, -- Provides snippets
+      version = "*", -- Use latest stable release tag
+      opts = {
+        keymap = {
+          preset = "default",
+          ["<CR>"] = { "accept", "fallback" }, -- require return key to accept suggestion
+        },
+        appearance = {
+          nerd_font_variant = "mono",
+        },
+        sources = {
+          default = { "lsp", "path", "snippets", "buffer" },
+        },
+        completion = {
+          accept = {
+            auto_brackets = { enabled = true },
+          },
+          documentation = {
+            auto_show = true, -- Automatically show doc window when selecting
+            auto_show_delay_ms = 250, -- Delay in milliseconds before showing doc window
+          },
+        },
+        signature = { enabled = true }, -- Displays signature help during typing
+      },
+      opts_extend = { "sources.default" },
+    },
   },
 
+  ---@param
+  ---@return
   config = function()
-    -- Get default capabilities from Neovim's built-in client
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    -- Get default capabilities from Neovim, expanded with blink.cmp capabilities
+    local capabilities = require("blink.cmp").get_lsp_capabilities()
 
     -- Map out language servers and their specific configurations
     local servers = {
@@ -89,29 +119,9 @@ return {
           vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
         end
 
-        -- Navigation / Definitions using snacks.nvim pickers
-        -- map("grd", function()
-        --   Snacks.picker.lsp_definitions()
-        -- end, "[G]oto [D]efinition")
-        -- map("grr", function()
-        --   Snacks.picker.lsp_references()
-        -- end, "[G]oto [R]eferences")
-        -- map("gri", function()
-        --   Snacks.picker.lsp_implementations()
-        -- end, "[G]oto [I]mplementation")
-        -- map("grt", function()
-        --   Snacks.picker.lsp_type_definitions()
-        -- end, "Type [D]efinition")
-        -- map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
-        --
         -- Actions
         map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
         map("gx", vim.lsp.buf.code_action, "[C]ode [A]ction")
-
-        -- Documentation
-        -- map("K", function()
-        --   vim.lsp.buf.hover({ border = "single" })
-        -- end, "Hover LSP info")
 
         -- Formatting
         vim.keymap.set("n", "<leader>fb", vim.lsp.buf.format, { desc = "[F]ormat Current [B]uffer" })

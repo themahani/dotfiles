@@ -4,9 +4,9 @@ vim.g.maplocalleader = "\\"
 
 -- # Set tab options for the Python standard
 vim.opt.expandtab = true
--- vim.opt.tabstop = 4
--- vim.opt.softtabstop = 4
--- vim.opt.shiftwidth = 4
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
 vim.opt.smartindent = true
 vim.opt.breakindent = true -- Enable break indent
 
@@ -75,17 +75,4 @@ vim.opt.cursorline = true -- Show which line your cursor is on
 
 vim.keymap.set("n", ";", ":") -- Map ; to : for easier access to vim cmd
 
--- require("tokyonight").setup({
---   -- use the night style
---   style = "night",
---   -- disable italic for functions
---   styles = {
---     functions = {}
---   },
---   -- Change the "hint" color to the "orange" color, and make the "error" color bright red
---   on_colors = function(colors)
---     colors.hint = colors.orange
---     colors.error = "#ff0000"
---   end
--- })
 vim.cmd.colorscheme("catppuccin")
