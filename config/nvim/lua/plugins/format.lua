@@ -15,6 +15,7 @@ return {
       html = { "prettier" },
       css = { "prettier" },
       markdown = { "prettier" },
+      java = { "java-language-server" },
     },
     format_on_save = {
       timeout_ms = 500,

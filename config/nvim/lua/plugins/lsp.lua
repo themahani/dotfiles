@@ -37,8 +37,6 @@ return {
     },
   },
 
-  ---@param
-  ---@return
   config = function()
     -- Get default capabilities from Neovim, expanded with blink.cmp capabilities
     local capabilities = require("blink.cmp").get_lsp_capabilities()
@@ -82,6 +80,7 @@ return {
           },
         },
       },
+      jdtls = {},
     }
 
     -- Set up mason-lspconfig to manage server installations natively
