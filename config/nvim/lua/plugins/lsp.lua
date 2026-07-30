@@ -81,6 +81,16 @@ return {
         },
       },
       jdtls = {},
+      ltex_plus = {
+        settings = {
+          ltex = {
+            language = "en-US",
+            additionalRules = {
+              enablePickyRules = true,
+            },
+          },
+        },
+      },
     }
 
     -- Set up mason-lspconfig to manage server installations natively
