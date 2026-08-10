@@ -56,7 +56,7 @@ hl.config({
 		},
 		resize_on_border = true,
 		allow_tearing = false,
-		layout = "scrolling",
+		layout = "master",
 	},
 	decoration = {
 		rounding = 8,
@@ -131,6 +131,7 @@ hl.config({
 		repeat_rate = 40,
 		repeat_delay = 200, -- ms
 		follow_mouse = 2,
+		sensitivity = 0.5,
 		touchpad = {
 			natural_scroll = true,
 			disable_while_typing = true,
