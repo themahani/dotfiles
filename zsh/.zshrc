@@ -82,6 +82,7 @@ export VISUAL='nvim'
 # Get rid of the `vi` command
 alias vi="nvim"
 alias el="eza -lh"
+alias ela="eza -lha"
 
 alias lg="lazygit"
 alias ld="lazydocker"
