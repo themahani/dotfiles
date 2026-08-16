@@ -27,14 +27,14 @@ button {
 }
 
 button:focus {
-  background-size: 50%;
+  background-size: 30%;
   border: 0px;
   outline-style: none;
 }
 
 button:hover {
   background-color: transparent;
-  background-size: 50%;
+  background-size: 30%;
   border: 0px;
   outline-style: none;
 }
