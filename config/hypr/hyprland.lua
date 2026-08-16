@@ -130,7 +130,7 @@ hl.config({
 		numlock_by_default = true,
 		repeat_rate = 40,
 		repeat_delay = 200, -- ms
-		follow_mouse = 2,
+		follow_mouse = 1,
 		sensitivity = 0.5,
 		touchpad = {
 			natural_scroll = true,
@@ -162,9 +162,9 @@ hl.bind(mainMod .. "+ F", hl.dsp.window.fullscreen({ action = "toggle", mode = "
 hl.bind(mainMod .. "+ R", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. "+ P", hl.dsp.window.pseudo({ action = "toggle" }))
 local hyprshotOptions = "-z -oPictures/Screenshots"
-hl.bind("PRINT", hl.dsp.exec_cmd("hyprshot -m region" .. hyprshotOptions))
-hl.bind(mainMod .. "+ SHIFT + PRINT", hl.dsp.exec_cmd("hyprshot -m window -m active" .. hyprshotOptions))
-hl.bind(mainMod .. "+ ALT + PRINT", hl.dsp.exec_cmd("hyprshot -m output -m active" .. hyprshotOptions))
+hl.bind("PRINT", hl.dsp.exec_cmd("hyprshot -m region " .. hyprshotOptions))
+hl.bind(mainMod .. "+ SHIFT + PRINT", hl.dsp.exec_cmd("hyprshot -m window -m active " .. hyprshotOptions))
+hl.bind(mainMod .. "+ ALT + PRINT", hl.dsp.exec_cmd("hyprshot -m output -m active " .. hyprshotOptions))
 hl.bind(mainMod .. "+ N", hl.dsp.exec_cmd("swaync-client -t"))
 hl.bind(mainMod .. "+ SHIFT + D", hl.dsp.exec_cmd("swaync-client --toggle-dnd"))
 hl.bind(mainMod .. "+ W", hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/rofi-hyprpaper.sh"))
