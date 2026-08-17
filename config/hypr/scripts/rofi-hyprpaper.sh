@@ -6,7 +6,7 @@ ROFI_CONFIG_DIR="$HOME/.config/rofi"
 CURRENT_WALLPAPER="$WALLPAPER_DIR/.current"
 
 # Get a list of all image files in the directory
-WALLPAPERS=($(find "$WALLPAPER_DIR" -type f -name "*.jpg" -o -name "*.jpeg" -o -name "*.png"))
+WALLPAPERS=($(find "$WALLPAPER_DIR" -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" \)))
 
 # Check if there are any wallpapers
 if [ ${#WALLPAPERS[@]} -eq 0 ]; then
@@ -17,7 +17,7 @@ fi
 # Create a rofi menu with wallpaper previews
 MENU=""
 for wallpaper in "${WALLPAPERS[@]}"; do
-    MENU+="$(basename $wallpaper)\0icon\x1f$wallpaper\n"
+    MENU+="${wallpaper#$WALLPAPER_DIR/}\0icon\x1f$wallpaper\n"
 done
 
 # Show the rofi menu and get the selected wallpaper
