@@ -220,17 +220,41 @@ hl.bind(mainMod .. "+ mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(mainMod .. "+ mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- multimedia keys
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/Volume.sh --inc"))
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/Volume.sh --dec"))
-hl.bind("XF86AudioMute", hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/Volume.sh --toggle"))
-hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/Volume.sh --toggle-mic"))
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/Brightness.sh --inc"))
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/Brightness.sh --dec"))
+hl.bind(
+	"XF86AudioRaiseVolume",
+	hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/Volume.sh --inc"),
+	{ locked = true, repeating = true }
+)
+hl.bind(
+	"XF86AudioLowerVolume",
+	hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/Volume.sh --dec"),
+	{ locked = true, repeating = true }
+)
+hl.bind(
+	"XF86AudioMute",
+	hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/Volume.sh --toggle"),
+	{ locked = true, repeating = true }
+)
+hl.bind(
+	"XF86AudioMicMute",
+	hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/Volume.sh --toggle-mic"),
+	{ locked = true, repeating = true }
+)
+hl.bind(
+	"XF86MonBrightnessUp",
+	hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/Brightness.sh --inc"),
+	{ locked = true, repeating = true }
+)
+hl.bind(
+	"XF86MonBrightnessDown",
+	hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/Brightness.sh --dec"),
+	{ locked = true, repeating = true }
+)
 -- requiring playerctl
-hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"))
-hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"))
-hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"))
-hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"))
+hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
+hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
+hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), { locked = true })
+hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), { locked = true })
 
 -- layer rules
 hl.layer_rule({ match = { namespace = "wofi" }, no_anim = true })
