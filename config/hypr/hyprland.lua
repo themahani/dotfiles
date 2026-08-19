@@ -262,10 +262,6 @@ hl.layer_rule({ match = { namespace = "swaync-control-center" }, blur = true })
 hl.layer_rule({ match = { namespace = "swaync-notification-window" }, ignore_alpha = 0.5 })
 hl.layer_rule({ match = { namespace = "swaync-notification-window" }, ignore_alpha = 0.5 })
 
---- fix xwayland issues
-hl.window_rule({ match = { class = "^$" }, no_focus = true })
-hl.window_rule({ match = { title = "^$" }, no_focus = true })
-
 hl.window_rule({ match = { class = "^(.*)$" }, idle_inhibit = "fullscreen" })
 hl.window_rule({ match = { title = "^(.*)$" }, idle_inhibit = "fullscreen" })
 hl.window_rule({ match = { fullscreen = true }, idle_inhibit = "fullscreen" })
