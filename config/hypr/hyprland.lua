@@ -265,3 +265,10 @@ hl.layer_rule({ match = { namespace = "swaync-notification-window" }, ignore_alp
 hl.window_rule({ match = { class = "^(.*)$" }, idle_inhibit = "fullscreen" })
 hl.window_rule({ match = { title = "^(.*)$" }, idle_inhibit = "fullscreen" })
 hl.window_rule({ match = { fullscreen = true }, idle_inhibit = "fullscreen" })
+hl.window_rule({ match = { title = "^Bluetooth" }, float = true, size = { "monitor_w * 0.5", "monitor_h * 0.5" } })
+hl.window_rule({ match = { class = "zoom" }, float = true })
+hl.window_rule({
+	match = { class = "zoom", initial_title = "Zoom Workplace" },
+	float = true,
+	size = { "monitor_w * 0.75", "monitor_h * 0.8" },
+})
