@@ -160,7 +160,6 @@ hl.bind(mainMod .. "+ E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. "+ V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. "+ F", hl.dsp.window.fullscreen({ action = "toggle", mode = "maximized" }))
 hl.bind(mainMod .. "+ R", hl.dsp.exec_cmd(menu))
-hl.bind(mainMod .. "+ P", hl.dsp.window.pseudo({ action = "toggle" }))
 local hyprshotOptions = "-z -oPictures/Screenshots"
 hl.bind("PRINT", hl.dsp.exec_cmd("hyprshot -m region " .. hyprshotOptions))
 hl.bind(mainMod .. "+ SHIFT + PRINT", hl.dsp.exec_cmd("hyprshot -m window -m active " .. hyprshotOptions))
@@ -253,6 +252,7 @@ hl.bind(
 -- requiring playerctl
 hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
+hl.bind(mainMod .. " + P", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), { locked = true })
 hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), { locked = true })
 
