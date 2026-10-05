@@ -4,3 +4,6 @@ tmux/plugins/*
 **/mpd/state
 **/mpd/database
 **/mpd/pid
+# Personal / per-machine files (see *.example templates). Never commit these.
+config/git/gitconfig_local
+*.local

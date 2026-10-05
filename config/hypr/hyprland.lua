@@ -1,5 +1,13 @@
-require("./monitors.lua")
-require("./workspaces.lua")
+-- Local per-machine files (ignored by git, see .gitignore + *.example).
+-- Fresh clones won't have them, so fail gracefully instead of crashing.
+local ok_mon = pcall(require, "./monitors.lua")
+if not ok_mon then
+	print("[hyprland.lua] no monitors.lua found, using defaults (see monitors.lua.example)")
+end
+local ok_ws = pcall(require, "./workspaces.lua")
+if not ok_ws then
+	print("[hyprland.lua] no workspaces.lua found, using defaults (see workspaces.lua.example)")
+end
 
 local terminal = "kitty"
 local fileManager = "nautilus"

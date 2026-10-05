@@ -1,0 +1,4 @@
+-- Example per-machine workspaces. Copy to workspaces.lua (untracked) and edit:
+--   cp workspaces.lua.example workspaces.lua
+-- Your real workspaces.lua is ignored by git (see .gitignore) and never committed.
+-- Leave empty for defaults.

@@ -1,0 +1,4 @@
+# Machine-specific bash overrides. Copy to ~/.bashrc.local (untracked) and edit.
+# Example:
+#   export PATH="$HOME/my-tools/bin:$PATH"
+#   export GIT_AUTHOR_NAME="Your Name"

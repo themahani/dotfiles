@@ -87,3 +87,6 @@ alias ela="eza -lha"
 alias lg="lazygit"
 alias ld="lazydocker"
 
+# Machine-specific overrides (not committed). See .zshrc.local.example.
+[ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
+

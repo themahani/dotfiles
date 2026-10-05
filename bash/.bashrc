@@ -15,14 +15,17 @@ alias vi="vim"
 # Use aliases in Sudo as well...
 alias sudo='sudo '
 
-# Virtual Env Local Directory
-export PATH=$PATH:/home/ali/.local/bin/
-export PATH=$PATH:/home/ali/.cargo/bin/
+# Virtual Env Local Directory (portable: uses $HOME, not a hardcoded user)
+export PATH=$PATH:$HOME/.local/bin/
+export PATH=$PATH:$HOME/.cargo/bin/
 
 # Ruby Gem local directory
-export PATH=$PATH:/home/ali/.local/share/gem/ruby/3.0.0/bin
+export PATH=$PATH:$HOME/.local/share/gem/ruby/3.0.0/bin
 
 
 # Firefox on wayland
 # export MOZ_ENABLE_WAYLAND=1
+
+# Machine-specific overrides (not committed). Example: ~/.bashrc.local
+[ -f "$HOME/.bashrc.local" ] && source "$HOME/.bashrc.local"
 

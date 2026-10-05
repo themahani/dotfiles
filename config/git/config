@@ -20,9 +20,8 @@
 	separator = yellow
 	function = blue
 
-[user]
-	email = ali.a.mahani@zoho.com
-	name = Ali Mahani
+# NOTE: Do NOT put your name/email here. This file is shared.
+# Put personal identity in ~/.gitconfig_local (see gitconfig_local.example).
 [core]
 	editor = nvim
 

@@ -40,6 +40,23 @@ cd .dotfiles
 ./install
 ```
 
+Some configs depend on your setup, such as the nwg-displays settings for monitors and workspaces, or your git, gh, glab settings
+which aren't tracked. Follow the code below so the setup works for you.
+
+```bash
+cp config/git/gitconfig_local.example ~/.gitconfig_local
+$EDITOR ~/.gitconfig_local   # set your name/email
+
+# Optional shell overrides
+cp bash/.bashrc.local.example ~/.bashrc.local
+cp zsh/.zshrc.local.example ~/.zshrc.local
+
+# Hyprland monitor/workspaces layout
+cp config/hypr/monitors.lua.example config/hypr/monitors.lua
+cp config/hypr/workspaces.lua.example config/hypr/workspaces.lua
+# ...then edit monitors.lua for your displays (or paste nwg-displays output)
+```
+
 ## Post-Installation Notes
 
 Ater installing the configs, some apps require your manual intervention to set up.

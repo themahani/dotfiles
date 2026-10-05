@@ -1,0 +1,17 @@
+# Copy this file to ~/.gitconfig_local and fill in your own details.
+# It is never committed (see .gitignore). Example:
+#
+#   cp config/git/gitconfig_local.example ~/.gitconfig_local
+#
+# Git credentials (HTTPS/store, SSH, gh) also stay outside the repo:
+#   - SSH: ~/.ssh/ + `gh auth login`
+#   - HTTPS cache: [credential] helper = store (already set in config)
+#     keeps tokens in ~/.git-credentials (untracked, per-machine).
+
+[user]
+	email = you@example.com
+	name = Your Name
+
+# Optional per-machine settings, e.g.:
+# [maintenance]
+# 	repo = /path/to/your/repo
