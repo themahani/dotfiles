@@ -1,23 +1,89 @@
-/* ---- 💫 https://github.com/JaKooLit 💫 ---- */
-/* Ja KooLit - Default 
+/* Standalone rofi config + theme (Catppuccin Mocha).
+ * Self-contained: no @import, no external theme files. */
 
-* All main themes or configs are located in ~/.config/rofi/themes/
-* If you want to edit the config, that is where you should edit NOT here 
+configuration {
+    modes: "drun,emoji,calc,combi";
+    combi-modes: "drun,emoji";
+    show-icons: false;
+    drun-match-fields: "name,generic,keywords,comment,categories";
+    drun-show-actions: true;
+    font: "JetBrains Mono 12";
+}
 
-* To load a new theme, manually edit the file path below or choose desired theme via rofi theme selector (choose via app menu)
+* {
+    bg:     #1e1e2e;
+    fg:     #cdd6f4;
+    lav:    #b4befe;
+    mauve:  #cba6f7;
+    pink:   #f38ba8;
+}
 
-* Alternative way to Load (preferred) own cooked by Ja 
-* SUPER CTRL R - Choose style & SUPER CTRL SHIFT R 
+window {
+    width: 960px;
+    background-color: @bg;
+    border: 1px;
+    border-color: @lav;
+    border-radius: 6px;
+    padding: 40px;
+}
 
-* TIPS 
-* If you have edited a config, rename it with a unique name. During update, the contents of 
-* ~/.config/rofi/themes/ will be replaced. */
+mainbox {
+    children: [ inputbar, listview ];
+    spacing: 32px;
+    background-color: transparent;
+}
 
-/* ---- Global Configuration Fonts ---- */
-@import "~/.config/rofi/0-shared-fonts.rasi"
+inputbar {
+    children: [ icon-search, entry ];
+    spacing: 12px;
+    background-color: transparent;
+}
 
-/* note: Main themes in ~/.config/rofi/themes */
-/* You can manually change here or you can use rofi theme selector SUPER SHIFT E */
+icon-search {
+    expand: false;
+    str: "";
+    text-color: @pink;
+    background-color: transparent;
+}
 
+entry {
+    text-color: @fg;
+    placeholder: "";
+    background-color: transparent;
+}
 
-@theme "~/.config/rofi/themes/saint-rofi.rasi"
+listview {
+    lines: 8;
+    fixed-height: true;
+    spacing: 8px;
+    scrollbar: false;
+    background-color: transparent;
+}
+
+/* override rofi's default normal/alternate row colors */
+element,
+element normal.normal,
+element alternate.normal,
+element normal.active,
+element alternate.active,
+element normal.urgent,
+element alternate.urgent {
+    padding: 8px;
+    border-radius: 6px;
+    background-color: transparent;
+    text-color: @fg;
+}
+
+element selected.normal,
+element selected.active,
+element selected.urgent {
+    border: 1px;
+    border-color: @lav;
+    background-color: transparent;
+    text-color: @mauve;
+}
+
+element-text {
+    background-color: transparent;
+    text-color: inherit;
+}

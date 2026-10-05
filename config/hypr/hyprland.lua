@@ -3,10 +3,11 @@ require("./workspaces.lua")
 
 local terminal = "kitty"
 local fileManager = "nautilus"
-local menu = "wofi --show drun"
+local menu = "rofi -show drun"
 
 hl.on("hyprland.start", function()
 	hl.exec_cmd("hyprpaper & waybar & hypridle")
+	hl.exec_cmd("hyprlauncher -d")
 	hl.exec_cmd("systemctl start --user hyprpolkitagent.service")
 	hl.exec_cmd("swaync")
 	hl.exec_cmd("nm-applet --appindicator")
@@ -160,6 +161,8 @@ hl.bind(mainMod .. "+ E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. "+ V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. "+ F", hl.dsp.window.fullscreen({ action = "toggle", mode = "maximized" }))
 hl.bind(mainMod .. "+ R", hl.dsp.exec_cmd(menu))
+hl.bind(mainMod .. "+ PERIOD", hl.dsp.exec_cmd("rofi -show emoji -emoji-mode copy"))
+hl.bind(mainMod .. "+ EQUAL", hl.dsp.exec_cmd("rofi -show calc"))
 local hyprshotOptions = "-z -oPictures/Screenshots"
 hl.bind("PRINT", hl.dsp.exec_cmd("hyprshot -m region " .. hyprshotOptions))
 hl.bind(mainMod .. "+ SHIFT + PRINT", hl.dsp.exec_cmd("hyprshot -m window -m active " .. hyprshotOptions))
