@@ -17,7 +17,23 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Load vim configs
 require("vim-configs")
-require("vim._core.ui2").enable({})
+local has_ui2, ui2 = pcall(require, "vim._core.ui2")
+if has_ui2 and type(ui2.enable) == "function" then
+  ui2.enable({})
+end
 
 -- Setup lazy.nvim
 require("lazy").setup("plugins")
+
+-- Local Lua can add editor options, mappings, commands, and autocmds.
+local configHome = vim.env.XDG_CONFIG_HOME
+if not configHome or configHome == "" then
+  configHome = vim.env.HOME .. "/.config"
+end
+local extra = configHome .. "/dotfiles/nvim.extra.lua"
+if vim.fn.filereadable(extra) == 1 then
+  local ok, err = pcall(dofile, extra)
+  if not ok then
+    vim.notify("Error in " .. extra .. ": " .. tostring(err), vim.log.levels.WARN)
+  end
+end

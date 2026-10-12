@@ -93,19 +93,25 @@ return {
       },
     }
 
-    -- Set up mason-lspconfig to manage server installations natively
+    local selected = require("dotfiles-options").servers
+    if selected then
+      local enabled = {}
+      for _, name in ipairs(selected) do
+        enabled[name] = servers[name] or {}
+      end
+      servers = enabled
+    end
+
+    -- Neovim >= 0.11 / mason-lspconfig >= 2 use vim.lsp.config, not handlers.
+    for name, config in pairs(servers) do
+      config.capabilities = vim.tbl_deep_extend("force", {}, capabilities, config.capabilities or {})
+      vim.lsp.config(name, config)
+    end
+
+    -- Do not automatically enable unrelated, previously installed servers.
     require("mason-lspconfig").setup({
       ensure_installed = vim.tbl_keys(servers),
-      handlers = {
-        function(server_name)
-          local server_config = servers[server_name] or {}
-          -- Inject system-wide capabilities into individual server configurations
-          server_config.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server_config.capabilities or {})
-
-          -- Pass configurations directly to nvim-lspconfig
-          require("lspconfig")[server_name].setup(server_config)
-        end,
-      },
+      automatic_enable = vim.tbl_keys(servers),
     })
 
     -- Global Diagnostic Configuration

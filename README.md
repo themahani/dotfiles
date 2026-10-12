@@ -1,75 +1,251 @@
 # Dotfiles
 
-My dotfiles for my most used applications. These config files are constantly revised for better perfomance and compatibility. Feel free to clone them,
-modify them, and potentially submit a pull request. :wink:
+Arch Linux configuration for Bash, Zsh, Git, Neovim, tmux, Kitty, Hyprland,
+Waybar, Rofi, SwayNC, wlogout, MPD, rmpc, and Irssi.
 
-## Dependencies
+Requirements: Git, Python >= 3.9, Neovim >= 0.12, and Hyprland's Lua config API
+(tested with 0.56.2). Dotbot creates config links. Ansible installs Arch packages.
 
-The installation depends on you having the following applications
+The repository uses my current setup as its base: `us,ir` keyboard layouts,
+Catppuccin styling, Telegram autostart, Copilot, and language servers for my
+development tools. Choose the applications through a profile, then adjust their
+settings through local files. Review startup commands and hardware settings
+before starting a new desktop session.
 
-- **Installation dependencies**:
-  - `git`
-  - `python3`
-- **Vim** and **Neovim**:
-  - `vim` (not maintaining the configs for this one anymore)
-  - `neovim`
-  - `nodejs`
-  - `npm`
-  - `rust` and `cargo` (in some OS variants, these are separate packages)
-  - `texlab` and `latexmk` (for the latex LSP server and build)
-  - `lazygit` for the `lazygit.nvim` plugin
-- **Tmux**:
-  - `tmux`
-- JetBrains Mono Nerd Font ( installation method depends on your OS and package manager )
+## Install
 
-And the configurations apply to the following applications:
-
-- [kitty](https://github.com/kovidhoyal/kitty)
-- [tmux](https://github.com/tmux/tmux)
-- [neovim](https://github.com/neovim/neovim)
-- [ vim ](https://github.com/vim/vim)
-
-## Installation
-
-In order to setup the dotfiles, run the following commands:
+Run these commands as your regular user:
 
 ```bash
-cd ~
-git clone --recursive https://github.com/themahani/dotfiles.git .dotfiles
-cd .dotfiles
-./install
+git clone https://github.com/themahani/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
+./install profiles
+./install plan --profile developer
+./install apply --profile developer
+./install doctor --profile developer
 ```
 
-Some configs depend on your setup, such as the nwg-displays settings for monitors and workspaces, or your git, gh, glab settings
-which aren't tracked. Follow the code below so the setup works for you.
+`./install` defaults to a preview of the developer profile. `apply` initializes
+the selected Git submodules and creates links. Review the plan before applying.
+
+### Profiles
+
+| Profile     | Modules                                                                     |
+| ----------- | --------------------------------------------------------------------------- |
+| `minimal`   | Git, Neovim, Bash                                                           |
+| `developer` | Git, Bash, Zsh, Neovim, tmux, CLI tools                                     |
+| `desktop`   | Developer profile plus Kitty, fonts, and the Hyprland desktop               |
+| `personal`  | Desktop profile plus music, Java, LaTeX, Rust, Irssi, and desktop utilities |
+
+Add modules to a profile for a single command:
 
 ```bash
-cp config/git/gitconfig_local.example ~/.gitconfig_local
-$EDITOR ~/.gitconfig_local   # set your name/email
-
-# Optional shell overrides
-cp bash/.bashrc.local.example ~/.bashrc.local
-cp zsh/.zshrc.local.example ~/.zshrc.local
-
-# Hyprland monitor/workspaces layout
-cp config/hypr/monitors.lua.example config/hypr/monitors.lua
-cp config/hypr/workspaces.lua.example config/hypr/workspaces.lua
-# ...then edit monitors.lua for your displays (or paste nwg-displays output)
+./install plan --profile minimal --modules tmux kitty
+./install apply --profile developer --modules latex
 ```
 
-## Post-Installation Notes
+`--modules` accepts one or more names. Selections include the profile's modules
+and each module's dependencies. Save permanent selections in `profiles/*.json`.
+An `extends` entry inherits a profile's modules, packages, and link overrides.
+Every included module uses the same base configuration. The full Neovim server
+list uses Java and LaTeX tools; add `--modules java latex` when provisioning a
+smaller profile if you keep those servers enabled.
 
-Ater installing the configs, some apps require your manual intervention to set up.
+## Packages
 
-- **Tmux**: Upon the first initialization of the app, use the `C-a I` combo -- that is ctrl+a, then shift+i -- to install all the tmux plugins.
-- **Neovim**: In your first run of the app, `lazy.nvim` will install all the plugins and `mason` will configure all the LSP servers, so not much to do there. You need to run
-  `:Copilot auth` if you plan on using it. You can check the keymaps by invoking the keymap picker `<space>sk`. `<leader>` is mapped to `<space>`, btw...
-- **Vim**: Run the vim command `:PlugInstall`, (for more command options and fancy maneuvers visit [vim-plug](https://github.com/junegunn/vim-plug))
-- **Kitty**: Nothing to do here, just run the app and do your thing. :)
-- **Zsh**: Uses `antigen` to install some plugins. The plugins are installed in a `$HOME/.zsh/` directory and should not be tracked by git. The `.zshrc` file is minimal. If you want
-  to add environment parameters to it (e.g., installing mamba or conda and having to set PATH env variable), you can do so by adding them to the `$HOME/.zshenv` file and (optionally) track it.
+Keep Arch current through your usual full-system upgrade workflow. Install
+Ansible and its collection once:
 
-## Credits
+```bash
+sudo pacman -S --needed ansible-core
+ansible-galaxy collection install -r ansible/requirements.yml
+```
 
-My configurations for neovim were inspired by many that are available on github, at this point I have lost count of how many configurations I've
-looked into. So if you have a dotfiles repo, thank you :)
+Preview the selected packages, then install them:
+
+```bash
+./install packages --profile developer --check
+./install packages --profile developer --apply
+```
+
+Package installation requires a privilege-escalation password. Check mode reads
+the package database as your regular user. Existing packages satisfy the manifest.
+System upgrades, service setup, login-shell selection, and package removal remain
+manual tasks.
+
+The desktop requires `wlogout` and `blueberry`; the font settings also use
+`vazirmatn-fonts`. These are listed under `aur` for manual installation with
+your preferred AUR workflow. Review their build files before installing.
+
+## Conflicts, relinking, and restore
+
+The installer checks all selected destinations before linking. Matching links
+are kept. Existing files, directories, and unrelated links require a decision.
+Each linked directory belongs to its module; its contents come from the checkout.
+
+Back up conflicting destinations before replacing them:
+
+```bash
+./install plan --profile personal --backup-conflicts
+./install apply --profile personal --backup-conflicts
+```
+
+After moving the checkout, repair broken destination symlinks:
+
+```bash
+./install plan --profile personal --relink
+./install apply --profile personal --relink
+```
+
+`--relink` requires an existing source and a broken destination symlink. Valid
+unrelated links and ordinary files retain their conflict protection. Symlinked
+parent directories require a separate migration.
+
+Backups and journals live in
+`${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/transactions/`. Apply prints a
+transaction ID. Restore that transaction with:
+
+```bash
+./install restore --transaction TRANSACTION_ID
+```
+
+Restore removes unchanged links created by that transaction, restores available
+backups, and removes empty directories it created. User changes remain in place.
+Package installation and edits to repository files have separate recovery steps.
+Backup moves require the source and transaction directories to share a filesystem.
+
+Logs use ANSI colors in terminals. Use `--color always` for captured output,
+`--color never` for plain text, or `NO_COLOR=1` to disable automatic colors.
+
+## Customize the configuration
+
+Settings in `config/` form the base. Local overrides load afterward and remain
+outside the checkout. The installer preserves existing local files.
+
+| File                                | Settings                                          |
+| ----------------------------------- | ------------------------------------------------- |
+| `~/.gitconfig_local`                | Git identity, editor, credential helper           |
+| `~/.bashrc.local`                   | Bash environment and aliases                      |
+| `~/.zshrc.local`                    | Zsh environment and aliases                       |
+| `~/.config/dotfiles/nvim.local.lua` | Copilot, language servers, formatters             |
+| `~/.config/dotfiles/hypr.local.lua` | Keyboard, mouse, startup commands                 |
+| `~/.config/dotfiles/monitors.lua`   | Monitor layout                                    |
+| `~/.config/dotfiles/workspaces.lua` | Workspace layout                                  |
+| `~/.config/dotfiles/hypr.extra.lua` | Additional Hyprland configuration                 |
+| `~/.config/dotfiles/nvim.extra.lua` | Additional editor options, mappings, and autocmds |
+
+Shell and Git examples live beside their configs. Desktop/editor examples live
+in `examples/`. For example:
+
+```bash
+mkdir -p ~/.config/dotfiles
+test -e ~/.config/dotfiles/hypr.local.lua || cp examples/hypr.local.lua ~/.config/dotfiles/hypr.local.lua
+test -e ~/.config/dotfiles/nvim.local.lua || cp examples/nvim.local.lua ~/.config/dotfiles/nvim.local.lua
+```
+
+Edit the copied files before restarting applications. The ignored Lua display
+layouts in `config/hypr/` also load; external layouts in `~/.config/dotfiles/`
+execute afterward.
+
+### Lua settings and schemas
+
+`config/dotfiles/schemas.lua` contains LuaLS type definitions and runtime
+validation. The installer links it and `.luarc.json` beside your local files so
+LuaLS can offer field completion. The examples include type annotations:
+
+```lua
+---@type DotfilesNvimConfig
+local config = {
+  copilot = false,
+  servers_extra = { "rust_analyzer" },
+}
+return config
+```
+
+Each `.local.lua` file returns a table. All fields are optional. Unknown fields,
+invalid types, and invalid list entries produce a warning; the entire invalid
+override is ignored. Omitted fields keep their base values.
+
+| Neovim field       | Value                                             |
+| ------------------ | ------------------------------------------------- |
+| `copilot`          | Boolean                                           |
+| `servers`          | Replacement list of nvim-lspconfig server names   |
+| `servers_extra`    | Server names to append                            |
+| `formatters`       | Replacement list of Mason formatter package names |
+| `formatters_extra` | Formatter package names to append                 |
+
+| Hyprland field                     | Value                                                      |
+| ---------------------------------- | ---------------------------------------------------------- |
+| `terminal`, `file_manager`, `menu` | Command strings for launcher keybindings                   |
+| `keyboard_layout`                  | XKB layout string, such as `"us,ir"`                       |
+| `keyboard_options`                 | XKB options string; `""` clears it                         |
+| `mouse`                            | `false`, or `{ name = "device-name", sensitivity = -0.5 }` |
+| `autostart`                        | Replacement list of startup shell commands                 |
+| `autostart_extra`                  | Startup commands to append                                 |
+
+Mouse sensitivity ranges from -1 to 1. Lists replace complete lists, including
+`{}` to disable them. The `_extra` fields append unique entries. `mouse = false`
+disables the base device-specific setting.
+
+For changes beyond these fields, use `nvim.extra.lua` with Neovim's `vim` API or
+`hypr.extra.lua` with Hyprland's `hl` API. These scripts execute after the base
+configuration. Formatter additions handle installation; configure new filetype
+mappings through Conform in `nvim.extra.lua`. Examples cover both script types.
+Hyprland's API annotations are installed under `/usr/share/hypr/stubs`.
+
+Local Lua files execute as your user. Review copied code and startup commands.
+
+### Other applications
+
+Git uses the `store` credential helper, which saves credentials in plaintext.
+Configure your preferred credential manager in `~/.gitconfig_local`.
+
+Waybar's layout and module definitions live in `config/waybar/config.jsonc`.
+Copy `examples/waybar.local.jsonc` for layout overrides and select it in the
+Waybar startup command in `hypr.local.lua`.
+
+MPD uses paths under `~/.config/mpd`; preserve the database, playlists, and sticker
+data when changing those paths. Desktop scripts assume the conventional
+`~/.config` layout.
+
+## Add an application
+
+1. Save its shared config under `config/APP/`. Keep secrets and runtime data local.
+2. Add an entry to `manifests/modules.json`:
+
+   ```json
+   "btop": {
+     "links": {"$CONFIG/btop/btop.conf": "config/btop/btop.conf"},
+     "packages": ["btop"],
+     "commands": ["btop"]
+   }
+   ```
+
+3. Preview it with `./install plan --profile personal --modules btop`.
+4. Review package changes with `./install packages --profile personal --modules btop --check`.
+5. Apply packages and config links when ready.
+6. Add the module name to a profile for permanent selection.
+
+`links` maps home/config destinations to repository-relative sources. `packages`
+lists official Arch packages, `aur` lists manual prerequisites, `commands` lists
+executables checked by `doctor`, and `requires` lists module dependencies.
+
+## Plugins and tests
+
+- tmux: press `Ctrl-a`, then `Shift-i`, to install TPM plugins.
+- Neovim: lazy.nvim and Mason install plugins and tools on first startup. Copilot
+  authentication is available through `:Copilot auth` when enabled.
+- Zsh: Antigen downloads its selected plugins on first startup.
+
+`lazy-lock.json` stays ignored so local plugin updates require no Git commit.
+Plugin managers control their own downloaded versions.
+
+```bash
+python3 -B -m unittest discover -s tests -v
+./install plan --profile minimal --home "$(mktemp -d)"
+```
+
+Tests use temporary homes. The tmux test uses a separate server socket; Lua tests
+use isolated Neovim instances. Tests with missing application/plugin prerequisites
+are skipped. Validate actual package installation and desktop startup in an Arch
+VM before deploying to a new machine.

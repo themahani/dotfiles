@@ -1,0 +1,5 @@
+{
+  "description": "Developer setup plus the Arch Hyprland desktop; review hardware overrides and AUR requirements.",
+  "extends": "developer",
+  "modules": ["hyprland-desktop"]
+}

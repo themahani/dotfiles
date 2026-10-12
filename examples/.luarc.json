@@ -1,0 +1,5 @@
+{
+  "runtime.version": "LuaJIT",
+  "workspace.library": ["../config/dotfiles", "/usr/share/hypr/stubs"],
+  "diagnostics.globals": ["vim", "hl"]
+}

@@ -1,0 +1,4 @@
+{
+  "description": "Shells, Neovim, tmux, and CLI tools using the repository's base configuration.",
+  "modules": ["git", "bash", "zsh", "neovim", "tmux", "cli-extras"]
+}

@@ -1,41 +1,40 @@
 {
-    // -------------------------------------------------------------------------
-    // Global settings
-    // -------------------------------------------------------------------------
-    "include": [
-      "$HOME/.config/waybar/Modules",
-      "$HOME/.config/waybar/ModulesWorkspaces",
-      "$HOME/.config/waybar/ModulesCustom",
-      "$HOME/.config/waybar/ModulesGroups",
-      "$HOME/.config/waybar/UserModules",
-  ],
+    // Layout and all active module definitions live in this file.
+    // Module styling originally inspired by JaKooLit's Waybar configs.
     "layer": "top",
     "position": "top",
     "height": 42,
     "spacing": 4,
 
-    // -------------------------------------------------------------------------
-    // Modules
-    // -------------------------------------------------------------------------
     "modules-left": ["tray", "hyprland/window"],
     "modules-center": ["hyprland/workspaces#simple", "mpris", "clock#simple"],
     "modules-right": [
         "idle_inhibitor", "custom/swaync", "custom/keyboard_layout", "custom/separator#line",
-        "cpu", "memory", "disk", "power-profiles-daemon", "custom/separator#line", 
+        "cpu", "memory", "disk", "power-profiles-daemon", "custom/separator#line",
         "group/laptop", "pulseaudio", "pulseaudio#microphone", "custom/separator#line",
-        "network", "bluetooth"],
+        "network", "bluetooth"
+    ],
 
-    // -------------------------------------------------------------------------
-    // Module Details
-    // -------------------------------------------------------------------------
-
-
-    "clock#simple": {
-    "format": "󰃭 {:%a %b %d |  %I:%M %p}", // AM PM format
-    "format-alt": " {:%I:%M %p}",
-    "tooltip": false,
+    // Left: tray and active window.
+    "tray": {
+        "icon-size": 20,
+        "spacing": 4
+    },
+    "hyprland/window": {
+        "format": "{}",
+        "max-length": 25,
+        "separate-outputs": true,
+        "offscreen-css": true,
+        "offscreen-css-text": "(inactive)",
+        "rewrite": {
+            "(.*) — Mozilla Firefox": " $1",
+            "(.*) - fish": "> [$1]",
+            "(.*) - zsh": "> [$1]",
+            "(.*) - $term": "> [$1]"
+        }
     },
 
+    // Center: workspaces, media, and clock.
     "hyprland/workspaces#simple": {
         "dynamic-workspaces": true,
         "all-outputs": false,
@@ -49,20 +48,214 @@
             "empty": ""
         }
     },
+    "mpris": {
+        "interval": 10,
+        "format": "{player_icon} {dynamic}",
+        "format-paused": "{status_icon} <i>{dynamic}</i>",
+        "on-click-middle": "playerctl play-pause",
+        "on-click": "playerctl previous",
+        "on-click-right": "playerctl next",
+        "scroll-step": 5.0,
+        "on-scroll-up": "$HOME/.config/hypr/scripts/Volume.sh --inc",
+        "on-scroll-down": "$HOME/.config/hypr/scripts/Volume.sh --dec",
+        "smooth-scrolling-threshold": 1,
+        "tooltip": true,
+        "tooltip-format": "{status_icon} {dynamic}\nLeft Click: previous\nMid Click: Pause\nRight Click: Next",
+        "player-icons": {
+            "chromium": "",
+            "default": "",
+            "firefox": "",
+            "kdeconnect": "",
+            "mopidy": "",
+            "mpv": "󰐹",
+            "spotify": "",
+            "vlc": "󰕼"
+        },
+        "status-icons": {
+            "paused": "󰐎",
+            "playing": "",
+            "stopped": ""
+        },
+        "max-length": 30
+    },
+    "clock#simple": {
+        "format": "󰃭 {:%a %b %d |  %I:%M %p}",
+        "format-alt": " {:%I:%M %p}",
+        "tooltip": false
+    },
 
-    "custom/gpu": {
-        "format": " GPU:{}%",
-        "exec": "~/.config/waybar/scripts/gpu.sh",
+    // Right: controls and system status.
+    "idle_inhibitor": {
+        "tooltip": true,
+        "tooltip-format-activated": "Idle_inhibitor active",
+        "tooltip-format-deactivated": "Idle_inhibitor not active",
+        "format": "{icon}",
+        "format-icons": {
+            "activated": " ",
+            "deactivated": " "
+        }
+    },
+    "custom/swaync": {
+        "tooltip": true,
+        "tooltip-format": "Left Click: Launch Notification Center\nRight Click: Do not Disturb",
+        "format": "{} {icon} ",
+        "format-icons": {
+            "notification": "<span foreground='red'><sup></sup></span>",
+            "none": "",
+            "dnd-notification": "<span foreground='red'><sup></sup></span>",
+            "dnd-none": "",
+            "inhibited-notification": "<span foreground='red'><sup></sup></span>",
+            "inhibited-none": "",
+            "dnd-inhibited-notification": "<span foreground='red'><sup></sup></span>",
+            "dnd-inhibited-none": ""
+        },
         "return-type": "json",
-        "on-click": "kitty -e nvtop"
+        "exec-if": "which swaync-client",
+        "exec": "swaync-client -swb",
+        "on-click": "sleep 0.1 && swaync-client -t -sw",
+        "on-click-right": "swaync-client -d -sw",
+        "escape": true
     },
-
     "custom/keyboard_layout": {
-      "format": "{icon} {text}",
-      "icon": "",
-      "exec": "hyprctl -j devices | jq -r '.keyboards[] | select(.main == true) | .active_keymap' | cut -c 1-3 | tr 'a-z' 'A-Z'",
-      "on-click": "hyprctl switchxkblayout at-translated-set-2-keyboard next",
-      "interval": 1,
-      "tooltip": true,
+        "format": "{icon} {text}",
+        "icon": "",
+        "exec": "hyprctl -j devices | jq -r '.keyboards[] | select(.main == true) | .active_keymap' | cut -c 1-3 | tr 'a-z' 'A-Z'",
+        "on-click": "hyprctl switchxkblayout at-translated-set-2-keyboard next",
+        "interval": 1,
+        "tooltip": true
     },
+    "custom/separator#line": {
+        "format": "|",
+        "interval": "once",
+        "tooltip": false
+    },
+    "cpu": {
+        "format": "{usage}% 󰍛",
+        "interval": 1,
+        "min-length": 5,
+        "format-alt-click": "click",
+        "format-alt": "{icon0}{icon1}{icon2}{icon3} {usage:>2}% 󰍛",
+        "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+        "on-click-right": "kitty -e btop"
+    },
+    "memory": {
+        "interval": 10,
+        "format": "{used:0.1f}G 󰾆",
+        "format-alt": "{percentage}% 󰾆",
+        "format-alt-click": "click",
+        "tooltip": true,
+        "tooltip-format": "{used:0.1f}GB/{total:0.1f}G",
+        "on-click-right": "kitty -e btop"
+    },
+    "disk": {
+        "interval": 30,
+        "path": "/",
+        "format": "{percentage_used}% 󰋊",
+        "tooltip-format": "{used} used out of {total} on {path} ({percentage_used}%)"
+    },
+    "power-profiles-daemon": {
+        "format": "{icon} ",
+        "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
+        "tooltip": true,
+        "format-icons": {
+            "default": "",
+            "performance": "",
+            "balanced": "",
+            "power-saver": ""
+        }
+    },
+    "group/laptop": {
+        "orientation": "inherit",
+        "modules": ["backlight", "battery"]
+    },
+    "backlight": {
+        "interval": 2,
+        "align": 0,
+        "rotate": 0,
+        "format-icons": [" ", " ", " ", "󰃝 ", "󰃞 ", "󰃟 ", "󰃠 "],
+        "format": "{icon}",
+        "tooltip-format": "backlight {percent}%",
+        "icon-size": 10,
+        "on-click": "",
+        "on-click-middle": "",
+        "on-click-right": "",
+        "on-update": "",
+        "on-scroll-up": "$HOME/.config/hypr/scripts/Brightness.sh --inc",
+        "on-scroll-down": "$HOME/.config/hypr/scripts/Brightness.sh --dec",
+        "smooth-scrolling-threshold": 1
+    },
+    "battery": {
+        "align": 0,
+        "rotate": 0,
+        "full-at": 100,
+        "design-capacity": false,
+        "states": {"good": 95, "warning": 30, "critical": 15},
+        "format": "{icon} {capacity}%",
+        "format-charging": " {capacity}%",
+        "format-plugged": "󱘖 {capacity}%",
+        "format-alt-click": "click",
+        "format-full": "{icon} Full",
+        "format-alt": "{icon} {time}",
+        "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+        "format-time": "{H}h {M}min",
+        "tooltip": true,
+        "tooltip-format": "{timeTo} {power}w",
+        "on-click-right": "$HOME/.config/hypr/scripts/Wlogout.sh"
+    },
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-bluetooth": "{icon} 󰂰 {volume}%",
+        "format-muted": "󰖁",
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": ["", "", "󰕾", ""],
+            "ignored-sinks": ["Easy Effects Sink"]
+        },
+        "scroll-step": 5.0,
+        "on-click": "$HOME/.config/hypr/scripts/Volume.sh --toggle",
+        "on-click-right": "pavucontrol -t 3",
+        "on-scroll-up": "$HOME/.config/hypr/scripts/Volume.sh --inc",
+        "on-scroll-down": "$HOME/.config/hypr/scripts/Volume.sh --dec",
+        "tooltip-format": "{icon} {desc} | {volume}%",
+        "smooth-scrolling-threshold": 1
+    },
+    "pulseaudio#microphone": {
+        "format": "{format_source}",
+        "format-source": " {volume}%",
+        "format-source-muted": "",
+        "on-click": "$HOME/.config/hypr/scripts/Volume.sh --toggle-mic",
+        "on-click-right": "pavucontrol -t 4",
+        "on-scroll-up": "$HOME/.config/hypr/scripts/Volume.sh --mic-inc",
+        "on-scroll-down": "$HOME/.config/hypr/scripts/Volume.sh --mic-dec",
+        "tooltip-format": "{source_desc} | {source_volume}%",
+        "scroll-step": 5
+    },
+    "network": {
+        "format": "{ifname}",
+        "format-wifi": "{icon}",
+        "format-ethernet": "󰌘",
+        "format-disconnected": "󰌙",
+        "tooltip-format": "{ipaddr}  {bandwidthUpBits}  {bandwidthDownBits}",
+        "format-linked": "󰈁 {ifname} (No IP)",
+        "tooltip-format-wifi": "{essid} {icon} {signalStrength}%",
+        "tooltip-format-ethernet": "{ifname} 󰌘",
+        "tooltip-format-disconnected": "󰌙 Disconnected",
+        "max-length": 30,
+        "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
+        "on-click-right": "nm-connection-editor"
+    },
+    "bluetooth": {
+        "format": " ",
+        "format-disabled": "󰂳",
+        "format-connected": "󰂱 {num_connections}",
+        "tooltip-format": " {device_alias}",
+        "tooltip-format-connected": "{device_enumerate}",
+        "tooltip-format-enumerate-connected": " {device_alias} 󰂄{device_battery_percentage}%",
+        "tooltip": true,
+        "on-click": "blueberry"
+    }
 }

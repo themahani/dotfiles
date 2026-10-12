@@ -48,10 +48,6 @@
     "dnd": {
       "text": "Do Not Disturb"
     },
-    "label": {
-      "max-lines": 1,
-      "text": "Notification"
-    },
     "volume": {
       "label": "󰕾"
     },

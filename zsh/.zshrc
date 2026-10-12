@@ -1,5 +1,10 @@
 # load antigen
-source "${HOME}/.antigen.zsh"
+if [[ -r "${HOME}/.antigen.zsh" ]]; then
+    source "${HOME}/.antigen.zsh"
+else
+    print -u2 'Antigen is missing; run the dotfiles installer before loading plugins.'
+    return
+fi
 
 # Autosuggestions style
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
@@ -25,7 +30,6 @@ antigen bundles <<EOBUNDLES
     # Bundles from the default repo (robbyrussell's oh-my-zsh)
     git
     sudo
-    archlinux
 
     # Vi/Vim mode
     jeffreytse/zsh-vi-mode
@@ -40,6 +44,10 @@ antigen bundles <<EOBUNDLES
     zsh-users/zsh-completions
 EOBUNDLES
 
+if [[ -f /etc/arch-release ]]; then
+    antigen bundle archlinux
+fi
+
 # Load the theme
 antigen theme https://github.com/denysdovhan/spaceship-zsh-theme spaceship
 # Tell antigen that you're done
@@ -51,7 +59,7 @@ autoload -U compinit && compinit
 # Completion style using zstyle
 zstyle ':completion:*' completer _extensions _complete _approximate     # Load compinit modules
 zstyle ':completion:*' use-cache on     # cache completions
-zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zsh/.zcompcache" # completion cache directory
+zstyle ':completion:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/.zcompcache" # completion cache directory
 
 zstyle ':completion:*' menu select
 zstyle ':completion:*' group-name ''    # Group completion results
@@ -75,18 +83,18 @@ fi
 
 
 
-# Set default editor to neovim
-export EDITOR='nvim'
-export VISUAL='nvim'
-
-# Get rid of the `vi` command
-alias vi="nvim"
-alias el="eza -lh"
-alias ela="eza -lha"
-
-alias lg="lazygit"
-alias ld="lazydocker"
+# Optional apps are not required just to use the shell module.
+if (( $+commands[nvim] )); then
+    export EDITOR='nvim'
+    export VISUAL='nvim'
+    alias vi="nvim"
+fi
+if (( $+commands[eza] )); then
+    alias el="eza -lh"
+    alias ela="eza -lha"
+fi
+(( $+commands[lazygit] )) && alias lg="lazygit"
+(( $+commands[lazydocker] )) && alias ld="lazydocker"
 
 # Machine-specific overrides (not committed). See .zshrc.local.example.
 [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
-

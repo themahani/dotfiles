@@ -1,0 +1,33 @@
+---
+- name: Install selected dotfile prerequisites on Arch Linux
+  hosts: all
+  connection: local
+  gather_facts: true
+  become: false
+  vars:
+    dotfiles_packages: []
+  pre_tasks:
+    - name: Require Arch Linux before any changes
+      ansible.builtin.assert:
+        that:
+          - ansible_facts['distribution'] == 'Archlinux'
+          - ansible_facts['user_id'] != 'root'
+          - dotfiles_packages is sequence
+          - dotfiles_packages is not string
+        fail_msg: Run as the target user on Arch Linux; this playbook does not manage other platforms.
+
+    - name: Validate package names (no URLs, flags, or arbitrary commands)
+      ansible.builtin.assert:
+        that:
+          - item is string
+          - item is match('^[a-zA-Z0-9][a-zA-Z0-9@+_.-]*$')
+      loop: "{{ dotfiles_packages }}"
+
+    - name: Explain provisioning boundaries
+      ansible.builtin.debug:
+        msg: >-
+          Install missing official-repository packages only. No database refresh,
+          system upgrade, package removal, AUR builds, service changes, or chsh.
+          On Arch, perform your normal full system upgrade separately before installing.
+  roles:
+    - role: packages

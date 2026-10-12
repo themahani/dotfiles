@@ -1,38 +1,12 @@
-[alias]
-    update-submodules = submodule update --init --recursive
-	upgrade-submodules = submodule update --init --remote
-    mnf = merge --no-ff
-
-[diff]
-	mnemonicPrefix = true
-	wordRegex = "[^[:space:]]|([[:alnum:]]|UTF_8_GUARD)+"
-	compactionHeuristic = true
-
-[color]
-	ui = auto
-
-[color "grep"]
-	match = cyan bold
-	selected = blue
-	context = normal
-	filename = magenta
-	linenumber = green
-	separator = yellow
-	function = blue
-
-# NOTE: Do NOT put your name/email here. This file is shared.
-# Put personal identity in ~/.gitconfig_local (see gitconfig_local.example).
-[core]
-	editor = nvim
+# Base Git settings. Identity and overrides live in ~/.gitconfig_local.
+[include]
+    path = common.conf
 
 [credential]
 	helper = store
 
-[pull]
-	rebase = false
-
-[init]
-	defaultBranch = main
+[core]
+    editor = nvim
 
 # Allow local customizations in the .gitconfig_local file
 [include]

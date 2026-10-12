@@ -1,0 +1,65 @@
+{
+  "bash": {
+    "links": {"~/.bashrc": "bash/.bashrc"},
+    "packages": ["bash"], "commands": ["bash"]
+  },
+  "zsh": {
+    "links": {"~/.zshrc": "zsh/.zshrc", "~/.antigen.zsh": "zsh/antigen/antigen.zsh"},
+    "packages": ["zsh"], "commands": ["zsh"]
+  },
+  "git": {
+    "links": {"$CONFIG/git": "config/git"},
+    "packages": ["git"], "commands": ["git"]
+  },
+  "neovim": {
+    "links": {
+      "$CONFIG/nvim": "config/nvim", "$CONFIG/dotfiles/nvim.lua": "config/dotfiles/nvim.lua",
+      "$CONFIG/dotfiles/schemas.lua": "config/dotfiles/schemas.lua",
+      "$CONFIG/dotfiles/.luarc.json": "config/dotfiles/.luarc.json"
+    },
+    "packages": ["neovim", "git", "base-devel", "unzip", "curl", "ripgrep", "fd", "tree-sitter-cli", "nodejs", "npm", "python", "python-pip"],
+    "commands": ["nvim", "rg", "fd", "cc", "node", "npm", "python3", "tree-sitter"]
+  },
+  "tmux": {
+    "links": {"~/.tmux.conf": "tmux/tmux.conf", "~/.tmux/plugins/tpm": "tmux/plugins/tpm"},
+    "packages": ["tmux"], "commands": ["tmux"]
+  },
+  "kitty": {
+    "links": {"$CONFIG/kitty": "config/kitty"},
+    "requires": ["fonts"],
+    "packages": ["kitty"], "commands": ["kitty"]
+  },
+  "fonts": {
+    "links": {"$CONFIG/fontconfig": "config/fontconfig"},
+    "packages": ["ttf-jetbrains-mono-nerd", "ttf-ubuntu-font-family", "noto-fonts-emoji"],
+    "aur": ["vazirmatn-fonts"]
+  },
+  "cli-extras": {
+    "packages": ["eza", "lazygit", "lazydocker", "fzf", "bat", "zoxide"],
+    "commands": ["eza", "lazygit", "lazydocker"]
+  },
+  "java": {"packages": ["jdk-openjdk"], "commands": ["java"]},
+  "latex": {"packages": ["texlive-binextra", "texlive-latexextra", "biber"], "commands": ["latexmk"]},
+  "rust": {"packages": ["rust"], "commands": ["cargo"]},
+  "hyprland-desktop": {
+    "links": {
+      "$CONFIG/hypr": "config/hypr", "$CONFIG/waybar": "config/waybar",
+      "$CONFIG/rofi": "config/rofi", "$CONFIG/swaync": "config/swaync",
+      "$CONFIG/wlogout": "config/wlogout", "$CONFIG/dotfiles/hypr.lua": "config/dotfiles/hypr.lua",
+      "$CONFIG/dotfiles/schemas.lua": "config/dotfiles/schemas.lua",
+      "$CONFIG/dotfiles/.luarc.json": "config/dotfiles/.luarc.json"
+    },
+    "requires": ["kitty", "fonts"],
+    "packages": ["hyprland", "hypridle", "hyprlock", "hyprpaper", "hyprlauncher", "hyprpolkitagent", "hyprshot", "hyprshutdown", "waybar", "rofi", "rofi-calc", "rofi-emoji", "swaync", "nautilus", "jq", "wl-clipboard", "brightnessctl", "pamixer", "pavucontrol", "playerctl", "libnotify", "network-manager-applet", "networkmanager", "nm-connection-editor", "btop", "bluez", "bluez-utils", "pipewire", "pipewire-pulse", "wireplumber", "xdg-desktop-portal-hyprland", "xdg-desktop-portal-gtk", "xorg-xwayland", "telegram-desktop"],
+    "aur": ["wlogout", "blueberry"],
+    "commands": ["Hyprland", "hyprctl", "waybar", "rofi", "swaync-client", "jq", "wlogout", "blueberry", "btop", "nm-connection-editor"]
+  },
+  "music": {
+    "links": {"$CONFIG/mpd": "config/mpd", "$CONFIG/rmpc": "config/rmpc"},
+    "packages": ["mpd", "rmpc"], "commands": ["mpd", "rmpc"]
+  },
+  "irssi": {
+    "links": {"~/.irssi/tzu.theme": "irssi/tzu.theme"},
+    "packages": ["irssi"], "commands": ["irssi"]
+  }
+}

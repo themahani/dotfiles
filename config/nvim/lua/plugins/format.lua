@@ -28,7 +28,7 @@ return {
 
     -- Native Mason check to ensure formatters are installed
     local mr = require("mason-registry")
-    local formatters = { "stylua", "black", "prettier" }
+    local formatters = require("dotfiles-options").formatters or { "stylua", "black", "prettier" }
 
     for _, tool in ipairs(formatters) do
       local p = mr.get_package(tool)

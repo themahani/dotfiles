@@ -1,0 +1,9 @@
+{
+  // Run: waybar -c ~/.config/dotfiles/waybar.local.jsonc
+  // Waybar keeps definitions from earlier includes. Your overrides go first.
+  "include": ["$HOME/.config/waybar/config.jsonc"],
+  "modules-right": ["cpu", "memory", "disk", "pulseaudio", "network"],
+  "custom/keyboard_layout": {
+    "on-click": "hyprctl switchxkblayout all next"
+  }
+}

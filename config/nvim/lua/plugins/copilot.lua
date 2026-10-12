@@ -1,5 +1,6 @@
 return {
   "zbirenbaum/copilot.lua",
+  enabled = require("dotfiles-options").copilot,
   cmd = "Copilot",
   event = "InsertEnter",
   config = function()

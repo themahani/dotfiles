@@ -1,0 +1,4 @@
+{
+  "description": "Git, Neovim and Bash only; no desktop or login-shell changes.",
+  "modules": ["git", "neovim", "bash"]
+}

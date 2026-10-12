@@ -1,3 +1,16 @@
+-- Base settings plus local customizations.
+local configHome = os.getenv("XDG_CONFIG_HOME")
+if not configHome or configHome == "" then
+	configHome = os.getenv("HOME") .. "/.config"
+end
+local settingsDir = configHome .. "/dotfiles/"
+local schema = dofile(settingsDir .. "schemas.lua")
+local function report(message)
+	print("[hyprland.lua] invalid settings " .. message)
+end
+local base = assert(schema.read("hypr", settingsDir .. "hypr.lua", report), "Missing/invalid hypr.lua; run ./install apply")
+local settings = schema.merge(base, schema.read("hypr", settingsDir .. "hypr.local.lua", report) or {})
+
 -- Local per-machine files (ignored by git, see .gitignore + *.example).
 -- Fresh clones won't have them, so fail gracefully instead of crashing.
 local ok_mon = pcall(require, "./monitors.lua")
@@ -9,17 +22,14 @@ if not ok_ws then
 	print("[hyprland.lua] no workspaces.lua found, using defaults (see workspaces.lua.example)")
 end
 
-local terminal = "kitty"
-local fileManager = "nautilus"
-local menu = "rofi -show drun"
+local terminal = settings.terminal
+local fileManager = settings.file_manager
+local menu = settings.menu
 
 hl.on("hyprland.start", function()
-	hl.exec_cmd("hyprpaper & waybar & hypridle")
-	hl.exec_cmd("hyprlauncher -d")
-	hl.exec_cmd("systemctl start --user hyprpolkitagent.service")
-	hl.exec_cmd("swaync")
-	hl.exec_cmd("nm-applet --appindicator")
-	hl.exec_cmd("Telegram")
+	for _, command in ipairs(settings.autostart) do
+		hl.exec_cmd(command)
+	end
 end)
 
 hl.env("XCURSOR_SIZE", "24")
@@ -120,7 +130,7 @@ hl.config({
 		animate_manual_resizes = false,
 		animate_mouse_windowdragging = false,
 		enable_swallow = false,
-		swallow_regex = "(foot|kitty|alacritty|Alacritty)",
+		swallow_regex = "kitty",
 		allow_session_lock_restore = true,
 		session_lock_xray = true,
 		initial_workspace_tracking = false,
@@ -134,8 +144,8 @@ hl.config({
 		no_donation_nag = true,
 	},
 	input = {
-		kb_layout = "us,ir",
-		kb_options = "grp:win_space_toggle",
+		kb_layout = settings.keyboard_layout,
+		kb_options = settings.keyboard_options,
 		numlock_by_default = true,
 		repeat_rate = 40,
 		repeat_delay = 200, -- ms
@@ -156,10 +166,9 @@ hl.gesture({
 	action = "workspace",
 })
 
-hl.device({
-	name = "epic-mouse-v1",
-	sensitivity = -0.5,
-})
+if settings.mouse then
+	hl.device(settings.mouse)
+end
 
 local mainMod = "SUPER"
 hl.bind(mainMod .. "+ return", hl.dsp.exec_cmd(terminal))
@@ -285,3 +294,16 @@ hl.window_rule({
 	float = true,
 	size = { "monitor_w * 0.75", "monitor_h * 0.8" },
 })
+
+-- External layouts/advanced overrides run last, so shared config does not win.
+for _, name in ipairs({ "monitors.lua", "workspaces.lua", "hypr.extra.lua" }) do
+	local path = settingsDir .. name
+	local file = io.open(path, "r")
+	if file then
+		file:close()
+		local ok, err = pcall(dofile, path)
+		if not ok then
+			print("[hyprland.lua] error in " .. path .. ": " .. tostring(err))
+		end
+	end
+end

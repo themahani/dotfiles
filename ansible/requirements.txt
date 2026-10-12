@@ -1,0 +1,2 @@
+# Version used for validation. Arch's ansible-core package can also be used.
+ansible-core==2.19.4

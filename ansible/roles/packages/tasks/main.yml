@@ -1,0 +1,9 @@
+---
+- name: Ensure selected official packages are present
+  community.general.pacman:
+    name: "{{ dotfiles_packages | unique | sort }}"
+    state: present
+    update_cache: false
+  # Check mode only reads the package database; no sudo/password required.
+  become: "{{ not ansible_check_mode }}"
+  when: dotfiles_packages | length > 0

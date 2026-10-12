@@ -1,0 +1,5 @@
+{
+  "runtime.version": "LuaJIT",
+  "workspace.library": ["../nvim/lua", "/usr/share/hypr/stubs"],
+  "diagnostics.globals": ["vim", "hl", "Snacks"]
+}
