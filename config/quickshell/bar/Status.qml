@@ -13,6 +13,12 @@ Row {
         onClicked: Controls.idleInhibited = !Controls.idleInhibited
     }
     Chip {
+        text: "󰶐"
+        tooltip: "Turn off screens (any input wakes them)\n" + (Controls.idleInhibited
+            ? "Idle inhibitor active: system stays awake" : "Idle timers still apply: lock and suspend")
+        onClicked: Controls.screenOff()
+    }
+    Chip {
         textFormat: Text.RichText
         text: (Notifications.dnd ? "" : "") + (Notifications.count ? " <font color='" + Theme.red + "'>•</font> " + Notifications.count : "")
         tooltip: "Left: notification center · Right: do not disturb"

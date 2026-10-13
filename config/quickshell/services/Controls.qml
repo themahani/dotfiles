@@ -30,6 +30,12 @@ Singleton {
         const home = Quickshell.env("XDG_CONFIG_HOME") || Quickshell.env("HOME") + "/.config";
         run(argument ? [home + "/hypr/scripts/" + name, argument] : [home + "/hypr/scripts/" + name]);
     }
+    // Delay so the click and settling mouse don't immediately re-enable DPMS
+    // (mouse_move_enables_dpms/key_press_enables_dpms wake the outputs).
+    // Idle timers keep running, so hypridle still locks/suspends unless inhibited.
+    function screenOff() {
+        run(["sh", "-c", "sleep 1 && hyprctl dispatch 'hl.dsp.dpms({ action = \"disable\" })'"]);
+    }
     function volume(action, microphone) {
         const node = microphone ? source : sink;
         if (!node || !node.audio) return;
@@ -85,6 +91,7 @@ Singleton {
         function volume(action: string): void { root.volume(action, false); }
         function microphone(action: string): void { root.volume(action, true); }
         function brightness(action: string): void { root.brightness(action); }
+        function screenOff(): void { root.screenOff(); }
         function status(): string {
             return JSON.stringify({osdVisible: root.osdVisible, label: root.osdLabel, value: root.osdValue});
         }
