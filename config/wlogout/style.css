@@ -1,13 +1,12 @@
 /* ----------- 💫 https://github.com/JaKooLit 💫 -------- */
 /* wallust-wlogout */
 
-/* Importing wallust colors */
-/* @import "../../.config/waybar/wallust/colors-waybar.css"; */
-@import "../waybar/styles/catppuccin/mocha.css";
+/* Catppuccin Mocha, independent of the retired Waybar config. */
+@define-color text #cdd6f4;
 
 window {
   font-size: 24pt;
-  color: @foreground; /* text */
+  color: @text;
   background-color: rgba(30, 30, 46, 0.8);
 }
 

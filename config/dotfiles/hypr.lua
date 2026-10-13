@@ -8,9 +8,9 @@ local config = {
   keyboard_options = "grp:win_space_toggle",
   mouse = { name = "epic-mouse-v1", sensitivity = -0.5 },
   autostart = {
-    "hyprpaper & waybar & hypridle", "hyprlauncher -d",
+    "hyprpaper", "quickshell -c desktop --no-duplicate", "hypridle", "hyprlauncher -d",
     "systemctl start --user hyprpolkitagent.service",
-    "swaync", "nm-applet --appindicator", "Telegram",
+    "nm-applet --appindicator", "Telegram",
   },
 }
 return config

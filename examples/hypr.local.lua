@@ -6,7 +6,7 @@ local config = {
   keyboard_options = "",
   mouse = false,
   -- Replace startup apps so personal apps do not start on your machine:
-  autostart = { "waybar", "hypridle", "swaync" },
+  autostart = { "quickshell -c desktop --no-duplicate", "hypridle" },
   -- autostart_extra = { "your-command" }, -- append to the base startup list
   -- terminal = "kitty",
   -- file_manager = "nautilus",
