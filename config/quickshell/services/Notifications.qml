@@ -10,6 +10,7 @@ Singleton {
     property bool dnd: false
     property var popupIds: []
     property var deadlines: ({})
+    property bool paused: false         // hovering popups keeps them on screen
     readonly property var history: server.trackedNotifications.values.filter(item => !item.transient)
     readonly property var popups: server.trackedNotifications.values.filter(item => popupIds.includes(item.id))
     readonly property int count: history.length
@@ -61,6 +62,10 @@ Singleton {
         interval: 250; running: root.popupIds.length > 0; repeat: true
         onTriggered: {
             const now = Date.now();
+            if (root.paused) {
+                Object.keys(root.deadlines).forEach(id => root.deadlines[id] += interval);
+                return;
+            }
             root.popups.slice().forEach(item => {
                 if (root.deadlines[item.id] && root.deadlines[item.id] <= now) {
                     root.hidePopup(item.id);

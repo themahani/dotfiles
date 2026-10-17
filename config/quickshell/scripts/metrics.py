@@ -51,6 +51,33 @@ def brightness():
     return -1
 
 
+CPU_SENSORS = ("coretemp", "k10temp", "zenpower", "cpu_thermal", "acpitz")
+
+
+def temperature(root=Path("/sys/class/hwmon")):
+    """CPU package temperature in °C, preferring CPU drivers over ACPI zones; -1 if unknown."""
+    readings = {}
+    for device in root.glob("hwmon*"):
+        try:
+            name = (device / "name").read_text().strip()
+            if name in CPU_SENSORS and name not in readings:
+                readings[name] = round(int((device / "temp1_input").read_text()) / 1000)
+        except (OSError, ValueError):
+            continue
+    return next((readings[name] for name in CPU_SENSORS if name in readings), -1)
+
+
+def airplane(root=Path("/sys/class/rfkill")):
+    """True when every radio is soft-blocked (rfkill block all)."""
+    states = []
+    for device in root.glob("rfkill*"):
+        try:
+            states.append((device / "soft").read_text().strip() == "1")
+        except OSError:
+            continue
+    return bool(states) and all(states)
+
+
 def keyboard():
     devices = command_json(["hyprctl", "-j", "devices"], {})
     main = next((item for item in devices.get("keyboards", []) if item.get("main")), {})
@@ -109,7 +136,8 @@ def main():
         started = time.monotonic()
         current_cpu = cpu_times()
         usage = cpu_usage(previous_cpu, current_cpu)
-        data.update(cpu=usage[0], cores=usage[1:], brightness=brightness())
+        data.update(cpu=usage[0], cores=usage[1:], brightness=brightness(),
+                    temperature=temperature(), airplane=airplane())
         data.update(keyboard())
         if tick % 10 == 0:
             data.update(memory())

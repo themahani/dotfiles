@@ -36,6 +36,8 @@ Singleton {
     function screenOff() {
         run(["sh", "-c", "sleep 1 && hyprctl dispatch 'hl.dsp.dpms({ action = \"disable\" })'"]);
     }
+    function setAirplane(enabled) { run(["rfkill", enabled ? "block" : "unblock", "all"]); }
+    function btop() { run(["kitty", "-e", "btop"]); }
     function volume(action, microphone) {
         const node = microphone ? source : sink;
         if (!node || !node.audio) return;
