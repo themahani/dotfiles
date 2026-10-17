@@ -318,6 +318,9 @@ class QuickshellTests(unittest.TestCase):
             self.assertEqual(backlight.value, 100)
             backlight.file.close()
 
+    def test_shell_renders_on_the_gui_thread(self):
+        self.assertRegex((SHELL / "shell.qml").read_text(), r"(?m)^//@ pragma Env QSG_RENDER_LOOP = basic$")
+
     def test_metrics_notify_only_changed_values(self):
         metrics_qml = (SHELL / "services/Metrics.qml").read_text()
         self.assertIn("if (key in sample) root[key] = sample[key];", metrics_qml)
