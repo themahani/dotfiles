@@ -15,11 +15,13 @@ BarButton {
     StyledText {
         anchors.verticalCenter: parent.verticalCenter
         text: Qt.formatDateTime(clock.date, "ddd MMM d")
+        font.pixelSize: 15
         color: Theme.onSurfaceVariantColor
     }
     StyledText {
         anchors.verticalCenter: parent.verticalCenter
         text: Qt.formatDateTime(clock.date, "h:mm AP")
+        font.pixelSize: 16
         font.weight: Font.DemiBold
     }
     Rectangle {
