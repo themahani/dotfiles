@@ -1,0 +1,14 @@
+# Material You colors from the wallpaper. rofi-hyprpaper.sh runs:
+#   matugen image --prefer saturation <wallpaper>
+# Quickshell watches its JSON and recolors live; Hyprland re-reads its border.
+
+[config]
+
+[templates.quickshell]
+input_path = "~/.config/matugen/templates/quickshell.json"
+output_path = "~/.local/state/matugen/quickshell.json"
+
+[templates.hyprland]
+input_path = "~/.config/matugen/templates/hyprland.lua"
+output_path = "~/.local/state/matugen/hyprland.lua"
+post_hook = "hyprctl eval 'dofile(os.getenv(\"HOME\") .. \"/.local/state/matugen/hyprland.lua\")' >/dev/null"
