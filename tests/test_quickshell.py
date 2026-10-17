@@ -117,6 +117,16 @@ class QuickshellTests(unittest.TestCase):
         self.assertEqual(links, [True, True, True, False, False, False])
         self.assertEqual(images, [True, True, True, False, False])
 
+    def test_bluetooth_pairing_goes_through_the_agent(self):
+        agent = (SHELL / "services/BluetoothAgent.qml").read_text()
+        self.assertIn('command: ["bluetoothctl", "--agent", "KeyboardDisplay"]', agent)
+        self.assertIn('onStarted: write("default-agent\\n")', agent)
+        self.assertIn("if (Lock.locked) cancel();", agent)
+        self.assertIn("property var bluetoothAgent: BluetoothAgent", (SHELL / "shell.qml").read_text())
+        page = (SHELL / "panels/BluetoothPage.qml").read_text()
+        self.assertIn("BluetoothAgent.ready) candidate.modelData.pair()", page)
+        self.assertIn("PairingPrompt", page)
+
     def test_lock_screen_is_password_only_and_ipc_cannot_unlock(self):
         lock = (SHELL / "services/Lock.qml").read_text()
         ipc = lock[lock.index("IpcHandler"):]

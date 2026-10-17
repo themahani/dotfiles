@@ -15,10 +15,16 @@ Item {
 
     readonly property var pages: ({ wifi: wifiPage, bluetooth: bluetoothPage, output: outputPage, input: inputPage })
     function open(name) { page = name; }
-    Component.onCompleted: {
+    function showRequestedPage() {
         if (Panels.page === "power") powerOpen = true;
         else if (pages[Panels.page]) page = Panels.page;
         Panels.page = "";
+    }
+    Component.onCompleted: showRequestedPage()
+    // A page asked for while the panel is already open, e.g. a pairing request.
+    Connections {
+        target: Panels
+        function onPageChanged() { if (Panels.page !== "") root.showRequestedPage(); }
     }
 
     Column {
