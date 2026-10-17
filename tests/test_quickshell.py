@@ -34,6 +34,15 @@ class QuickshellTests(unittest.TestCase):
         self.assertNotRegex(tooltip, r"import QtQuick.Controls\s*\n")
         self.assertIn("popupType: QtControls.Popup.Window", tooltip)
 
+    def test_labels_render_plain_text(self):
+        # Titles, track names and network names come from other people; rich
+        # text would fetch their <img> URLs.
+        text = (SHELL / "components/StyledText.qml").read_text()
+        self.assertIn("textFormat: Text.PlainText", text)
+        opted_in = [path.relative_to(SHELL).as_posix() for path in SHELL.rglob("*.qml")
+                    if re.search(r"textFormat:\s*Text\.(StyledText|RichText|AutoText|MarkdownText)", path.read_text())]
+        self.assertEqual(opted_in, ["panels/NotificationItem.qml"])
+
     def test_theme_roles_match_matugen_template(self):
         theme = (SHELL / "theme/Theme.qml").read_text()
         template = json.loads(re.sub(r"\{\{[^}]+\}\}", "x", (ROOT / "config/matugen/templates/quickshell.json").read_text()))
