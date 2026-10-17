@@ -39,7 +39,7 @@ Singleton {
         }
         // Compatibility with progress notifications emitted by other desktop tools.
         if (synchronous && hints.value !== undefined) {
-            Controls.showOsd(item.summary, item.appIcon || "󰕾", Number(hints.value));
+            Controls.showOsd(item.summary, /bright/i.test(item.appIcon + item.summary) ? "brightness_6" : "volume_up", Number(hints.value));
             item.dismiss();
             return;
         }

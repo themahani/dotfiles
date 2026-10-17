@@ -22,75 +22,66 @@ spec.loader.exec_module(metrics)
 
 
 class QuickshellTests(unittest.TestCase):
-    def test_readable_text_and_scaled_tray_icons(self):
+    def test_material_type_and_icon_fonts(self):
         theme = (SHELL / "theme/Theme.qml").read_text()
-        self.assertIn('fontFamily: "Ubuntu Nerd Font"', theme)
-        self.assertIn("letterSpacing: 0.5", theme)
-        self.assertIn("font.letterSpacing: Theme.letterSpacing", (SHELL / "components/Label.qml").read_text())
-        for path in ("components/Chip.qml", "notifications/ControlCenter.qml"):
-            text = (SHELL / path).read_text()
-            self.assertIn("import QtQuick.Controls as QtControls", text)
-            self.assertNotRegex(text, r"import QtQuick.Controls\s*\n")
-        chip = (SHELL / "components/Chip.qml").read_text()
-        self.assertIn("popupType: QtControls.Popup.Window", chip)
-        self.assertIn("y: root.height + 12", chip)
-        tray = (SHELL / "bar/Tray.qml").read_text()
-        self.assertIn("IconImage {", tray)
-        self.assertIn("backer.sourceSize:", tray)
-        self.assertIn("screen.devicePixelRatio", tray)
-        self.assertIn("mipmap: true", tray)
+        self.assertIn('font: "Roboto"', theme)
+        self.assertIn('iconFont: "Material Symbols Rounded"', theme)
         fonts = json.loads((ROOT / "manifests/modules.json").read_text())["fonts"]
-        self.assertIn("ttf-ubuntu-nerd", fonts["packages"])
+        for package in ("ttf-roboto", "ttf-material-symbols-variable"):
+            self.assertIn(package, fonts["packages"])
+        tooltip = (SHELL / "components/Tooltip.qml").read_text()
+        self.assertIn("import QtQuick.Controls as QtControls", tooltip)
+        self.assertNotRegex(tooltip, r"import QtQuick.Controls\s*\n")
+        self.assertIn("popupType: QtControls.Popup.Window", tooltip)
 
-    def test_original_palette_is_preserved(self):
-        old = (ROOT / "config/waybar/styles/catppuccin/mocha.css").read_text()
-        new = (SHELL / "theme/Theme.qml").read_text()
-        for name, value in re.findall(r"@define-color\s+(\w+)\s+(#[\da-f]+)", old):
-            self.assertIn(f'color {name}: "{value}"', new)
+    def test_theme_roles_match_matugen_template(self):
+        theme = (SHELL / "theme/Theme.qml").read_text()
+        template = json.loads(re.sub(r"\{\{[^}]+\}\}", "x", (ROOT / "config/matugen/templates/quickshell.json").read_text()))
+        fallback = set(re.findall(r"(\w+): \"#[0-9a-f]{6}\"", theme))
+        roles = set(re.findall(r'role\("(\w+)"\)', theme))
+        self.assertEqual(set(template) - {"mode"}, fallback)
+        self.assertLessEqual(roles, fallback)
 
-    def test_tray_menus_have_application_support_and_compact_spacing(self):
-        self.assertTrue((SHELL / "shell.qml").read_text().startswith("//@ pragma UseQApplication\n"))
-        tray = (SHELL / "bar/Tray.qml").read_text()
-        self.assertIn("spacing: 2", tray)
-        self.assertIn("width: 26; height: 30", tray)
-        self.assertIn("item.modelData.hasMenu &&", tray)
-        self.assertIn("if (menu.visible) menu.close();", tray)
+    def test_theme_role_names_do_not_parse_as_handlers(self):
+        # A property "onX" beside a property "x" is read as a change handler and never binds.
+        theme = (SHELL / "theme/Theme.qml").read_text()
+        names = set(re.findall(r"property \w+ (\w+)", theme))
+        for name in names:
+            if name.startswith("on") and len(name) > 2 and name[2].isupper():
+                self.assertNotIn(name[2].lower() + name[3:], names, name)
 
-    def test_native_menu_theme(self):
+    def test_scaled_tray_icons_and_native_menus(self):
+        icons = (SHELL / "bar/TrayIcons.qml").read_text()
+        self.assertIn("backer.sourceSize:", icons)
+        self.assertIn("screen.devicePixelRatio", icons)
+        self.assertIn("mipmap: true", icons)
+        self.assertIn('Panels.open = "tray"', icons)
+        menu = (SHELL / "panels/TrayMenu.qml").read_text()
+        self.assertIn("QsMenuOpener", menu)
+        self.assertIn("entry.modelData.triggered()", menu)
+        self.assertNotIn("UseQApplication", (SHELL / "shell.qml").read_text())
+
+    def test_single_drawer_window_per_output(self):
         shell = (SHELL / "shell.qml").read_text()
-        self.assertIn("//@ pragma RespectSystemStyle", shell)
-        self.assertIn("//@ pragma DefaultEnv QT_QPA_PLATFORMTHEME = qt6ct", shell)
-        settings = configparser.ConfigParser()
-        settings.read(ROOT / "config/qt6ct/qt6ct.conf")
-        self.assertEqual(settings["Appearance"]["custom_palette"], "true")
-        self.assertIn("catppuccin-mocha-blue.conf", settings["Appearance"]["color_scheme_path"])
-        palette = configparser.ConfigParser()
-        palette.read(ROOT / "config/qt6ct/colors/catppuccin-mocha-blue.conf")
-        for group in ("active_colors", "inactive_colors", "disabled_colors"):
-            colors = [value.strip() for value in palette["ColorScheme"][group].split(",")]
-            self.assertEqual(len(colors), 22)
-            self.assertTrue(all(re.fullmatch(r"#[0-9a-f]{8}", color) for color in colors))
-        active = [value.strip() for value in palette["ColorScheme"]["active_colors"].split(",")]
-        self.assertEqual(active[6], "#ffcdd6f4")  # Text
-        self.assertEqual(active[10], "#ff181825")  # Window
-        self.assertEqual(active[12], "#ff89b4fa")  # Highlight
-        desktop = json.loads((ROOT / "manifests/modules.json").read_text())["hyprland-desktop"]
-        self.assertIn("qt6ct", desktop["packages"])
-        self.assertIn("$CONFIG/qt6ct/qt6ct.conf", desktop["links"])
+        self.assertIn("Reserver { screen: output.modelData }", shell)
+        self.assertIn("Drawer { screen: output.modelData }", shell)
+        drawer = (SHELL / "bar/Drawer.qml").read_text()
+        self.assertIn("exclusionMode: ExclusionMode.Ignore", drawer)
+        self.assertIn("mask: active ? null : barInput", drawer)
+        self.assertIn("HyprlandFocusGrab", drawer)
+        lua = (ROOT / "config/hypr/hyprland.lua").read_text()
+        self.assertIn("ipc call panels toggle system", lua)
+        self.assertNotIn('"quickshell-notifications" }, blur', lua)
 
-    def test_native_menu_frame_matches_tooltip(self):
-        settings = configparser.ConfigParser()
-        settings.read(ROOT / "config/qt6ct/qt6ct.conf")
-        stylesheet = ROOT / "config/qt6ct/qss/tray-menus.qss"
-        self.assertEqual(Path(settings["Appearance"]["stylesheets"]), stylesheet)
-        qss = stylesheet.read_text()
-        tooltip = (SHELL / "components/Chip.qml").read_text()
-        self.assertIn("border: 1px solid #6c7086", qss)
-        self.assertIn("border-radius: 8px", qss)
-        self.assertIn("background-color: #181825", qss)
-        self.assertIn("border.width: 1", tooltip)
-        self.assertIn("border.color: Theme.overlay0", tooltip)
-        self.assertIn("radius: 8", tooltip)
+    def test_matugen_runs_on_wallpaper_change(self):
+        script = (ROOT / "config/hypr/scripts/rofi-hyprpaper.sh").read_text()
+        self.assertIn("matugen image --prefer saturation", script)
+        config = (ROOT / "config/matugen/config.toml").read_text()
+        self.assertIn("~/.local/state/matugen/quickshell.json", config)
+        self.assertIn("/.local/state/matugen/quickshell.json", (SHELL / "theme/Theme.qml").read_text())
+        desktop = json.loads((ROOT / "manifests/modules.json").read_text())["hyprland-desktop"]
+        self.assertEqual(desktop["links"]["$CONFIG/matugen"], "config/matugen")
+        self.assertIn("matugen", desktop["packages"])
 
     def test_desktop_uses_stable_shell_instead_of_legacy_daemons(self):
         desktop = json.loads((ROOT / "manifests/modules.json").read_text())["hyprland-desktop"]
@@ -114,6 +105,28 @@ class QuickshellTests(unittest.TestCase):
         self.assertEqual(metrics.cpu_usage([(100, 30)], [(200, 50)]), [80])
         self.assertEqual(metrics.cpu_usage([(100, 30)], [(100, 30)]), [0])
 
+    def test_temperature_prefers_cpu_sensors(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for index, (name, millidegrees) in enumerate((("acpitz", 40000), ("coretemp", 51500), ("nvme", 33000))):
+                device = root / f"hwmon{index}"
+                device.mkdir()
+                (device / "name").write_text(name + "\n")
+                (device / "temp1_input").write_text(str(millidegrees))
+            self.assertEqual(metrics.temperature(root), 52)
+            self.assertEqual(metrics.temperature(root / "missing"), -1)
+
+    def test_airplane_requires_every_radio_blocked(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.assertFalse(metrics.airplane(root))
+            for index, blocked in enumerate(("1", "0")):
+                (root / f"rfkill{index}").mkdir()
+                (root / f"rfkill{index}" / "soft").write_text(blocked)
+            self.assertFalse(metrics.airplane(root))
+            (root / "rfkill1" / "soft").write_text("1")
+            self.assertTrue(metrics.airplane(root))
+
     def test_power_profile_drivers(self):
         text = "  performance:\n    Driver: intel_pstate\n* balanced:\n    CPU Driver: amd_pstate\n    Platform Driver: platform_profile\n"
         self.assertEqual(metrics.parse_profile_drivers(text), {
@@ -124,7 +137,8 @@ class QuickshellTests(unittest.TestCase):
                                    stdout=subprocess.PIPE, text=True)
         try:
             sample = json.loads(process.stdout.readline())
-            for key in ("cpu", "cores", "memoryUsed", "memoryTotal", "diskPercent", "brightness", "keyboard", "interfaces"):
+            for key in ("cpu", "cores", "memoryUsed", "memoryTotal", "diskPercent", "brightness", "temperature",
+                        "airplane", "keyboard", "interfaces"):
                 self.assertIn(key, sample)
             self.assertGreater(sample["memoryTotal"], 0)
             self.assertGreaterEqual(sample["brightness"], -1)

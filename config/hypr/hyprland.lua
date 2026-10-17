@@ -282,7 +282,6 @@ hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), { locked = true 
 -- layer rules
 hl.layer_rule({ match = { namespace = "wofi" }, no_anim = true })
 hl.layer_rule({ match = { namespace = "^quickshell-bar" }, no_anim = true })
-hl.layer_rule({ match = { namespace = "quickshell-osd" }, blur = true })
 
 hl.window_rule({ match = { class = "^(.*)$" }, idle_inhibit = "fullscreen" })
 hl.window_rule({ match = { title = "^(.*)$" }, idle_inhibit = "fullscreen" })

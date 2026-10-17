@@ -10,7 +10,7 @@ Singleton {
     readonly property var source: Pipewire.defaultAudioSource
     property bool idleInhibited: false
     property string osdLabel: ""
-    property string osdIcon: ""
+    property string osdIcon: ""          // Material Symbols name
     property real osdValue: 0
     property bool osdVisible: false
     property int brightnessValue: Metrics.data.brightness
@@ -45,13 +45,13 @@ Singleton {
         else if (node.audio.muted) node.audio.muted = false;
         else node.audio.volume = Math.max(0, Math.min(microphone ? 1 : 1.5,
             node.audio.volume + (action === "inc" ? 0.05 : -0.05)));
-        showOsd(microphone ? "Microphone" : "Volume", node.audio.muted ? "󰖁" : microphone ? "" : "󰕾",
+        showOsd(microphone ? "Microphone" : "Volume", microphone ? (node.audio.muted ? "mic_off" : "mic") : (node.audio.muted ? "volume_off" : "volume_up"),
             node.audio.muted ? 0 : Math.round(node.audio.volume * 100));
         if (!microphone && !node.audio.muted) hyprScript("Sounds.sh", "--volume");
     }
     function setVolume(value) {
         if (sink && sink.audio) { sink.audio.volume = value / 100; sink.audio.muted = false; }
-        showOsd("Volume", "󰕾", value);
+        showOsd("Volume", "volume_up", value);
     }
     function brightness(action) {
         const current = brightnessValue;
@@ -80,7 +80,7 @@ Singleton {
     Process {
         id: brightnessProcess
         onExited: (code, status) => {
-            if (code === 0) root.showOsd("Brightness", "󰃟", root.appliedBrightness);
+            if (code === 0) root.showOsd("Brightness", "brightness_6", root.appliedBrightness);
             else {
                 console.warn("brightnessctl failed with exit code", code);
                 root.brightnessValue = Metrics.data.brightness;

@@ -22,62 +22,54 @@ does not uninstall old packages or terminate your running desktop processes.
 
 ## Structure
 
-- `theme/`: original Mocha palette, typography, and dimensions.
-- `components/`: shared labels, clickable chips, and bar islands.
-- `services/`: shared PipeWire controls, notifications, IPC, and metrics.
-- `bar/`: output-aware workspaces/window titles, tray, media, and system modules.
-- `notifications/`: notification cards, history, DND, actions, images, code copy,
-  quick actions, and audio/backlight sliders.
+- `theme/`: Material 3 color roles, type, shape and motion. Colors come from
+  matugen (`config/matugen`), which `rofi-hyprpaper.sh` runs on every wallpaper
+  change; `Theme` watches `~/.local/state/matugen/quickshell.json` and recolors
+  live. Until matugen has run, it uses the dark tonal-spot scheme of Mocha blue.
+  Run `matugen image --prefer saturation ~/.wallpapers/.current` once after
+  installing.
+- `components/`: Material building blocks (icons, state layers, buttons,
+  switch, Pixel-style slider, concave fillet, sparkline, tooltip).
+- `services/`: PipeWire controls, notifications, metrics, players, power,
+  network summaries, and `Panels`, which tracks the one open dropdown.
+- `bar/`: `Drawer` is one full-output window per screen holding the bar and the
+  panel surface that grows out of it; `Reserver` reserves the bar's 40px.
+- `panels/`: the system panel and its pages, notifications and calendar, media
+  player, tray menus and notification popups.
 - `osd/`: non-interactive feedback on the focused output, independent of DND.
-- `scripts/metrics.py`: `/proc` statistics, `/sys` brightness/network counters,
-  keyboard layout, and IP addresses. Memory updates every 10 seconds, disk every
-  30 seconds; CPU, keyboard, backlight, and network rates update every second.
+- `scripts/metrics.py`: `/proc` statistics, `/sys` brightness, CPU temperature,
+  rfkill and network counters, keyboard layout, and IP addresses. Memory updates
+  every 10 seconds, disk every 30 seconds, everything else every second.
 
-The bar preserves the old left/center/right module order, 42px reservation,
-Mocha module colors, blue outer borders, and overlay center border. Laptop-only
-modules hide when hardware is absent. Idle inhibition retains the original
-bright-green indicator. Native Quickshell services provide tray menus, MPRIS,
-PipeWire, UPower, power profiles, NetworkManager, Bluetooth, and Hyprland state.
-Text uses Ubuntu Nerd Font (`ttf-ubuntu-nerd`) with 0.5px letter spacing.
-Tooltips use explicit Mocha text/background colors; application notification
-markup cannot override text colors. Tray icons request output-scaled source
-sizes and use mipmap filtering rather than stretching a default-sized bitmap.
-Backend daemons (`NetworkManager`, `bluetooth`, `upower`, `power-profiles-daemon`,
+The bar is a single full-width surface whose bottom corners curve into the
+screen edges at radius 10, concentric with Hyprland's window corners (rounding 8
+plus gaps 2). Dropdowns grow out of it as the same surface, joined by the same
+curves, and slide between anchors when you switch from one to another. Text uses
+Roboto and icons use Material Symbols Rounded (`ttf-material-symbols-variable`).
+Laptop-only items hide when the hardware is absent. Backend daemons
+(`NetworkManager`, `bluetooth`, `upower`, `power-profiles-daemon`,
 PipeWire/WirePlumber) must be running; installing packages does not enable them.
-Power-profile driver names are collected from `powerprofilesctl list` every
-30 seconds and shown in the profile tooltip.
 
 ## Controls
 
-- Super+N: notification center; Super+Shift+D: DND.
-- Notification chip: left opens history, right toggles DND.
-- Media: left previous, middle play/pause, right next; wheel adjusts output.
-- CPU/memory/clock/battery: left toggles alternate display.
-- CPU/memory: right opens btop; battery: right opens wlogout.
-- Audio/microphone: left mute, wheel ±5%, right opens pavucontrol.
-- Backlight: wheel ±10%, clamped to 5–100%; output volume allows 150% boost.
-- Power profile: click cycles available profiles.
-- Keyboard: click advances the actual main keyboard's layout.
-- Network: right opens connection editor; Bluetooth: click opens blueberry.
-- Tray: left/right opens available menus; middle invokes the secondary action.
-  Items without menus use their activation action. Platform menus require the
-  `UseQApplication` pragma in `shell.qml`; changes to this pragma require a full
-  Quickshell restart, not just a QML reload.
-- Tray menus are native Qt Widgets menus, including their submenus, checkboxes,
-  and keyboard navigation. `RespectSystemStyle` allows native Qt styling, and
-  `qt6ct` is the default platform theme when none is already selected. The desktop
-  manifest links the Mocha blue-accent palette and Qt6 settings under `qt6ct`.
-  These settings also affect other apps that use the qt6ct platform plugin.
-  Existing platform-theme environment overrides are respected. Apply the config
-  links and install `qt6ct`, then restart Quickshell to activate native theming.
-  The installer preserves existing settings unless you explicitly request backup
-  and replacement; merge the Appearance/Fonts settings manually if preferred.
-  `config/qt6ct/qss/tray-menus.qss` matches tooltip borders (1px overlay0,
-  8px corners, mantle background). qt6ct requires an absolute stylesheet path;
-  update `Appearance.stylesheets` in `config/qt6ct/qt6ct.conf` when installing
-  this checkout under a different home/path. Restart Quickshell after changing
-  native menu styling.
-- Center: Escape closes, Delete clears; quick actions match the old SwayNC grid.
+- Left: tray icons (left or right click opens the app's menu in the bar, middle
+  click is the secondary action, wheel scrolls) and the active window.
+- Middle: workspace dots (click switches, wheel cycles), the clock (opens
+  notifications and calendar), and the media chip (opens the player; its button
+  plays or pauses directly). The chip hides when nothing is playing.
+- Right: CPU and RAM (click opens btop), keyboard layout (click switches), and the
+  status icons, which open the system panel; the wheel there changes volume.
+- System panel: power menu (restart and power off need a second click), sliders,
+  tiles for Wi-Fi, Bluetooth, stay awake, airplane mode, power profile and screen
+  off, and system monitor cards that open btop. Chevrons open Wi-Fi, Bluetooth
+  and sound device pages. Right-click a saved network to forget it.
+- Notifications: groups expand, swipe or close to dismiss, Do not disturb and
+  Clear all in the header. Popups pause while hovered and swipe away.
+- Escape, clicking outside, clicking the same bar item or another output closes
+  the open panel.
+- Super+N: notifications; Super+A: system panel; Super+Shift+D: DND.
+- IPC: `panels toggle <system|clock|media>`, `panels openPage system
+  <wifi|bluetooth|output|input|power>`, `panels tray <id>`, `panels close`.
 
 Normal popups hide after 6 seconds, low urgency after 3, critical notifications
 remain until dismissed; explicit application timeouts take precedence for
@@ -98,11 +90,14 @@ notify-send -u critical 'Critical test' 'Dismiss manually'
 notify-send -A open=Open 'Action test' 'Try the action'
 quickshell -c desktop ipc call controls volume inc
 quickshell -c desktop ipc call notifications toggleDnd
+quickshell -c desktop ipc call panels openPage system wifi
 ```
 
 Do not launch the path-based test alongside another notification daemon. Test
 tray menus, multi-output workspace switching, laptop discharge/charging, Bluetooth
-device battery reporting, and hardware media keys in your actual session.
+pairing and battery reporting, Wi-Fi password entry, and hardware media keys in
+your actual session. Restart Quickshell after adding or renaming files in a
+directory with a `qmldir`; reloads do not re-read it.
 The opt-in automated smoke test uses a private D-Bus session, so it can run
 alongside the existing notification daemon without replacing it.
 
