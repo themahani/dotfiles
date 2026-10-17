@@ -151,7 +151,15 @@ class QuickshellTests(unittest.TestCase):
         surface = (SHELL / "lock/LockSurface.qml").read_text()
         self.assertIn("BarSurface { anchors.fill: parent; screen: surface.screen; locked: true }", surface)
         idle = (ROOT / "config/hypr/hypridle.conf").read_text()
-        self.assertIn("lock_cmd = quickshell -c desktop ipc call lock lock || pidof hyprlock || hyprlock", idle)
+        self.assertIn("lock_cmd = pgrep -x quickshell >/dev/null || pidof hyprlock || hyprlock", idle)
+        self.assertRegex(idle, r"(?m)^\s*inhibit_sleep = 3\b")
+        # The shell locks on logind's signals and holds suspend until the lock is shown.
+        self.assertIn('"systemd-inhibit", "--what=sleep", "--mode=delay"', lock)
+        self.assertIn("function updateSleepDelay() { sleepDelay.running = !(locked && secure); }", lock)
+        self.assertIn('line.startsWith(root.sessionPath + ": org.freedesktop.login1.Session.Lock ")', lock)
+        self.assertIn("org.freedesktop.login1.Session.SetLockedHint", lock)
+        self.assertIn('Binding { target: Lock; property: "secure"; value: lock.secure }',
+                      (SHELL / "lock/LockScreen.qml").read_text())
         self.assertIn('"+ escape", hl.dsp.exec_cmd("loginctl lock-session")', (ROOT / "config/hypr/hyprland.lua").read_text())
 
     def test_matugen_runs_on_wallpaper_change(self):
