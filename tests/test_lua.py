@@ -132,6 +132,60 @@ assert(#custom.commands == 1 and custom.commands[1] == "test-only", "local start
 assert(custom.monitors[#custom.monitors].output == "test-monitor", "external layout was not loaded")
 vim.fn.writefile({ 'return { autostart = {} }' }, settings .. "hypr.local.lua")
 assert(#desktop().commands == 0, "empty startup list failed to disable apps")
+
+-- Dynamic workspaces: { id, monitor, windows } per workspace, active ones per monitor.
+local dynamic = dofile(root .. "/config/hypr/dynamic-workspaces.lua")
+local function run(spec, action)
+  local monitors, list, dispatched = {}, {}, {}
+  for name in pairs(spec.active) do
+    monitors[name] = { name = name, focused = name == (spec.focused or "eDP-1") }
+  end
+  for _, entry in ipairs(spec.workspaces) do
+    local workspace = { id = entry[1], monitor = monitors[entry[2]], windows = entry[3], special = false }
+    table.insert(list, workspace)
+    if spec.active[entry[2]] == entry[1] then monitors[entry[2]].active_workspace = workspace end
+  end
+  local focused = monitors[spec.focused or "eDP-1"]
+  hl = {
+    get_workspaces = function() return list end,
+    get_monitor = function(name) return monitors[name] end,
+    get_active_monitor = function() return focused end,
+    get_active_window = function()
+      local workspace = focused.active_workspace
+      return workspace.windows > 0 and { workspace = workspace, monitor = focused } or nil
+    end,
+    dispatch = function(value) table.insert(dispatched, value) end,
+    dsp = {
+      focus = function(value) return { focus = value } end,
+      window = { move = function(value) return { move = value } end },
+    },
+  }
+  action()
+  return dispatched
+end
+local function strip(laptop_active, last_windows)
+  return {
+    active = { ["eDP-1"] = laptop_active, ["DP-1"] = 2 },
+    workspaces = { { 1, "eDP-1", 2 }, { 2, "DP-1", 1 }, { 3, "eDP-1", 1 }, { 5, "eDP-1", last_windows or 1 }, { 6, "DP-1", 1 } },
+  }
+end
+local function focused_on(dispatched)
+  assert(#dispatched == 1 and dispatched[1].focus, "expected one focus dispatch")
+  return dispatched[1].focus.workspace
+end
+assert(focused_on(run(strip(3), dynamic.focus(1))) == "5", "next workspace skipped an ID gap wrongly")
+assert(focused_on(run(strip(5), dynamic.focus(1))) == "7", "trailing workspace took another monitor's ID")
+assert(focused_on(run(strip(5), dynamic.focus_index(4))) == "7", "position past the end missed the trailing workspace")
+assert(focused_on(run(strip(1), dynamic.focus_index(2))) == "3", "positions do not follow ID order")
+assert(#run(strip(5), dynamic.focus_index(5)) == 0, "position beyond the trailing workspace dispatched")
+assert(#run(strip(1), dynamic.focus(-1)) == 0, "previous from the first workspace wrapped")
+assert(#run(strip(5, 0), dynamic.focus(1)) == 0, "next from the trailing empty workspace dispatched")
+local other = run(strip(1), dynamic.focus(1, "DP-1"))
+assert(#other == 2 and other[1].focus.monitor == "DP-1" and other[2].focus.workspace == "6", "bar on another monitor acted on the focused one")
+assert(#run(strip(5), dynamic.move_window(1)) == 0, "moving the last workspace's only window renumbered it")
+local moved = run(strip(5, 2), dynamic.move_window(1))
+assert(#moved == 1 and moved[1].move.workspace == "7" and moved[1].move.follow, "window did not follow into the trailing workspace")
+assert(#run(strip(1), dynamic.move_window(-1)) == 0, "moving left of the first workspace wrapped")
 print("Lua syntax, schemas, plugin setup, and base/local customization validated")
 ''')
             result = subprocess.run(
