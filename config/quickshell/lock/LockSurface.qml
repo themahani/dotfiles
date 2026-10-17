@@ -12,6 +12,24 @@ WlSessionLockSurface {
     // The password field lives on the output that had focus; others show the clock.
     readonly property bool primary: !Hyprland.focusedMonitor || !screen || Hyprland.focusedMonitor.name === screen.name
     color: Theme.surface
+    // Pointer motion on any output starts the fingerprint scan; keys do it
+    // in the password field. Qt repeats hover events for a still pointer
+    // whenever the scene repaints, such as the text cursor blinking, so only
+    // a new position counts.
+    Item {
+        anchors.fill: parent
+        HoverHandler {
+            property real lastX: -1
+            property real lastY: -1
+            onPointChanged: {
+                const p = point.scenePosition;
+                if (p.x === lastX && p.y === lastY) return;
+                lastX = p.x;
+                lastY = p.y;
+                Lock.activity();
+            }
+        }
+    }
 
     Image {
         id: wallpaper

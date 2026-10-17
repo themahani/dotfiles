@@ -38,6 +38,7 @@ Rectangle {
         text: Lock.password
         onTextEdited: { Lock.password = text; Lock.failed = false; }
         onAccepted: Lock.submit()
+        Keys.onPressed: event => { Lock.activity(); event.accepted = false; }
         Keys.onEscapePressed: Lock.password = ""
         Accessible.name: "Password"
     }

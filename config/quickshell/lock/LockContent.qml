@@ -113,13 +113,14 @@ Item {
                         name: "fingerprint"
                         size: 24
                         color: Lock.fingerprint === "mismatch" ? Theme.onErrorContainerColor
-                            : Lock.fingerprint === "exhausted" ? Theme.outline : Theme.primary
+                            : Lock.fingerprint === "exhausted" || Lock.fingerprint === "paused" ? Theme.outline : Theme.primary
                     }
                 }
                 StyledText {
                     anchors.verticalCenter: parent.verticalCenter
                     text: Lock.fingerprint === "mismatch" ? "Fingerprint not recognized"
                         : Lock.fingerprint === "exhausted" ? "Too many tries. Use your password."
+                        : Lock.fingerprint === "paused" ? "Press a key to use your fingerprint"
                         : Lock.fingerprintPrompt || "Touch the fingerprint reader"
                     font.weight: Font.Normal
                     color: Lock.fingerprint === "mismatch" ? Theme.error : Theme.onSurfaceVariantColor

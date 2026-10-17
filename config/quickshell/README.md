@@ -47,8 +47,10 @@ does not uninstall old packages or terminate your running desktop processes.
   sessions running side by side, and whichever succeeds first unlocks:
   `lock/pam/password` is a password-only copy of system-auth (a test fails
   when their auth or account rules differ), and
-  `lock/pam/fingerprint` listens with pam_fprintd for as long as the screen is
-  locked (five mismatches end it until the next lock). The fingerprint prompt
+  `lock/pam/fingerprint` listens with pam_fprintd while someone is at the lock
+  screen (five mismatches end it until the next lock). The scan stops after 30
+  seconds without input and starts again on a key press, pointer motion or a
+  wake-up, so a suspend rarely finds it open. The fingerprint prompt
   only appears when `fprintd-list` shows enrolled fingers. Only a successful
   PAM check unlocks; IPC can lock but not unlock. The shell also locks on
   logind's Lock signal and before every suspend, holding a sleep delay
