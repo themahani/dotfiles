@@ -1,6 +1,7 @@
 # Fingerprint-only PAM stack for the Quickshell lock screen (Lock.qml). It runs
-# alongside lock/pam/password; whichever succeeds first unlocks. It listens for
-# as long as the screen is locked and gives up after five mismatches.
+# alongside lock/pam/password; whichever succeeds first unlocks. Lock.qml keeps
+# it open while someone is at the lock screen, and it gives up after five
+# mismatches.
 auth       required                    pam_fprintd.so       max-tries=5 timeout=-1
 
 -account   [success=1 default=ignore]  pam_systemd_home.so

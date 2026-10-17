@@ -147,6 +147,15 @@ class QuickshellTests(unittest.TestCase):
         # The fingerprint budget spans the whole lock, not one PAM session.
         self.assertIn("fingerprintMisses = 0;", lock[lock.index("function lock()"):lock.index("function unlock()")])
         self.assertIn("if (fingerprintMisses >= fingerprintTries) { fingerprint = \"exhausted\"; return; }", lock)
+        # The scan only stays open while someone is at the lock screen, so a
+        # suspend rarely finds it open and wedges fprintd.
+        self.assertIn('if (!present) { fingerprint = "paused"; return; }', lock)
+        self.assertIn("interval: 30000", lock[lock.index("id: presence"):])
+        self.assertIn("Keys.onPressed: event => { Lock.activity(); event.accepted = false; }",
+                      (SHELL / "lock/PasswordField.qml").read_text())
+        surface = (SHELL / "lock/LockSurface.qml").read_text()
+        self.assertIn("if (p.x === lastX && p.y === lastY) return;", surface)
+        self.assertIn("Lock.activity();", surface[surface.index("HoverHandler"):])
         # A reload while locked would release the session.
         self.assertIn('Binding { target: Quickshell; property: "watchFiles"; value: !root.locked }', lock)
         self.assertIn('configDirectory: Quickshell.shellPath("lock/pam")', lock)

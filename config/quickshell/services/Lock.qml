@@ -21,13 +21,18 @@ Singleton {
 
     // Fingerprint runs as its own PAM session next to the password one.
     property bool fingerprintEnrolled: false
-    property string fingerprint: "off"  // "off", "listening", "mismatch" or "exhausted"
+    property string fingerprint: "off"  // "off", "listening", "mismatch", "paused" or "exhausted"
     property string fingerprintPrompt: ""   // fprintd's own wording, naming the enrolled finger
     // Misses over the whole lock. pam_fprintd's max-tries counts per PAM
     // session, and a new session starts after every wake-up or error.
     property int fingerprintMisses: 0
     readonly property int fingerprintTries: 5
     property bool sleeping: false       // from logind's PrepareForSleep until the wake-up
+    // Input on the lock screen within the last 30 seconds. The scan only runs
+    // while someone is there, so a suspend rarely finds it open. Aborting it
+    // on PrepareForSleep races fprintd suspending the reader, and when fprintd
+    // loses, the reader drops off USB and fprintd hangs until it is killed.
+    property bool present: false
 
     // A reload starts the config over with locked false, and the new
     // WlSessionLock then releases the session. Don't reload on file changes
@@ -50,6 +55,8 @@ Singleton {
         failed = false;
         message = "";
         fingerprintMisses = 0;
+        present = true;
+        presence.restart();
         locked = true;
         enrolled.running = true;        // fingers may have been enrolled since the last lock
     }
@@ -59,10 +66,21 @@ Singleton {
         if (pam.active) pam.abort();
         if (finger.active) finger.abort();
         fingerprint = "off";
+        present = false;
+        presence.stop();
+    }
+    // Key presses and pointer motion on the lock screen.
+    function activity() {
+        if (!locked || sleeping) return;
+        presence.restart();
+        if (present) return;
+        present = true;
+        listenForFingerprint();
     }
     function listenForFingerprint() {
         if (!locked || sleeping || !fingerprintEnrolled || finger.active) return;
         if (fingerprintMisses >= fingerprintTries) { fingerprint = "exhausted"; return; }
+        if (!present) { fingerprint = "paused"; return; }
         fingerprint = "listening";
         finger.start();
         if (!finger.active) fingerprint = "off";     // fprintd or the PAM file is missing
@@ -110,6 +128,7 @@ Singleton {
         configDirectory: Quickshell.shellPath("lock/pam")
         config: "fingerprint"
         onPamMessage: {
+            presence.restart();     // a finger on the reader counts as someone there
             if (responseRequired) respond("");
             else if (!messageIsError) root.fingerprintPrompt = message;
             else if (root.locked) {
@@ -133,6 +152,17 @@ Singleton {
             else retry.restart();
         }
         onError: { if (root.locked) retry.restart(); }
+    }
+    Timer {
+        id: presence
+        interval: 30000
+        onTriggered: {
+            root.present = false;
+            retry.stop();
+            backToListening.stop();
+            if (finger.active) finger.abort();
+            if (root.fingerprint === "listening" || root.fingerprint === "mismatch") root.fingerprint = "paused";
+        }
     }
     Timer { id: backToListening; interval: 2000; onTriggered: if (root.fingerprint === "mismatch") root.fingerprint = "listening" }
     Timer { id: retry; interval: 5000; onTriggered: root.listenForFingerprint() }
@@ -186,7 +216,8 @@ Singleton {
             }
         }
     }
-    Timer { id: afterWake; interval: 2000; onTriggered: root.listenForFingerprint() }
+    // Someone opened the lid or pressed a key, so treat the wake-up as input.
+    Timer { id: afterWake; interval: 2000; onTriggered: { root.present = false; root.activity(); } }
 
     // Whether this account has fingerprints enrolled on any reader.
     Process {
@@ -207,7 +238,7 @@ Singleton {
         function lock(): void { root.lock(); }
         function status(): string {
             return JSON.stringify({locked: root.locked, checking: root.checking, failures: root.failures,
-                fingerprint: root.fingerprint, fingerprintEnrolled: root.fingerprintEnrolled});
+                fingerprint: root.fingerprint, fingerprintEnrolled: root.fingerprintEnrolled, present: root.present});
         }
     }
 }
