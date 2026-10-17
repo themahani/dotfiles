@@ -30,6 +30,14 @@ Rectangle {
             else root.x = 0;
         }
     }
+    // A click opens the notification under the pointer, or the newest one
+    // when it lands on the header.
+    StateLayer {
+        onClicked: event => {
+            const row = column.childAt(event.x - column.x, event.y - column.y);
+            if (Notifications.activate(row && row.notification ? row.notification : root.latest)) Panels.close();
+        }
+    }
     Column {
         id: column
         anchors { left: parent.left; right: parent.right; top: parent.top; margins: 12; leftMargin: 12; rightMargin: 10; topMargin: 12 }

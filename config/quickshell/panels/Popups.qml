@@ -37,10 +37,8 @@ Item {
                 StateLayer {
                     radius: card.radius
                     onClicked: {
-                        const action = card.modelData.actions.find(item => item.identifier === "default");
                         Notifications.hidePopup(card.modelData.id);
-                        if (action) action.invoke();
-                        else Panels.toggle("clock", null);
+                        if (!Notifications.activate(card.modelData)) Panels.toggle("clock", null);
                     }
                 }
                 AppIcon { id: icon; x: 12; y: 12; width: 40; height: 40; source: card.modelData.appIcon }

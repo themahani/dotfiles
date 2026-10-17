@@ -3,6 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Notifications
+import Quickshell.Wayland
 
 Singleton {
     id: root
@@ -26,6 +27,20 @@ Singleton {
     function since(item) {
         const minutes = Math.floor((Date.now() - (times[item.id] || Date.now())) / 60000);
         return minutes < 1 ? "now" : minutes < 60 ? minutes + "m" : minutes < 1440 ? Math.floor(minutes / 60) + "h" : Math.floor(minutes / 1440) + "d";
+    }
+    // Runs the default action, then raises the sender's window, or launches
+    // the app when it has none. The action alone shows nothing for an app
+    // closed to the tray, like Discord. Returns false when nothing happened.
+    function activate(item) {
+        const action = item.actions.find(action => action.identifier === "default");
+        const entry = DesktopEntries.heuristicLookup(item.desktopEntry || item.appName);
+        if (action) action.invoke();
+        if (!entry) return action !== undefined;
+        const appIds = [entry.id, entry.startupClass].filter(id => id).map(id => id.toLowerCase());
+        const window = ToplevelManager.toplevels.values.find(toplevel => appIds.includes(toplevel.appId.toLowerCase()));
+        if (window) window.activate();
+        else entry.execute();
+        return true;
     }
     function receive(item) {
         item.tracked = true;
@@ -53,6 +68,8 @@ Singleton {
             : item.urgency === NotificationUrgency.Low ? 3 : 6;
         if (timeout > 0) deadlines[item.id] = Date.now() + timeout * 1000;
     }
+    // Both load on first use; start them now so the first click finds the app.
+    Component.onCompleted: { DesktopEntries.applications; ToplevelManager.toplevels; }
     NotificationServer {
         id: server
         actionsSupported: true
