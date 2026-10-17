@@ -9,8 +9,8 @@ Rectangle {
     property string icon: ""
     property string style: "text"       // "text", "tonal", "filled", "outlined" or "danger"
     signal clicked()
-    readonly property color content: style === "filled" ? Theme.onPrimary : style === "tonal" ? Theme.onSecondaryContainer
-        : style === "danger" ? Theme.onErrorContainer : style === "outlined" ? Theme.onSurfaceVariant : Theme.primary
+    readonly property color content: style === "filled" ? Theme.onPrimaryColor : style === "tonal" ? Theme.onSecondaryContainerColor
+        : style === "danger" ? Theme.onErrorContainerColor : style === "outlined" ? Theme.onSurfaceVariantColor : Theme.primary
     implicitWidth: row.implicitWidth + (style === "text" ? 24 : 32)
     implicitHeight: 36
     radius: height / 2

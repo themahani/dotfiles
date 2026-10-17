@@ -41,7 +41,7 @@ Item {
                     anchors.centerIn: parent
                     name: Power.hasBattery ? Power.icon : "computer"
                     filled: true
-                    color: Power.low ? Theme.error : Theme.onSurface
+                    color: Power.low ? Theme.error : Theme.onSurfaceColor
                     SequentialAnimation on opacity {
                         running: Power.low
                         loops: Animation.Infinite
@@ -59,14 +59,14 @@ Item {
                     text: Power.hasBattery ? Power.level + "%" : "System"
                     font.pixelSize: 16
                     font.weight: Font.DemiBold
-                    color: Power.low ? Theme.error : Theme.onSurface
+                    color: Power.low ? Theme.error : Theme.onSurfaceColor
                 }
                 StyledText {
                     width: parent.width
                     text: [Power.status, Power.profileName + " profile"].filter(Boolean).join(" · ")
                     font.pixelSize: 12
                     font.weight: Font.Normal
-                    color: Theme.onSurfaceVariant
+                    color: Theme.onSurfaceVariantColor
                 }
             }
             IconButton {
@@ -207,7 +207,7 @@ Item {
                     Column {
                         x: 12; y: 10
                         width: parent.width - 24
-                        StyledText { text: modelData.label; font.pixelSize: 11; font.weight: Font.DemiBold; font.letterSpacing: 0.6; color: Theme.onSurfaceVariant }
+                        StyledText { text: modelData.label; font.pixelSize: 11; font.weight: Font.DemiBold; font.letterSpacing: 0.6; color: Theme.onSurfaceVariantColor }
                         StyledText { text: modelData.value; font.pixelSize: 17; font.weight: Font.DemiBold }
                     }
                     Sparkline {

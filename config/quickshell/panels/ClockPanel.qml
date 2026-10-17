@@ -42,7 +42,7 @@ Item {
                 }
                 StyledText {
                     text: Qt.formatDateTime(clock.date, "dddd, MMMM d")
-                    color: Theme.onSurfaceVariant
+                    color: Theme.onSurfaceVariantColor
                     font.weight: Font.Normal
                 }
             }
@@ -113,8 +113,8 @@ Item {
                 anchors.centerIn: parent
                 visible: Notifications.count === 0
                 spacing: 8
-                Icon { anchors.horizontalCenter: parent.horizontalCenter; name: "notifications_off"; size: 32; color: Theme.onSurfaceVariant }
-                StyledText { text: "No notifications"; color: Theme.onSurfaceVariant; font.weight: Font.Normal }
+                Icon { anchors.horizontalCenter: parent.horizontalCenter; name: "notifications_off"; size: 32; color: Theme.onSurfaceVariantColor }
+                StyledText { text: "No notifications"; color: Theme.onSurfaceVariantColor; font.weight: Font.Normal }
             }
         }
     }

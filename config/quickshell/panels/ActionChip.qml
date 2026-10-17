@@ -30,7 +30,7 @@ Rectangle {
             id: label
             font.pixelSize: 13
             font.weight: Font.DemiBold
-            color: root.selected ? Theme.onSecondaryContainer : Theme.onSurfaceVariant
+            color: root.selected ? Theme.onSecondaryContainerColor : Theme.onSurfaceVariantColor
         }
     }
     StateLayer { color: label.color; onClicked: root.clicked() }

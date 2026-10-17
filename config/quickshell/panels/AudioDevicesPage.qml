@@ -43,7 +43,7 @@ Item {
                     icon: root.icon(modelData)
                     title: modelData.description || modelData.nickname || modelData.name
                     subtitle: modelData.name.includes("bluez") ? "Bluetooth" : chosen ? "Default" : ""
-                    Icon { name: device.chosen ? "radio_button_checked" : "radio_button_unchecked"; filled: true; color: device.chosen ? device.content : Theme.onSurfaceVariant }
+                    Icon { name: device.chosen ? "radio_button_checked" : "radio_button_unchecked"; filled: true; color: device.chosen ? device.content : Theme.onSurfaceVariantColor }
                     onClicked: {
                         if (root.sinks) Pipewire.preferredDefaultAudioSink = modelData;
                         else Pipewire.preferredDefaultAudioSource = modelData;

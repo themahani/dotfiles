@@ -6,7 +6,7 @@ Rectangle {
     property string icon
     property bool filled: false
     property real iconSize: 20
-    property color contentColor: Theme.onSurface
+    property color contentColor: Theme.onSurfaceColor
     property string tooltip: ""
     property alias hovered: layer.containsMouse
     property alias disabled: layer.disabled

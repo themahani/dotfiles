@@ -31,13 +31,13 @@ BarButton {
         id: battery
         visible: Power.hasBattery
         spacing: 2
-        Icon { name: Power.icon; filled: true; size: 18; color: Power.low ? Theme.error : Theme.onSurface }
+        Icon { name: Power.icon; filled: true; size: 18; color: Power.low ? Theme.error : Theme.onSurfaceColor }
         StyledText {
             anchors.verticalCenter: parent.verticalCenter
             text: Power.level + "%"
             font.pixelSize: 13
             font.weight: Font.DemiBold
-            color: Power.low ? Theme.error : Theme.onSurface
+            color: Power.low ? Theme.error : Theme.onSurfaceColor
         }
         SequentialAnimation on opacity {
             running: Power.low

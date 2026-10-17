@@ -53,7 +53,7 @@ Item {
                         text: (card.modelData.appName || "Notification") + " · now"
                         font.pixelSize: 12
                         font.weight: Font.DemiBold
-                        color: Theme.onSurfaceVariant
+                        color: Theme.onSurfaceVariantColor
                     }
                     NotificationItem { width: parent.width; notification: card.modelData; bodyLines: 2 }
                 }

@@ -42,7 +42,7 @@ Rectangle {
                     text: root.letters[index]
                     font.pixelSize: 11
                     font.weight: Font.DemiBold
-                    color: Theme.onSurfaceVariant
+                    color: Theme.onSurfaceVariantColor
                 }
                 Rectangle {
                     anchors.horizontalCenter: parent.horizontalCenter
@@ -53,7 +53,7 @@ Rectangle {
                         anchors.centerIn: parent
                         text: modelData.getDate()
                         font.weight: parent.isToday ? Font.Bold : Font.Medium
-                        color: parent.isToday ? Theme.onPrimary : Theme.onSurface
+                        color: parent.isToday ? Theme.onPrimaryColor : Theme.onSurfaceColor
                     }
                 }
             }
@@ -89,7 +89,7 @@ Rectangle {
                     text: modelData
                     font.pixelSize: 11
                     font.weight: Font.DemiBold
-                    color: Theme.onSurfaceVariant
+                    color: Theme.onSurfaceVariantColor
                 }
             }
         }
@@ -112,7 +112,7 @@ Rectangle {
                         text: modelData.getDate()
                         font.pixelSize: 13
                         font.weight: parent.isToday ? Font.Bold : Font.Normal
-                        color: parent.isToday ? Theme.onPrimary : Theme.onSurface
+                        color: parent.isToday ? Theme.onPrimaryColor : Theme.onSurfaceColor
                         opacity: parent.isToday || modelData.getMonth() === root.month.getMonth() ? 1 : 0.45
                     }
                 }

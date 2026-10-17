@@ -12,6 +12,6 @@ BarButton {
         font.pixelSize: 12
         font.weight: Font.DemiBold
         font.letterSpacing: 0.8
-        color: Theme.onSurfaceVariant
+        color: Theme.onSurfaceVariantColor
     }
 }

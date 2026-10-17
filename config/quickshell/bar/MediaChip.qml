@@ -24,7 +24,7 @@ Row {
             anchors.verticalCenter: parent.verticalCenter
             width: 24; height: 24; radius: 6
             color: Theme.tertiaryContainer
-            Icon { anchors.centerIn: parent; name: Players.icon(root.player); filled: true; size: 16; color: Theme.onTertiaryContainer }
+            Icon { anchors.centerIn: parent; name: Players.icon(root.player); filled: true; size: 16; color: Theme.onTertiaryContainerColor }
             Image {
                 anchors.fill: parent
                 source: root.player ? root.player.trackArtUrl : ""

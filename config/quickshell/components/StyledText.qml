@@ -2,7 +2,7 @@ import QtQuick
 import "../theme"
 
 Text {
-    color: Theme.onSurface
+    color: Theme.onSurfaceColor
     font.family: Theme.font
     font.pixelSize: 14
     font.weight: Font.Medium

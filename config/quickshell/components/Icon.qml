@@ -7,7 +7,7 @@ Text {
     property bool filled: false
     property real size: 20
     text: name
-    color: Theme.onSurface
+    color: Theme.onSurfaceColor
     font.family: Theme.iconFont
     font.pixelSize: size
     font.variableAxes: ({ "FILL": filled ? 1 : 0, "opsz": Math.max(20, Math.min(48, size)), "wght": 400 })

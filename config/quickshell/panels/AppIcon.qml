@@ -27,6 +27,6 @@ Rectangle {
         name: root.fallback
         filled: true
         size: Math.round(root.width * 0.56)
-        color: Theme.onSecondaryContainer
+        color: Theme.onSecondaryContainerColor
     }
 }

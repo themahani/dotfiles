@@ -13,7 +13,7 @@ Rectangle {
     property bool hasDetails: false
     signal toggled()
     signal details()
-    readonly property color content: active ? Theme.onPrimary : Theme.onSurface
+    readonly property color content: active ? Theme.onPrimaryColor : Theme.onSurfaceColor
     implicitHeight: 64
     radius: 32
     color: active ? Theme.primary : Theme.surfaceContainerHighest

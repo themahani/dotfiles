@@ -4,7 +4,7 @@ import "../theme"
 // Material state layer: tints its parent on hover and press, and handles input.
 MouseArea {
     id: root
-    property color color: Theme.onSurface
+    property color color: Theme.onSurfaceColor
     property real radius: parent ? parent.radius || 0 : 0
     property bool disabled: false
     signal scrolled(int direction)

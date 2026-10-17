@@ -62,7 +62,7 @@ Item {
                     circle: true
                     icon: Network.deviceIcon(modelData.icon)
                     iconBackground: modelData.connected ? Theme.primary : Theme.surfaceContainerHighest
-                    iconColor: modelData.connected ? Theme.onPrimary : Theme.onSurface
+                    iconColor: modelData.connected ? Theme.onPrimaryColor : Theme.onSurfaceColor
                     title: modelData.name
                     subtitle: busy ? (modelData.connected ? "Disconnecting…" : "Connecting…")
                         : modelData.connected ? "Connected" + (modelData.batteryAvailable ? " · " + Math.round(modelData.battery * 100) + "% battery" : "")
@@ -111,7 +111,7 @@ Item {
                 text: "Searching for nearby devices…"
                 font.pixelSize: 13
                 font.weight: Font.Normal
-                color: Theme.onSurfaceVariant
+                color: Theme.onSurfaceVariantColor
             }
         }
     }
@@ -119,8 +119,8 @@ Item {
         anchors.centerIn: parent
         visible: !Network.bluetoothEnabled
         spacing: 10
-        Icon { anchors.horizontalCenter: parent.horizontalCenter; name: "bluetooth_disabled"; size: 32; color: Theme.onSurfaceVariant }
-        StyledText { text: root.adapter ? "Bluetooth is off" : "No Bluetooth adapter"; color: Theme.onSurfaceVariant; font.weight: Font.Normal }
+        Icon { anchors.horizontalCenter: parent.horizontalCenter; name: "bluetooth_disabled"; size: 32; color: Theme.onSurfaceVariantColor }
+        StyledText { text: root.adapter ? "Bluetooth is off" : "No Bluetooth adapter"; color: Theme.onSurfaceVariantColor; font.weight: Font.Normal }
     }
 
     TextButton {

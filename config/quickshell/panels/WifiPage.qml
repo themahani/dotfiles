@@ -156,17 +156,17 @@ Item {
                 text: "Right-click a saved network to forget it."
                 font.pixelSize: 12
                 font.weight: Font.Normal
-                color: Theme.onSurfaceVariant
+                color: Theme.onSurfaceVariantColor
             }
         }
         Column {
             anchors.centerIn: parent
             visible: !Network.wifiEnabled || Network.airplane || !root.device
             spacing: 10
-            Icon { anchors.horizontalCenter: parent.horizontalCenter; name: Network.airplane ? "airplanemode_active" : "wifi_off"; size: 32; color: Theme.onSurfaceVariant }
+            Icon { anchors.horizontalCenter: parent.horizontalCenter; name: Network.airplane ? "airplanemode_active" : "wifi_off"; size: 32; color: Theme.onSurfaceVariantColor }
             StyledText {
                 text: !root.device ? "No Wi-Fi device" : Network.airplane ? "Airplane mode is on" : "Wi-Fi is off"
-                color: Theme.onSurfaceVariant
+                color: Theme.onSurfaceVariantColor
                 font.weight: Font.Normal
             }
         }

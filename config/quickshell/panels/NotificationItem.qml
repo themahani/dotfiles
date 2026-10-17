@@ -27,7 +27,7 @@ Column {
         maximumLineCount: root.bodyLines
         font.pixelSize: 13
         font.weight: Font.Normal
-        color: Theme.onSurfaceVariant
+        color: Theme.onSurfaceVariantColor
         linkColor: Theme.primary
         lineHeight: 1.1
         onLinkActivated: link => Qt.openUrlExternally(link)

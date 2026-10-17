@@ -15,7 +15,7 @@ BarButton {
     StyledText {
         anchors.verticalCenter: parent.verticalCenter
         text: Qt.formatDateTime(clock.date, "ddd MMM d")
-        color: Theme.onSurfaceVariant
+        color: Theme.onSurfaceVariantColor
     }
     StyledText {
         anchors.verticalCenter: parent.verticalCenter
@@ -34,6 +34,6 @@ BarButton {
         name: "do_not_disturb_on"
         filled: true
         size: 16
-        color: Theme.onSurfaceVariant
+        color: Theme.onSurfaceVariantColor
     }
 }

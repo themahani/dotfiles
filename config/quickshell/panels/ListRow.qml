@@ -12,10 +12,10 @@ Rectangle {
     property bool selected: false
     property bool circle: false
     property color iconBackground: Theme.surfaceContainerHighest
-    property color iconColor: Theme.onSurface
+    property color iconColor: Theme.onSurfaceColor
     default property alias trailing: trailingRow.data
     signal clicked(int button)
-    readonly property color content: selected ? Theme.onPrimaryContainer : Theme.onSurface
+    readonly property color content: selected ? Theme.onPrimaryContainerColor : Theme.onSurfaceColor
     implicitHeight: 60
     radius: 16
     color: selected ? Theme.primaryContainer : "transparent"
@@ -38,7 +38,7 @@ Rectangle {
             text: root.subtitle
             font.pixelSize: 12
             font.weight: Font.Normal
-            color: root.selected ? root.content : Theme.onSurfaceVariant
+            color: root.selected ? root.content : Theme.onSurfaceVariantColor
         }
     }
     Row {

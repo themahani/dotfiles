@@ -54,7 +54,7 @@ Item {
                     required property int index
                     readonly property bool asking: root.confirming === modelData.id
                     readonly property bool wide: index === root.actions.length - 1
-                    readonly property color content: asking ? Theme.onError : modelData.id === "poweroff" ? Theme.onPrimaryContainer : Theme.onSurface
+                    readonly property color content: asking ? Theme.onErrorColor : modelData.id === "poweroff" ? Theme.onPrimaryContainerColor : Theme.onSurfaceColor
                     width: wide ? grid.width : (grid.width - grid.spacing) / 2
                     height: 72
                     radius: 20

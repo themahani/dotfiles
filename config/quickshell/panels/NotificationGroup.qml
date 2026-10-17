@@ -52,7 +52,7 @@ Rectangle {
                 text: "· " + Notifications.since(root.latest)
                 font.pixelSize: 12
                 font.weight: Font.Normal
-                color: Theme.onSurfaceVariant
+                color: Theme.onSurfaceVariantColor
             }
             Row {
                 id: buttons

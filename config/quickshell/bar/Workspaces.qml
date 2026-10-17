@@ -26,7 +26,7 @@ Row {
                 width: button.active ? 24 : 8
                 height: 8; radius: 4
                 color: button.active ? Theme.primary : button.modelData.urgent ? Theme.error
-                    : button.occupied ? Theme.onSurfaceVariant : "transparent"
+                    : button.occupied ? Theme.onSurfaceVariantColor : "transparent"
                 border.width: button.active || button.occupied || button.modelData.urgent ? 0 : 1.5
                 border.color: Theme.outline
                 Behavior on width { NumberAnimation { duration: Theme.durationMedium; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.emphasized } }

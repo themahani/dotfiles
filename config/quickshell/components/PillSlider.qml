@@ -22,13 +22,13 @@ Rectangle {
         color: Theme.primary
         Behavior on width { enabled: !drag.pressed; NumberAnimation { duration: 100 } }
     }
-    Icon { x: 14; anchors.verticalCenter: parent.verticalCenter; name: root.icon; filled: true; color: Theme.onPrimary }
+    Icon { x: 14; anchors.verticalCenter: parent.verticalCenter; name: root.icon; filled: true; color: Theme.onPrimaryColor }
     StyledText {
         anchors { right: parent.right; rightMargin: 18; verticalCenter: parent.verticalCenter }
         text: root.label
         font.pixelSize: 13
         font.weight: Font.DemiBold
-        color: root.value > 0.82 ? Theme.onPrimary : Theme.onSurfaceVariant
+        color: root.value > 0.82 ? Theme.onPrimaryColor : Theme.onSurfaceVariantColor
     }
     MouseArea {
         id: drag

@@ -18,9 +18,9 @@ Rectangle {
         id: input
         anchors { fill: parent; leftMargin: 16; rightMargin: 16 }
         verticalAlignment: TextInput.AlignVCenter
-        color: Theme.onSurface
+        color: Theme.onSurfaceColor
         selectionColor: Theme.primary
-        selectedTextColor: Theme.onPrimary
+        selectedTextColor: Theme.onPrimaryColor
         font.family: Theme.font
         font.pixelSize: 14
         clip: true
@@ -32,7 +32,7 @@ Rectangle {
         verticalAlignment: Text.AlignVCenter
         visible: input.text === ""
         text: root.placeholder
-        color: Theme.onSurfaceVariant
+        color: Theme.onSurfaceVariantColor
         font: input.font
     }
 }
