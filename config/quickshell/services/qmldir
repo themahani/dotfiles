@@ -1,5 +1,7 @@
 singleton Controls 1.0 Controls.qml
 singleton Metrics 1.0 Metrics.qml
+singleton Network 1.0 Network.qml
 singleton Notifications 1.0 Notifications.qml
 singleton Panels 1.0 Panels.qml
 singleton Players 1.0 Players.qml
+singleton Power 1.0 Power.qml
