@@ -37,15 +37,20 @@ Item {
     }
 
     readonly property real anchorCenter: shownMode === "media" ? media.x + media.width / 2 : bar.center.x + bar.center.width / 2
-    readonly property real targetWidth: content.item ? content.item.implicitWidth : 0
+    readonly property real targetWidth: content.item ? Math.ceil(content.item.implicitWidth) : 0
     readonly property real targetX: {
         if (shownMode === "system" || shownMode === "controls") return width - targetWidth;
         if (shownMode === "tray") return 0;
         const x = anchorCenter - targetWidth / 2;
-        return x < 24 ? 0 : x + targetWidth > width - 24 ? width - targetWidth : x;
+        return Math.round(x < 24 ? 0 : x + targetWidth > width - 24 ? width - targetWidth : x);
     }
     property real panelX: targetX
     property real panelWidth: targetWidth
+    // The drawn edges, on whole pixels: on a fractional edge the panel and the
+    // curve beside it both antialias the same pixel column and let what's
+    // underneath show through. Rounded per frame, so slides stay seamless.
+    readonly property int edgeLeft: Math.round(panelX)
+    readonly property int edgeRight: Math.round(panelX + panelWidth)
     property real panelHeight: mode !== "" && content.item ? content.item.implicitHeight : 0
     Behavior on panelX { enabled: root.sliding; NumberAnimation { duration: Theme.durationMedium; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.emphasized } }
     Behavior on panelWidth { enabled: root.sliding; NumberAnimation { duration: Theme.durationMedium; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.emphasized } }
@@ -74,29 +79,29 @@ Item {
         Fillet { y: Theme.barSize; mirrored: true }
         Fillet { x: parent.width - Theme.fillet; y: Theme.barSize }
         Rectangle {
-            x: root.panelX
+            x: root.edgeLeft
             y: Theme.barSize
-            width: root.panelWidth
+            width: root.edgeRight - root.edgeLeft
             height: root.panelHeight
             color: Theme.surfaceContainer
             bottomLeftRadius: Math.min(Theme.panelRadius, height)
             bottomRightRadius: Math.min(Theme.panelRadius, height)
         }
         Item {
-            x: root.panelX - Theme.fillet
+            x: root.edgeLeft - Theme.fillet
             y: Theme.barSize
             width: Theme.fillet
             height: Math.min(Theme.fillet, root.panelHeight)
-            visible: root.panelX > 0.5
+            visible: root.edgeLeft > 0
             clip: true
             Fillet {}
         }
         Item {
-            x: root.panelX + root.panelWidth
+            x: root.edgeRight
             y: Theme.barSize
             width: Theme.fillet
             height: Math.min(Theme.fillet, root.panelHeight)
-            visible: root.panelX + root.panelWidth < root.width - 0.5
+            visible: root.edgeRight < root.width
             clip: true
             Fillet { mirrored: true }
         }
@@ -168,9 +173,9 @@ Item {
 
     FocusScope {
         id: panelArea
-        x: root.panelX
+        x: root.edgeLeft
         y: Theme.barSize
-        width: root.panelWidth
+        width: root.edgeRight - root.edgeLeft
         height: root.panelHeight
         clip: true
         focus: root.active
