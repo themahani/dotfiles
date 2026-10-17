@@ -3,17 +3,13 @@ import "../components"
 import "../services"
 import "../theme"
 
-// The lock screen's only settings: brightness, volume and power. Restart and
-// power off need a second click within three seconds.
+// The lock screen's only settings: brightness, volume and power. Reboot and
+// shut down need a second click within three seconds.
 Item {
     id: root
     property string confirming: ""
     readonly property var audio: Controls.sink ? Controls.sink.audio : null
-    readonly property var actions: [
-        { id: "suspend", icon: "bedtime", label: "Suspend", command: ["systemctl", "suspend"] },
-        { id: "reboot", icon: "restart_alt", label: "Restart", confirm: true, command: ["systemctl", "reboot"] },
-        { id: "poweroff", icon: "power_settings_new", label: "Power off", confirm: true, command: ["systemctl", "poweroff"] }
-    ]
+    readonly property var actions: Session.pick(["suspend", "reboot", "shutdown"])
     implicitWidth: 400
     implicitHeight: content.implicitHeight + 32
     Timer { id: reset; interval: 3000; onTriggered: root.confirming = "" }
@@ -58,11 +54,11 @@ Item {
                     required property var modelData
                     readonly property bool asking: root.confirming === modelData.id
                     readonly property color content: asking ? Theme.onErrorColor
-                        : modelData.id === "poweroff" ? Theme.onPrimaryContainerColor : Theme.onSurfaceColor
+                        : modelData.id === "shutdown" ? Theme.onPrimaryContainerColor : Theme.onSurfaceColor
                     width: (parent.width - 16) / 3
                     height: 72
                     radius: 20
-                    color: asking ? Theme.error : modelData.id === "poweroff" ? Theme.primaryContainer : Theme.surfaceContainerHighest
+                    color: asking ? Theme.error : modelData.id === "shutdown" ? Theme.primaryContainer : Theme.surfaceContainerHighest
                     Behavior on color { ColorAnimation { duration: Theme.durationShort } }
                     Column {
                         anchors.centerIn: parent
@@ -85,8 +81,7 @@ Item {
                                 return;
                             }
                             reset.stop();
-                            Panels.close();
-                            Controls.run(action.modelData.command);
+                            Session.run(action.modelData.id);
                         }
                     }
                 }

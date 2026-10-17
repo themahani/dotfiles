@@ -196,6 +196,14 @@ class QuickshellTests(unittest.TestCase):
         self.assertIn("CanHibernate", session)
         ipc = session[session.index("IpcHandler"):]
         self.assertNotIn("function run", ipc)
+        # The power sheet and the lock screen pick from the same list.
+        sheet = (SHELL / "panels/PowerSheet.qml").read_text()
+        lock_controls = (SHELL / "panels/LockControls.qml").read_text()
+        self.assertIn('Session.pick(["lock", "suspend", "logout", "reboot", "shutdown"])', sheet)
+        self.assertIn('Session.pick(["suspend", "reboot", "shutdown"])', lock_controls)
+        for panel in (sheet, lock_controls):
+            self.assertIn("Session.run(action.modelData.id);", panel)
+            self.assertNotIn("command:", panel)
         menu = (SHELL / "session/SessionMenu.qml").read_text()
         self.assertIn("WlrKeyboardFocus.Exclusive", menu)
         self.assertIn("event.key === Qt.Key_Escape) Session.close()", menu)
