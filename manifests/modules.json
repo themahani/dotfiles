@@ -47,14 +47,14 @@
       "$CONFIG/rofi": "config/rofi", "$CONFIG/matugen": "config/matugen",
       "$CONFIG/qt6ct/qt6ct.conf": "config/qt6ct/qt6ct.conf",
       "$CONFIG/qt6ct/colors/catppuccin-mocha-blue.conf": "config/qt6ct/colors/catppuccin-mocha-blue.conf",
-      "$CONFIG/wlogout": "config/wlogout", "$CONFIG/dotfiles/hypr.lua": "config/dotfiles/hypr.lua",
+      "$CONFIG/dotfiles/hypr.lua": "config/dotfiles/hypr.lua",
       "$CONFIG/dotfiles/schemas.lua": "config/dotfiles/schemas.lua",
       "$CONFIG/dotfiles/.luarc.json": "config/dotfiles/.luarc.json"
     },
     "requires": ["kitty", "fonts"],
     "packages": ["hyprland", "hypridle", "hyprlock", "hyprpaper", "hyprlauncher", "hyprpolkitagent", "hyprshot", "hyprshutdown", "quickshell", "matugen", "qt6ct", "qt6-declarative", "qt6-wayland", "qt6-svg", "python", "iproute2", "upower", "power-profiles-daemon", "util-linux", "glib2", "sound-theme-freedesktop", "rofi", "rofi-calc", "rofi-emoji", "nautilus", "jq", "wl-clipboard", "brightnessctl", "pavucontrol", "playerctl", "libnotify", "network-manager-applet", "networkmanager", "nm-connection-editor", "btop", "bluez", "bluez-utils", "pipewire", "pipewire-pulse", "wireplumber", "xdg-desktop-portal-hyprland", "xdg-desktop-portal-gtk", "xorg-xwayland", "telegram-desktop"],
-    "aur": ["wlogout", "blueberry"],
-    "commands": ["Hyprland", "hyprctl", "quickshell", "python3", "ip", "brightnessctl", "pw-play", "rfkill", "rofi", "jq", "wlogout", "blueberry", "btop", "nm-connection-editor", "matugen"]
+    "aur": ["blueberry"],
+    "commands": ["Hyprland", "hyprctl", "quickshell", "python3", "ip", "brightnessctl", "pw-play", "rfkill", "rofi", "jq", "blueberry", "btop", "nm-connection-editor", "matugen"]
   },
   "music": {
     "links": {"$CONFIG/mpd": "config/mpd", "$CONFIG/rmpc": "config/rmpc"},

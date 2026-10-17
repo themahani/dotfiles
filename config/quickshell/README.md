@@ -57,6 +57,11 @@ does not uninstall old packages or terminate your running desktop processes.
   inhibitor until the compositor confirms the lock, and sets logind's
   LockedHint. hypridle keeps the idle timers and app inhibitors.
 - `osd/`: non-interactive feedback on the focused output, independent of DND.
+- `session/`: the full-screen session menu, which replaced wlogout. It shows
+  lock, reboot, shut down, log out, suspend and hibernate on the focused
+  output; hibernate only when logind's CanHibernate says yes. Each action
+  keeps its wlogout key (l, r, s, e, u, h). Arrows or Tab move the
+  highlight, Enter runs it, and Escape or a click outside closes the menu.
 - `scripts/metrics.py`: `/proc` statistics, `/sys` brightness, CPU temperature,
   rfkill and network counters, keyboard layout, and IP addresses. Memory updates
   every 10 seconds, disk every 30 seconds, everything else every second.
@@ -105,9 +110,10 @@ PipeWire/WirePlumber) must be running; installing packages does not enable them.
 - Super+N: notifications; Super+A: system panel; Super+Shift+D: DND;
   Super+Escape: lock (through `loginctl lock-session`; the shell locks on
   logind's Lock signal, and hypridle falls back to hyprlock when Quickshell is
-  not running).
+  not running); Super+X: session menu.
 - IPC: `panels toggle <system|clock|media>`, `panels openPage system
-  <wifi|bluetooth|output|input|power>`, `panels tray <id>`, `panels close`.
+  <wifi|bluetooth|output|input|power>`, `panels tray <id>`, `panels close`,
+  `session toggle`, `session close`.
 
 Normal popups hide after 6 seconds, low urgency after 3, critical notifications
 remain until dismissed; explicit application timeouts take precedence for

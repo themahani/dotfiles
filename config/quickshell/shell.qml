@@ -5,6 +5,7 @@ import "services"
 import "bar"
 import "lock"
 import "osd"
+import "session"
 
 ShellRoot {
     // Instantiate shared services once, not once per output.
@@ -24,5 +25,6 @@ ShellRoot {
         }
     }
     OsdWindow {}
+    SessionMenu {}
     LockScreen {}
 }

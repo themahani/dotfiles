@@ -1,7 +1,7 @@
 # Dotfiles
 
 Arch Linux configuration for Bash, Zsh, Git, Neovim, tmux, Kitty, Hyprland,
-Waybar, Rofi, SwayNC, wlogout, MPD, rmpc, and Irssi.
+Waybar, Rofi, SwayNC, MPD, rmpc, and Irssi.
 
 Requirements: Git, Python >= 3.9, Neovim >= 0.12, and Hyprland's Lua config API
 (tested with 0.56.2). Dotbot creates config links. Ansible installs Arch packages.
@@ -73,7 +73,7 @@ the package database as your regular user. Existing packages satisfy the manifes
 System upgrades, service setup, login-shell selection, and package removal remain
 manual tasks.
 
-The desktop requires `wlogout` and `blueberry`; the font settings also use
+The desktop requires `blueberry`; the font settings also use
 `vazirmatn-fonts`. These are listed under `aur` for manual installation with
 your preferred AUR workflow. Review their build files before installing.
 
@@ -205,8 +205,8 @@ The desktop shell lives in `config/quickshell`, targeting stable Quickshell
 multi-output bar, notification center/popups, and volume/microphone/brightness
 OSD. The original Catppuccin Mocha colors and module actions are preserved.
 See [the shell guide](config/quickshell/README.md) for dependencies, controls,
-and validation. The old Waybar/SwayNC configs are retained only as references;
-wlogout no longer depends on the Waybar palette path.
+and validation. The old Waybar/SwayNC configs are retained only as references.
+The shell's session menu (Super+X) replaced wlogout.
 
 MPD uses paths under `~/.config/mpd`; preserve the database, playlists, and sticker
 data when changing those paths. Desktop scripts assume the conventional
