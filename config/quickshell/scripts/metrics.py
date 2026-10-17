@@ -2,18 +2,8 @@
 
 import json
 from pathlib import Path
-import re
 import shutil
-import subprocess
 import time
-
-
-def command_json(arguments, fallback):
-    try:
-        result = subprocess.run(arguments, capture_output=True, text=True, timeout=2, check=True)
-        return json.loads(result.stdout)
-    except (OSError, subprocess.SubprocessError, ValueError):
-        return fallback
 
 
 def cpu_times():
@@ -90,52 +80,8 @@ def caps_lock(root=Path("/sys/class/leds")):
     return False
 
 
-def parse_profile_drivers(text):
-    drivers = {}
-    profile = None
-    for line in text.splitlines():
-        header = re.match(r"\s*\*?\s*(performance|balanced|power-saver):", line)
-        if header:
-            profile = header[1]
-        elif profile and "Driver:" in line:
-            driver = line.split("Driver:", 1)[1].strip()
-            drivers[profile] = ", ".join(filter(None, [drivers.get(profile), driver]))
-    return drivers
-
-
-def profile_drivers():
-    try:
-        result = subprocess.run(["powerprofilesctl", "list"], capture_output=True,
-                                text=True, timeout=2, check=True)
-        return parse_profile_drivers(result.stdout)
-    except (OSError, subprocess.SubprocessError):
-        return {}
-
-
-def interfaces(previous, elapsed):
-    addresses = command_json(["ip", "-j", "address"], [])
-    result, counters = {}, {}
-    for device in addresses:
-        name = device["ifname"]
-        try:
-            path = Path("/sys/class/net") / name / "statistics"
-            rx, tx = (int((path / f"{direction}_bytes").read_text()) for direction in ("rx", "tx"))
-        except (OSError, ValueError):
-            continue
-        old_rx, old_tx = previous.get(name, (rx, tx))
-        counters[name] = (rx, tx)
-        result[name] = {
-            "ip": ", ".join(item["local"] for item in device.get("addr_info", []) if item["scope"] == "global"),
-            "down": max(0, (rx - old_rx) * 8 / elapsed),
-            "up": max(0, (tx - old_tx) * 8 / elapsed),
-        }
-    return result, counters
-
-
 def main():
     previous_cpu = cpu_times()
-    previous_net = {}
-    previous_time = time.monotonic()
     data = {}
     tick = 0
     while True:
@@ -151,10 +97,8 @@ def main():
             disk = shutil.disk_usage("/")
             data.update(diskPercent=round(100 * disk.used / disk.total),
                         diskUsed=f"{disk.used / 1024**3:.1f} GiB", diskTotal=f"{disk.total / 1024**3:.1f} GiB")
-            data["profileDrivers"] = profile_drivers()
-        data["interfaces"], previous_net = interfaces(previous_net, max(0.01, started - previous_time))
         print(json.dumps(data), flush=True)
-        previous_cpu, previous_time = current_cpu, started
+        previous_cpu = current_cpu
         tick += 1
         time.sleep(max(0.1, 1 - (time.monotonic() - started)))
 

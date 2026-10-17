@@ -295,13 +295,9 @@ class QuickshellTests(unittest.TestCase):
     def test_keyboard_layout_follows_hyprland_events(self):
         keyboard = (SHELL / "services/Keyboard.qml").read_text()
         self.assertIn('event.name === "activelayout" || event.name === "configreloaded"', keyboard)
-        self.assertNotIn('["hyprctl"', (SHELL / "scripts/metrics.py").read_text())
+        # The collector reads files only; it starts no processes.
+        self.assertNotIn("subprocess", (SHELL / "scripts/metrics.py").read_text())
         self.assertIn("Keyboard.name", (SHELL / "bar/LayoutButton.qml").read_text())
-
-    def test_power_profile_drivers(self):
-        text = "  performance:\n    Driver: intel_pstate\n* balanced:\n    CPU Driver: amd_pstate\n    Platform Driver: platform_profile\n"
-        self.assertEqual(metrics.parse_profile_drivers(text), {
-            "performance": "intel_pstate", "balanced": "amd_pstate, platform_profile"})
 
     def test_metrics_live_sample(self):
         process = subprocess.Popen([sys.executable, "-B", str(SHELL / "scripts/metrics.py")],
@@ -309,7 +305,7 @@ class QuickshellTests(unittest.TestCase):
         try:
             sample = json.loads(process.stdout.readline())
             for key in ("cpu", "cores", "memoryUsed", "memoryTotal", "diskPercent", "brightness", "temperature",
-                        "airplane", "capsLock", "interfaces"):
+                        "airplane", "capsLock"):
                 self.assertIn(key, sample)
             self.assertGreater(sample["memoryTotal"], 0)
             self.assertGreaterEqual(sample["brightness"], -1)
