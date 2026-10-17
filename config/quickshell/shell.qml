@@ -3,6 +3,7 @@
 import Quickshell
 import "services"
 import "bar"
+import "lock"
 import "osd"
 
 ShellRoot {
@@ -22,4 +23,5 @@ ShellRoot {
         }
     }
     OsdWindow {}
+    LockScreen {}
 }

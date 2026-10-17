@@ -39,6 +39,13 @@ does not uninstall old packages or terminate your running desktop processes.
   panel surface that grows out of it; `Reserver` reserves the bar's 40px.
 - `panels/`: the system panel and its pages, notifications and calendar, media
   player, tray menus and notification popups.
+- `lock/`: the session lock (`WlSessionLock`). Each output gets the blurred
+  wallpaper and the bar's locked variant (lock label, notification count
+  without content, media, keyboard layout, status icons opening brightness,
+  volume and power). The focused output adds the clock, account, password
+  field and player. `lock/pam/password` is a password-only copy of
+  system-auth, so wrong passwords fail at once instead of waiting for a
+  fingerprint. Only a successful PAM check unlocks; IPC can lock but not unlock.
 - `osd/`: non-interactive feedback on the focused output, independent of DND.
 - `scripts/metrics.py`: `/proc` statistics, `/sys` brightness, CPU temperature,
   rfkill and network counters, keyboard layout, and IP addresses. Memory updates
@@ -74,7 +81,9 @@ PipeWire/WirePlumber) must be running; installing packages does not enable them.
   while hovered and swipe away.
 - Escape, clicking outside, clicking the same bar item or another output closes
   the open panel.
-- Super+N: notifications; Super+A: system panel; Super+Shift+D: DND.
+- Super+N: notifications; Super+A: system panel; Super+Shift+D: DND;
+  Super+Escape: lock (through `loginctl lock-session`, which hypridle turns
+  into `lock lock`, falling back to hyprlock when Quickshell is not running).
 - IPC: `panels toggle <system|clock|media>`, `panels openPage system
   <wifi|bluetooth|output|input|power>`, `panels tray <id>`, `panels close`.
 
@@ -99,6 +108,10 @@ quickshell -c desktop ipc call controls volume inc
 quickshell -c desktop ipc call notifications toggleDnd
 quickshell -c desktop ipc call panels openPage system wifi
 ```
+
+If the lock screen ever fails while locked, Hyprland keeps the session locked.
+Switch to a TTY and run `hyprctl --instance 0 dispatch exec "quickshell -c desktop --no-duplicate"`
+(or `hyprlock`); `misc:allow_session_lock_restore` lets a new locker take over.
 
 Do not launch the path-based test alongside another notification daemon. Test
 tray menus, multi-output workspace switching, laptop discharge/charging, Bluetooth

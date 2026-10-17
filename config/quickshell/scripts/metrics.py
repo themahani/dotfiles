@@ -81,7 +81,8 @@ def airplane(root=Path("/sys/class/rfkill")):
 def keyboard():
     devices = command_json(["hyprctl", "-j", "devices"], {})
     main = next((item for item in devices.get("keyboards", []) if item.get("main")), {})
-    return {"keyboard": main.get("active_keymap", ""), "keyboardName": main.get("name", "")}
+    return {"keyboard": main.get("active_keymap", ""), "keyboardName": main.get("name", ""),
+            "capsLock": bool(main.get("capsLock", False))}
 
 
 def parse_profile_drivers(text):

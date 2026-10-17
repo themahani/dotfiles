@@ -1,4 +1,5 @@
 singleton Controls 1.0 Controls.qml
+singleton Lock 1.0 Lock.qml
 singleton Metrics 1.0 Metrics.qml
 singleton Network 1.0 Network.qml
 singleton Notifications 1.0 Notifications.qml

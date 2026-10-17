@@ -12,15 +12,19 @@ import "../theme"
 Item {
     id: root
     required property var screen
+    property bool locked: false         // the lock screen's variant: no tray, title, workspaces or system panel
     readonly property alias barItem: bar
     readonly property alias panelItem: panelArea
 
     readonly property string screenName: screen ? screen.name : ""
-    readonly property bool active: Panels.open !== "" && Panels.screenName === screenName
+    // Panels belong to whichever variant matches the lock state, so the
+    // Drawer underneath a lock never opens (or grabs focus) while locked.
+    readonly property bool active: Panels.open !== "" && Panels.screenName === screenName && Lock.locked === locked
     readonly property bool focusedOutput: Hyprland.focusedMonitor !== null && Hyprland.focusedMonitor.name === screenName
-    readonly property bool showPopups: !active && focusedOutput && Notifications.popups.length > 0
+    readonly property bool showPopups: !locked && !Lock.locked && !active && focusedOutput && Notifications.popups.length > 0
     readonly property string mode: active ? Panels.open : showPopups ? "popup" : ""
-    readonly property var panels: ({ clock: clockPanel, popup: popupPanel, system: systemPanel, media: mediaPanel, tray: trayPanel })
+    readonly property var panels: locked ? ({ media: mediaPanel, controls: lockControls })
+        : ({ clock: clockPanel, popup: popupPanel, system: systemPanel, media: mediaPanel, tray: trayPanel })
 
     // Content stays loaded while the surface closes; geometry slides only
     // between two open panels, never when opening from the bar.
@@ -32,10 +36,10 @@ Item {
         Qt.callLater(() => previousMode = mode);
     }
 
-    readonly property real anchorCenter: shownMode === "media" ? media.x + media.width / 2 : clock.x + clock.width / 2
+    readonly property real anchorCenter: shownMode === "media" ? media.x + media.width / 2 : bar.center.x + bar.center.width / 2
     readonly property real targetWidth: content.item ? content.item.implicitWidth : 0
     readonly property real targetX: {
-        if (shownMode === "system") return width - targetWidth;
+        if (shownMode === "system" || shownMode === "controls") return width - targetWidth;
         if (shownMode === "tray") return 0;
         const x = anchorCenter - targetWidth / 2;
         return x < 24 ? 0 : x + targetWidth > width - 24 ? width - targetWidth : x;
@@ -104,8 +108,10 @@ Item {
         height: Theme.barSize
         MouseArea { anchors.fill: parent }   // the bar's background is not "outside"
 
+        LockedLabel { visible: root.locked; x: 8; anchors.verticalCenter: parent.verticalCenter }
         Row {
             id: left
+            visible: !root.locked
             x: 8
             anchors.verticalCenter: parent.verticalCenter
             spacing: 4
@@ -125,28 +131,38 @@ Item {
         }
         Workspaces {
             id: workspaces
+            visible: !root.locked
             screen: root.screen
             anchors { right: clock.left; rightMargin: 8; verticalCenter: parent.verticalCenter }
         }
         ClockButton {
             id: clock
+            visible: !root.locked
             screen: root.screen
             x: Math.round((parent.width - width) / 2)
             anchors.verticalCenter: parent.verticalCenter
         }
+        NotificationSummary {
+            id: summary
+            visible: root.locked
+            x: Math.round((parent.width - width) / 2)
+            anchors.verticalCenter: parent.verticalCenter
+        }
+        readonly property Item center: root.locked ? summary : clock
         MediaChip {
             id: media
             screen: root.screen
-            anchors { left: clock.right; leftMargin: 8; verticalCenter: parent.verticalCenter }
+            x: bar.center.x + bar.center.width + 8
+            anchors.verticalCenter: parent.verticalCenter
             maximumWidth: Math.max(0, Math.min(260, right.x - x - 16))
         }
         Row {
             id: right
             anchors { right: parent.right; rightMargin: 8; verticalCenter: parent.verticalCenter }
             spacing: 2
-            StatsButton {}
+            StatsButton { visible: !root.locked }
             LayoutButton {}
-            StatusButton { screen: root.screen }
+            StatusButton { screen: root.screen; panel: root.locked ? "controls" : "system" }
         }
     }
 
@@ -184,4 +200,5 @@ Item {
     Component { id: systemPanel; SystemPanel {} }
     Component { id: mediaPanel; MediaPanel {} }
     Component { id: trayPanel; TrayMenu {} }
+    Component { id: lockControls; LockControls {} }
 }

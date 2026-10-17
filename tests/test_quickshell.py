@@ -78,6 +78,23 @@ class QuickshellTests(unittest.TestCase):
         self.assertIn("ipc call panels toggle system", lua)
         self.assertNotIn('"quickshell-notifications" }, blur', lua)
 
+    def test_lock_screen_is_password_only_and_ipc_cannot_unlock(self):
+        lock = (SHELL / "services/Lock.qml").read_text()
+        ipc = lock[lock.index("IpcHandler"):]
+        self.assertIn("function lock()", ipc)
+        self.assertNotIn("unlock", ipc.lower())
+        self.assertIn('configDirectory: Quickshell.shellPath("lock/pam")', lock)
+        pam = (SHELL / "lock/pam/password").read_text()
+        rules = [line for line in pam.splitlines() if line.strip() and not line.startswith("#")]
+        self.assertTrue(any("pam_unix.so" in line for line in rules))
+        self.assertTrue(any("pam_faillock.so" in line and "authfail" in line for line in rules))
+        self.assertFalse(any("fprintd" in line for line in rules))
+        surface = (SHELL / "lock/LockSurface.qml").read_text()
+        self.assertIn("BarSurface { anchors.fill: parent; screen: surface.screen; locked: true }", surface)
+        idle = (ROOT / "config/hypr/hypridle.conf").read_text()
+        self.assertIn("lock_cmd = quickshell -c desktop ipc call lock lock || pidof hyprlock || hyprlock", idle)
+        self.assertIn('"+ escape", hl.dsp.exec_cmd("loginctl lock-session")', (ROOT / "config/hypr/hyprland.lua").read_text())
+
     def test_matugen_runs_on_wallpaper_change(self):
         script = (ROOT / "config/hypr/scripts/rofi-hyprpaper.sh").read_text()
         self.assertIn("matugen image --prefer saturation", script)

@@ -7,15 +7,16 @@ import "../theme"
 BarButton {
     id: root
     required property var screen
+    property string panel: "system"     // "controls" on the lock screen
     readonly property var sink: Controls.sink
     readonly property int volume: sink && sink.audio ? Math.round(sink.audio.volume * 100) : 0
     readonly property bool muted: !sink || !sink.audio || sink.audio.muted
 
-    open: Panels.isOpen("system", screen)
+    open: Panels.isOpen(panel, screen)
     tooltip: "System"
     spacing: 10
     padding: 12
-    onClicked: Panels.toggle("system", screen)
+    onClicked: Panels.toggle(panel, screen)
     onScrolled: direction => Controls.volume(direction > 0 ? "inc" : "dec", false)
 
     Icon { visible: Controls.idleInhibited; name: "coffee"; filled: true; size: 18; color: Theme.primary }
