@@ -76,7 +76,7 @@ Singleton {
         imageSupported: true
         bodyMarkupSupported: true
         bodyHyperlinksSupported: true
-        bodyImagesSupported: true
+        bodyImagesSupported: false
         persistenceSupported: true
         onNotification: item => root.receive(item)
     }
