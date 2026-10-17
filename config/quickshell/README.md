@@ -49,7 +49,10 @@ does not uninstall old packages or terminate your running desktop processes.
   `lock/pam/fingerprint` listens with pam_fprintd for as long as the screen is
   locked (five mismatches end it until the next lock). The fingerprint prompt
   only appears when `fprintd-list` shows enrolled fingers. Only a successful
-  PAM check unlocks; IPC can lock but not unlock.
+  PAM check unlocks; IPC can lock but not unlock. The shell also locks on
+  logind's Lock signal and before every suspend, holding a sleep delay
+  inhibitor until the compositor confirms the lock, and sets logind's
+  LockedHint. hypridle keeps the idle timers and app inhibitors.
 - `osd/`: non-interactive feedback on the focused output, independent of DND.
 - `scripts/metrics.py`: `/proc` statistics, `/sys` brightness, CPU temperature,
   rfkill and network counters, keyboard layout, and IP addresses. Memory updates
@@ -97,8 +100,9 @@ PipeWire/WirePlumber) must be running; installing packages does not enable them.
 - Escape, clicking outside, clicking the same bar item or another output closes
   the open panel.
 - Super+N: notifications; Super+A: system panel; Super+Shift+D: DND;
-  Super+Escape: lock (through `loginctl lock-session`, which hypridle turns
-  into `lock lock`, falling back to hyprlock when Quickshell is not running).
+  Super+Escape: lock (through `loginctl lock-session`; the shell locks on
+  logind's Lock signal, and hypridle falls back to hyprlock when Quickshell is
+  not running).
 - IPC: `panels toggle <system|clock|media>`, `panels openPage system
   <wifi|bluetooth|output|input|power>`, `panels tray <id>`, `panels close`.
 

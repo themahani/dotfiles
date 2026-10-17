@@ -6,9 +6,13 @@ import Quickshell.Services.Pam
 
 // Session lock state and the password check. Only a successful PAM
 // authentication unlocks; there is deliberately no IPC call to unlock.
+// Locking follows logind: loginctl lock-session (Super+Escape, hypridle's
+// idle timeout) and every suspend, which waits until the lock is shown.
 Singleton {
     id: root
     property bool locked: false
+    property bool secure: false         // the compositor confirmed the lock covers every output
+    property string sessionPath: ""     // this login session's logind object
     property string password: ""
     property bool checking: false
     property bool failed: false
@@ -29,6 +33,15 @@ Singleton {
     // WlSessionLock then releases the session. Don't reload on file changes
     // while locked.
     Binding { target: Quickshell; property: "watchFiles"; value: !root.locked }
+
+    onLockedChanged: updateSleepDelay()
+    onSecureChanged: {
+        updateSleepDelay();
+        // Tell logind, so loginctl and other tools see the session as locked.
+        if (sessionPath) Quickshell.execDetached(["gdbus", "call", "--system", "--dest", "org.freedesktop.login1",
+            "--object-path", sessionPath, "--method", "org.freedesktop.login1.Session.SetLockedHint", String(secure)]);
+    }
+    Component.onCompleted: updateSleepDelay()
 
     function lock() {
         if (locked) return;
@@ -124,20 +137,46 @@ Singleton {
     Timer { id: backToListening; interval: 2000; onTriggered: if (root.fingerprint === "mismatch") root.fingerprint = "listening" }
     Timer { id: retry; interval: 5000; onTriggered: root.listenForFingerprint() }
 
-    // fprintd suspends the reader with the system and can't while a scan is
-    // open, and a scan left open across a suspend never reports again. The
-    // lock usually starts right before sleep (hypridle's before_sleep_cmd), so
-    // stop the scan for the suspend and start a new one after the wake-up,
-    // once the reader is back.
+    // Suspend waits for this delay inhibitor, held whenever the screen isn't
+    // securely locked, and released once the lock is shown. If locking fails,
+    // logind suspends anyway after InhibitDelayMaxSec.
+    Process {
+        id: sleepDelay
+        command: ["systemd-inhibit", "--what=sleep", "--mode=delay", "--who=Quickshell",
+            "--why=Lock the screen before sleep", "sleep", "infinity"]
+        onExited: holdAgain.restart()     // taken again below if still needed
+    }
+    function updateSleepDelay() { sleepDelay.running = !(locked && secure); }
+    Timer { id: holdAgain; interval: 2000; onTriggered: root.updateSleepDelay() }
+
+    // The session's object path, to tell its Lock signal from other sessions'.
+    // "auto" finds the display session even though the shell runs outside it.
     Process {
         running: true
-        command: ["gdbus", "monitor", "--system", "--dest", "org.freedesktop.login1", "--object-path", "/org/freedesktop/login1"]
+        command: ["gdbus", "call", "--system", "--dest", "org.freedesktop.login1", "--object-path", "/org/freedesktop/login1",
+            "--method", "org.freedesktop.login1.Manager.GetSession", "auto"]
+        stdout: SplitParser { onRead: line => { const path = line.match(/'([^']+)'/); if (path) root.sessionPath = path[1]; } }
+    }
+
+    // logind's signals: Lock for this session locks, and PrepareForSleep locks
+    // before a suspend. fprintd suspends the reader with the system and can't
+    // while a scan is open, and a scan left open across a suspend never
+    // reports again, so stop the scan for the suspend and start a new one
+    // after the wake-up, once the reader is back.
+    Process {
+        running: true
+        command: ["gdbus", "monitor", "--system", "--dest", "org.freedesktop.login1"]
         stdout: SplitParser {
             onRead: line => {
-                const match = line.match(/\.PrepareForSleep \((true|false),\)/);
+                if (root.sessionPath && line.startsWith(root.sessionPath + ": org.freedesktop.login1.Session.Lock ")) {
+                    root.lock();
+                    return;
+                }
+                const match = line.match(/^\/org\/freedesktop\/login1: org\.freedesktop\.login1\.Manager\.PrepareForSleep \((true|false),\)/);
                 if (!match) return;
                 root.sleeping = match[1] === "true";
                 if (root.sleeping) {
+                    root.lock();
                     if (finger.active) finger.abort();
                     retry.stop();
                     afterWake.stop();
