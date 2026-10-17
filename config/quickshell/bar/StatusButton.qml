@@ -19,7 +19,6 @@ BarButton {
     onScrolled: direction => Controls.volume(direction > 0 ? "inc" : "dec", false)
 
     Icon { visible: Controls.idleInhibited; name: "coffee"; filled: true; size: 18; color: Theme.primary }
-    Icon { visible: Notifications.dnd; name: "do_not_disturb_on"; filled: true; size: 18; color: Theme.primary }
     Icon { name: Network.icon; filled: true; size: 18 }
     Icon { name: Network.bluetoothIcon; size: 18 }
     Icon {

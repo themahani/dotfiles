@@ -11,13 +11,13 @@ BarButton {
     Row {
         anchors.verticalCenter: parent.verticalCenter
         spacing: 5
-        Icon { name: "memory"; size: 18; color: Theme.primary }
-        StyledText { text: Metrics.data.cpu + "%"; font.pixelSize: 13; font.weight: Font.DemiBold }
+        Icon { name: "memory"; size: 18; color: Theme.primary; anchors.verticalCenter: parent.verticalCenter }
+        StyledText { text: Metrics.data.cpu + "%"; font.pixelSize: 13; font.weight: Font.DemiBold; anchors.verticalCenter: parent.verticalCenter }
     }
     Row {
         anchors.verticalCenter: parent.verticalCenter
         spacing: 5
-        Icon { name: "memory_alt"; size: 18; color: Theme.tertiary }
-        StyledText { text: Metrics.data.memoryUsed.toFixed(1) + "G"; font.pixelSize: 13; font.weight: Font.DemiBold }
+        Icon { name: "memory_alt"; size: 18; color: Theme.tertiary; anchors.verticalCenter: parent.verticalCenter }
+        StyledText { text: Metrics.data.memoryUsed.toFixed(1) + "G"; font.pixelSize: 13; font.weight: Font.DemiBold; anchors.verticalCenter: parent.verticalCenter }
     }
 }
