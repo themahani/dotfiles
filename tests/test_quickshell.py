@@ -176,6 +176,17 @@ class QuickshellTests(unittest.TestCase):
         self.assertIn('"+ escape", hl.dsp.exec_cmd("loginctl lock-session")', hyprland)
         self.assertIn("session_lock_xray = false", hyprland)
 
+    @unittest.skipUnless(Path("/etc/pam.d/system-auth").exists(), "no system-auth on this system")
+    def test_lock_pam_matches_system_auth(self):
+        # The lock reads its own PAM files; a system policy change must not
+        # silently skip the lock screen.
+        def rules(path, *types):
+            return [" ".join(line.split()) for line in Path(path).read_text().splitlines()
+                    if line.split() and line.split()[0].lstrip("-") in types]
+        system = "/etc/pam.d/system-auth"
+        self.assertEqual(rules(SHELL / "lock/pam/password", "auth", "account"), rules(system, "auth", "account"))
+        self.assertEqual(rules(SHELL / "lock/pam/fingerprint", "account"), rules(system, "account"))
+
     def test_matugen_runs_on_wallpaper_change(self):
         script = (ROOT / "config/hypr/scripts/rofi-hyprpaper.sh").read_text()
         self.assertIn('"$HOME/.config/matugen/wallpaper.py" "$new_wallpaper"', script)
