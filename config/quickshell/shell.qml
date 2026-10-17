@@ -1,6 +1,3 @@
-//@ pragma UseQApplication
-//@ pragma RespectSystemStyle
-//@ pragma DefaultEnv QT_QPA_PLATFORMTHEME = qt6ct
 import Quickshell
 import "services"
 import "bar"

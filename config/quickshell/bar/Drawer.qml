@@ -26,7 +26,7 @@ PanelWindow {
     readonly property bool focusedOutput: Hyprland.focusedMonitor !== null && Hyprland.focusedMonitor.name === screenName
     readonly property bool showPopups: !active && focusedOutput && Notifications.popups.length > 0
     readonly property string mode: active ? Panels.open : showPopups ? "popup" : ""
-    readonly property var panels: ({ clock: clockPanel, popup: popupPanel, system: systemPanel, media: mediaPanel })
+    readonly property var panels: ({ clock: clockPanel, popup: popupPanel, system: systemPanel, media: mediaPanel, tray: trayPanel })
 
     // Content stays loaded while the surface closes; geometry slides only
     // between two open panels, never when opening from the bar.
@@ -187,4 +187,5 @@ PanelWindow {
     Component { id: popupPanel; Popups {} }
     Component { id: systemPanel; SystemPanel {} }
     Component { id: mediaPanel; MediaPanel {} }
+    Component { id: trayPanel; TrayMenu {} }
 }

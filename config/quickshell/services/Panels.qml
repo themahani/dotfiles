@@ -3,6 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Io
+import Quickshell.Services.SystemTray
 
 // Which dropdown is open, and on which output. Only one is open at a time.
 Singleton {
@@ -31,6 +32,14 @@ Singleton {
             root.page = page;
             root.screenName = root.focusedScreenName();
             root.open = name;
+        }
+        // Opens the menu of the tray item whose id contains the text, e.g. "nm-applet".
+        function tray(id: string): void {
+            const item = SystemTray.items.values.find(entry => entry.id.toLowerCase().includes(id.toLowerCase()));
+            if (!item || !item.hasMenu) return;
+            root.trayItem = item;
+            root.screenName = root.focusedScreenName();
+            root.open = "tray";
         }
         function close(): void { root.close(); }
         function status(): string { return JSON.stringify({open: root.open, screen: root.screenName}); }
