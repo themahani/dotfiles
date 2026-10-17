@@ -94,6 +94,7 @@ Singleton {
         function microphone(action: string): void { root.volume(action, true); }
         function brightness(action: string): void { root.brightness(action); }
         function screenOff(): void { root.screenOff(); }
+        function toggleIdleInhibit(): void { root.idleInhibited = !root.idleInhibited; }
         function status(): string {
             return JSON.stringify({osdVisible: root.osdVisible, label: root.osdLabel, value: root.osdValue});
         }

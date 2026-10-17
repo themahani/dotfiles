@@ -185,6 +185,7 @@ hl.bind(mainMod .. "+ ALT + PRINT", hl.dsp.exec_cmd("hyprshot -m output -m activ
 hl.bind(mainMod .. "+ N", hl.dsp.exec_cmd("quickshell -c desktop ipc call notifications toggle"))
 hl.bind(mainMod .. "+ A", hl.dsp.exec_cmd("quickshell -c desktop ipc call panels toggle system"))
 hl.bind(mainMod .. "+ SHIFT + D", hl.dsp.exec_cmd("quickshell -c desktop ipc call notifications toggleDnd"))
+hl.bind(mainMod .. "+ I", hl.dsp.exec_cmd("quickshell -c desktop ipc call controls toggleIdleInhibit"))
 hl.bind(mainMod .. "+ W", hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/rofi-hyprpaper.sh"))
 hl.bind(mainMod .. "+ X", hl.dsp.exec_cmd("quickshell -c desktop ipc call session toggle"))
 hl.bind(mainMod .. "+ escape", hl.dsp.exec_cmd("loginctl lock-session"))
