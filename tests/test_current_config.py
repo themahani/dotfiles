@@ -13,8 +13,13 @@ class CurrentConfigTests(unittest.TestCase):
         catalog = json.loads((ROOT / "manifests/modules.json").read_text())
         self.assertNotIn("vim-legacy", catalog)
         self.assertNotIn("alacritty", catalog)
-        for relative in ("install-legacy", "install.conf.yaml", "vim/.vimrc", "config/hypr/workspaces.conf"):
+        for relative in ("install-legacy", "install.conf.yaml", "vim/.vimrc"):
             self.assertFalse((ROOT / relative).exists(), relative)
+        # nwg-displays writes these next to the Lua config whenever it applies
+        # a layout, so they may exist; they must stay out of git.
+        ignored = (ROOT / "config/hypr/.gitignore").read_text().split()
+        for name in ("monitors.conf", "workspaces.conf", "monitors.lua", "workspaces.lua"):
+            self.assertIn(name, ignored)
         self.assertNotIn("alacritty", (ROOT / ".gitmodules").read_text())
 
     def test_all_module_and_profile_links_have_sources(self):
