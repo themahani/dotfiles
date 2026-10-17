@@ -29,11 +29,16 @@ Singleton {
             : minutes + ":" + String(seconds % 60).padStart(2, "0");
     }
 
-    // MPRIS does not stream positions; ask the player to re-emit while playing.
+    // MPRIS does not stream positions; Quickshell extrapolates the position
+    // from the last report, and re-emitting positionChanged makes bindings
+    // read it again. Only tick while something shows it: the media panel (in
+    // the bar or on the lock screen) or the lock screen's player.
+    readonly property bool positionShown: Panels.open === "media" || Lock.locked
     Timer {
         interval: 1000
         repeat: true
-        running: root.player !== null && root.player.isPlaying
+        triggeredOnStart: true
+        running: root.player !== null && root.player.isPlaying && root.positionShown
         onTriggered: root.player.positionChanged()
     }
 }

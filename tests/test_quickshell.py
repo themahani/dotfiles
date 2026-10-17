@@ -318,6 +318,15 @@ class QuickshellTests(unittest.TestCase):
             self.assertEqual(backlight.value, 100)
             backlight.file.close()
 
+    def test_media_position_is_polled_only_while_shown(self):
+        players = (SHELL / "services/Players.qml").read_text()
+        self.assertIn('readonly property bool positionShown: Panels.open === "media" || Lock.locked', players)
+        self.assertIn("running: root.player !== null && root.player.isPlaying && root.positionShown", players)
+        # Nothing outside the media panel and the lock screen's player reads the position.
+        for path in SHELL.rglob("*.qml"):
+            if path.name not in ("MediaPanel.qml", "LockMedia.qml", "Players.qml"):
+                self.assertNotIn(".position", path.read_text(), path.name)
+
     def test_caps_lock_follows_any_keyboard_led(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
