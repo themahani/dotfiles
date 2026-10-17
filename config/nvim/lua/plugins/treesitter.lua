@@ -23,7 +23,6 @@ return {
       "toml",
       "yaml",
       "json",
-      "jsonc",
       "gitignore",
       -- C/C++, Python
       "c",
