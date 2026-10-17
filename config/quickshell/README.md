@@ -49,6 +49,9 @@ screen edges at radius 10, concentric with Hyprland's window corners (rounding 8
 plus gaps 2). Dropdowns grow out of it as the same surface, joined by the same
 curves, and slide between anchors when you switch from one to another. Text uses
 Roboto and icons use Material Symbols Rounded (`ttf-material-symbols-variable`).
+Tray and window icons come from the GTK icon theme (as set with nwg-look):
+`shell.qml` selects Qt's gtk3 platform theme, which needs a full Quickshell
+restart to change. Tray apps that send their own pixmaps keep their icons.
 Laptop-only items hide when the hardware is absent. Backend daemons
 (`NetworkManager`, `bluetooth`, `upower`, `power-profiles-daemon`,
 PipeWire/WirePlumber) must be running; installing packages does not enable them.

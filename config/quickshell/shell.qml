@@ -1,3 +1,5 @@
+// Follow the GTK settings nwg-look writes (icon theme for tray and app icons).
+//@ pragma DefaultEnv QT_QPA_PLATFORMTHEME = gtk3
 import Quickshell
 import "services"
 import "bar"

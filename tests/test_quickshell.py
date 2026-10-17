@@ -60,7 +60,10 @@ class QuickshellTests(unittest.TestCase):
         menu = (SHELL / "panels/TrayMenu.qml").read_text()
         self.assertIn("QsMenuOpener", menu)
         self.assertIn("entry.modelData.triggered()", menu)
-        self.assertNotIn("UseQApplication", (SHELL / "shell.qml").read_text())
+        shell = (SHELL / "shell.qml").read_text()
+        self.assertNotIn("UseQApplication", shell)
+        # Icon names resolve in the GTK icon theme (set with nwg-look / gsettings).
+        self.assertIn("//@ pragma DefaultEnv QT_QPA_PLATFORMTHEME = gtk3", shell)
 
     def test_single_drawer_window_per_output(self):
         shell = (SHELL / "shell.qml").read_text()
