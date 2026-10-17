@@ -98,6 +98,33 @@ Item {
                     }
                 }
             }
+            Row {
+                anchors.horizontalCenter: parent.horizontalCenter
+                visible: Lock.fingerprint !== "off"
+                spacing: 8
+                topPadding: 4
+                Rectangle {
+                    anchors.verticalCenter: parent.verticalCenter
+                    width: 40; height: 40; radius: 20
+                    color: Lock.fingerprint === "mismatch" ? Theme.errorContainer : Theme.surfaceContainerHigh
+                    Behavior on color { ColorAnimation { duration: Theme.durationShort } }
+                    Icon {
+                        anchors.centerIn: parent
+                        name: "fingerprint"
+                        size: 24
+                        color: Lock.fingerprint === "mismatch" ? Theme.onErrorContainerColor
+                            : Lock.fingerprint === "exhausted" ? Theme.outline : Theme.primary
+                    }
+                }
+                StyledText {
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: Lock.fingerprint === "mismatch" ? "Fingerprint not recognized"
+                        : Lock.fingerprint === "exhausted" ? "Too many tries. Use your password."
+                        : Lock.fingerprintPrompt || "Touch the fingerprint reader"
+                    font.weight: Font.Normal
+                    color: Lock.fingerprint === "mismatch" ? Theme.error : Theme.onSurfaceVariantColor
+                }
+            }
             Item { width: 1; height: 24 }
             LockMedia {
                 anchors.horizontalCenter: parent.horizontalCenter

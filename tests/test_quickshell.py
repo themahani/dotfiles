@@ -89,6 +89,11 @@ class QuickshellTests(unittest.TestCase):
         self.assertTrue(any("pam_unix.so" in line for line in rules))
         self.assertTrue(any("pam_faillock.so" in line and "authfail" in line for line in rules))
         self.assertFalse(any("fprintd" in line for line in rules))
+        # Fingerprint runs as its own stack in parallel, never inside the password one.
+        finger = (SHELL / "lock/pam/fingerprint").read_text()
+        self.assertRegex(finger, r"(?m)^auth\s+required\s+pam_fprintd\.so\s+max-tries=5 timeout=-1$")
+        self.assertIn('config: "fingerprint"', lock)
+        self.assertEqual(lock.count("PamContext {"), 2)
         surface = (SHELL / "lock/LockSurface.qml").read_text()
         self.assertIn("BarSurface { anchors.fill: parent; screen: surface.screen; locked: true }", surface)
         idle = (ROOT / "config/hypr/hypridle.conf").read_text()

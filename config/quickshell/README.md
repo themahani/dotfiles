@@ -43,9 +43,13 @@ does not uninstall old packages or terminate your running desktop processes.
   wallpaper and the bar's locked variant (lock label, notification count
   without content, media, keyboard layout, status icons opening brightness,
   volume and power). The focused output adds the clock, account, password
-  field and player. `lock/pam/password` is a password-only copy of
-  system-auth, so wrong passwords fail at once instead of waiting for a
-  fingerprint. Only a successful PAM check unlocks; IPC can lock but not unlock.
+  field, fingerprint prompt and player. Password and fingerprint are two PAM
+  sessions running side by side, and whichever succeeds first unlocks:
+  `lock/pam/password` is a password-only copy of system-auth, and
+  `lock/pam/fingerprint` listens with pam_fprintd for as long as the screen is
+  locked (five mismatches end it until the next lock). The fingerprint prompt
+  only appears when `fprintd-list` shows enrolled fingers. Only a successful
+  PAM check unlocks; IPC can lock but not unlock.
 - `osd/`: non-interactive feedback on the focused output, independent of DND.
 - `scripts/metrics.py`: `/proc` statistics, `/sys` brightness, CPU temperature,
   rfkill and network counters, keyboard layout, and IP addresses. Memory updates
