@@ -1,7 +1,7 @@
 # Dotfiles
 
 Arch Linux configuration for Bash, Zsh, Git, Neovim, tmux, Kitty, Hyprland,
-Waybar, Rofi, SwayNC, MPD, rmpc, and Irssi.
+Quickshell, Rofi, MPD, rmpc, and Irssi.
 
 Requirements: Git, Python >= 3.9, Neovim >= 0.12, and Hyprland's Lua config API
 (tested with 0.56.2). Dotbot creates config links. Ansible installs Arch packages.

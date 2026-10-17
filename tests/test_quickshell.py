@@ -242,8 +242,11 @@ class QuickshellTests(unittest.TestCase):
         self.assertEqual(desktop["links"]["$CONFIG/quickshell/desktop"], "config/quickshell")
         self.assertNotIn("$CONFIG/swaync", desktop["links"])
         self.assertIn("quickshell", desktop["packages"])
-        for obsolete in ("waybar", "swaync", "pamixer", "quickshell-git"):
-            self.assertNotIn(obsolete, desktop["packages"])
+        # Replaced by the shell, or only needed by what it replaced.
+        for obsolete in ("waybar", "swaync", "wlogout", "pamixer", "quickshell-git", "jq", "iproute2"):
+            self.assertNotIn(obsolete, desktop["packages"] + desktop.get("aur", []))
+        for command in ("waybar", "swaync", "wlogout", "jq", "ip"):
+            self.assertNotIn(command, desktop["commands"])
         startup = (ROOT / "config/dotfiles/hypr.lua").read_text()
         self.assertIn("quickshell -c desktop --no-duplicate", startup)
         self.assertNotRegex(startup, r'"(?:swaync|waybar)"')
