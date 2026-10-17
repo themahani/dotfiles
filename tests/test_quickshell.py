@@ -102,6 +102,12 @@ class QuickshellTests(unittest.TestCase):
         self.assertNotIn("SWAYNC_BYPASS_DND", server)
         self.assertIn("dnd && item.urgency !== NotificationUrgency.Critical", server)
 
+    def test_notification_history_is_bounded(self):
+        server = (SHELL / "services/Notifications.qml").read_text()
+        self.assertIn("readonly property int historyLimit: 100", server)
+        self.assertIn("older.slice(0, Math.max(0, older.length - (historyLimit - 1))).forEach(other => other.dismiss());", server)
+        self.assertIn("delete rest[id];", server)
+
     def test_notifications_load_nothing_remote(self):
         server = (SHELL / "services/Notifications.qml").read_text()
         self.assertIn("bodyImagesSupported: false", server)

@@ -15,6 +15,7 @@ Singleton {
     readonly property var history: server.trackedNotifications.values.filter(item => !item.transient)
     readonly property var popups: server.trackedNotifications.values.filter(item => popupIds.includes(item.id))
     readonly property int count: history.length
+    readonly property int historyLimit: 100
 
     function hidePopup(id) {
         popupIds = popupIds.filter(value => value !== id);
@@ -44,8 +45,18 @@ Singleton {
     }
     function receive(item) {
         item.tracked = true;
-        times = Object.assign({}, times, {[item.id]: Date.now()});
-        item.closed.connect(() => root.hidePopup(item.id));
+        const id = item.id;
+        times = Object.assign({}, times, {[id]: Date.now()});
+        item.closed.connect(() => {
+            root.hidePopup(id);
+            const rest = Object.assign({}, root.times);
+            delete rest[id];
+            root.times = rest;
+        });
+        // Keep the newest notifications; dismiss the oldest past the limit. The
+        // new one isn't in the tracked list yet.
+        const older = server.trackedNotifications.values.filter(other => !other.transient && other.id !== id);
+        older.slice(0, Math.max(0, older.length - (historyLimit - 1))).forEach(other => other.dismiss());
         const hints = item.hints;
         const synchronous = hints["x-canonical-private-synchronous"];
         if (synchronous) {
