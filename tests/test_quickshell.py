@@ -92,6 +92,8 @@ class QuickshellTests(unittest.TestCase):
         ipc = lock[lock.index("IpcHandler"):]
         self.assertIn("function lock()", ipc)
         self.assertNotIn("unlock", ipc.lower())
+        # A reload while locked would release the session.
+        self.assertIn('Binding { target: Quickshell; property: "watchFiles"; value: !root.locked }', lock)
         self.assertIn('configDirectory: Quickshell.shellPath("lock/pam")', lock)
         pam = (SHELL / "lock/pam/password").read_text()
         rules = [line for line in pam.splitlines() if line.strip() and not line.startswith("#")]

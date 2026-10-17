@@ -21,6 +21,11 @@ Singleton {
     property string fingerprintPrompt: ""   // fprintd's own wording, naming the enrolled finger
     property bool sleeping: false       // from logind's PrepareForSleep until the wake-up
 
+    // A reload starts the config over with locked false, and the new
+    // WlSessionLock then releases the session. Don't reload on file changes
+    // while locked.
+    Binding { target: Quickshell; property: "watchFiles"; value: !root.locked }
+
     function lock() {
         if (locked) return;
         Panels.close();
