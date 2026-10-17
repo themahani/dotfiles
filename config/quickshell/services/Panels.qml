@@ -22,17 +22,19 @@ Singleton {
         else { screenName = target; open = name; }
     }
     function close() { open = ""; trayItem = null; }
+    // Opens a panel on the focused output at a detail page, e.g. ("system", "wifi").
+    function openPage(name, target) {
+        page = target;
+        screenName = focusedScreenName();
+        open = name;
+    }
     function isOpen(name, screen) { return open === name && screen && screenName === screen.name; }
 
     IpcHandler {
         target: "panels"
         function toggle(name: string): void { root.toggle(name, null); }
         // e.g. "openPage system wifi"; pages: wifi, bluetooth, output, input, power.
-        function openPage(name: string, page: string): void {
-            root.page = page;
-            root.screenName = root.focusedScreenName();
-            root.open = name;
-        }
+        function openPage(name: string, page: string): void { root.openPage(name, page); }
         // Opens the menu of the tray item whose id contains the text, e.g. "nm-applet".
         function tray(id: string): void {
             const item = SystemTray.items.values.find(entry => entry.id.toLowerCase().includes(id.toLowerCase()));

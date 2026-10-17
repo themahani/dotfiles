@@ -1,3 +1,4 @@
+singleton BluetoothAgent 1.0 BluetoothAgent.qml
 singleton Controls 1.0 Controls.qml
 singleton Lock 1.0 Lock.qml
 singleton Metrics 1.0 Metrics.qml

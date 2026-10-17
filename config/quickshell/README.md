@@ -80,6 +80,11 @@ PipeWire/WirePlumber) must be running; installing packages does not enable them.
   tiles for Wi-Fi, Bluetooth, stay awake, airplane mode, power profile and screen
   off, and system monitor cards that open btop. Chevrons open Wi-Fi, Bluetooth
   and sound device pages. Right-click a saved network to forget it.
+- Bluetooth pairing: the shell runs bluez's agent (`bluetoothctl --agent
+  KeyboardDisplay`) as the default agent, so pairing shows the passkey to
+  compare, asks for a PIN, or shows a code to type on the device, inline on the
+  Bluetooth page. Requests from other devices open that page; while locked they
+  are refused. Without the agent the page doesn't offer pairing.
 - Notifications: groups expand, swipe or close to dismiss, Do not disturb and
   Clear all in the header; Backspace or Delete also clears all. Popups pause
   while hovered and swipe away.

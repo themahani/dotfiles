@@ -12,6 +12,7 @@ ShellRoot {
     property var controls: Controls
     property var metrics: Metrics
     property var panels: Panels
+    property var bluetoothAgent: BluetoothAgent
 
     Variants {
         model: Quickshell.screens
