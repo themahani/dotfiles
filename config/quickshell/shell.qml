@@ -4,7 +4,6 @@
 import Quickshell
 import "services"
 import "bar"
-import "notifications"
 import "osd"
 
 ShellRoot {
@@ -12,12 +11,16 @@ ShellRoot {
     property var notifications: Notifications
     property var controls: Controls
     property var metrics: Metrics
+    property var panels: Panels
 
     Variants {
-        id: bars
         model: Quickshell.screens
-        Bar { required property var modelData; screen: modelData }
+        Scope {
+            id: output
+            required property var modelData
+            Reserver { screen: output.modelData }
+            Drawer { screen: output.modelData }
+        }
     }
-    NotificationWindows { bars: bars.instances }
     OsdWindow {}
 }

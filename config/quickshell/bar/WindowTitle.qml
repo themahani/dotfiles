@@ -1,23 +1,43 @@
 import QtQuick
+import Quickshell
 import Quickshell.Hyprland
+import Quickshell.Widgets
 import "../components"
 import "../theme"
 
-Chip {
+Row {
+    id: root
     required property var screen
+    property real maximumWidth: 300
     readonly property var monitor: Hyprland.monitorFor(screen)
     readonly property var toplevel: Hyprland.toplevels.values.find(window =>
         window.monitor === monitor && window.activated) || Hyprland.toplevels.values.find(window =>
-        monitor && monitor.activeWorkspace && window.address === monitor.activeWorkspace.lastIpcObject.lastwindow) || null
+        monitor && monitor.activeWorkspace && window.address === monitor.activeWorkspace.lastIpcObject.lastwindow)
+        || (monitor && monitor.activeWorkspace ? monitor.activeWorkspace.toplevels.values[0] || null : null)
+    readonly property string appId: toplevel ? (toplevel.wayland && toplevel.wayland.appId) || toplevel.lastIpcObject["class"] || "" : ""
+    readonly property var entry: appId ? DesktopEntries.heuristicLookup(appId) : null
+    readonly property string iconSource: entry && entry.icon ? Quickshell.iconPath(entry.icon, true) : appId ? Quickshell.iconPath(appId, true) : ""
     visible: toplevel !== null
-    foreground: Theme.mauve
-    text: {
-        if (!toplevel) return "";
-        let title = toplevel.title;
-        title = title.replace(/(.*) — Mozilla Firefox$/, " $1");
-        title = title.replace(/(.*) - (fish|zsh|\$term)$/, "> [$1]");
-        if (!toplevel.activated) title = "(inactive) " + title;
-        return title.length > 25 ? title.slice(0, 24) + "…" : title;
+    spacing: 8
+    IconImage {
+        anchors.verticalCenter: parent.verticalCenter
+        visible: root.iconSource !== ""
+        implicitSize: 18
+        source: root.iconSource
+        mipmap: true
     }
-    tooltip: toplevel ? toplevel.title : ""
+    Icon {
+        anchors.verticalCenter: parent.verticalCenter
+        visible: root.iconSource === ""
+        name: "web_asset"
+        filled: true
+        size: 18
+        color: Theme.primary
+    }
+    StyledText {
+        anchors.verticalCenter: parent.verticalCenter
+        width: Math.min(implicitWidth, root.maximumWidth - 26)
+        text: root.toplevel ? root.toplevel.title : ""
+        opacity: root.toplevel && root.toplevel.activated ? 1 : 0.7
+    }
 }

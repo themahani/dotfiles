@@ -185,6 +185,7 @@ hl.bind("PRINT", hl.dsp.exec_cmd("hyprshot -m region " .. hyprshotOptions))
 hl.bind(mainMod .. "+ SHIFT + PRINT", hl.dsp.exec_cmd("hyprshot -m window -m active " .. hyprshotOptions))
 hl.bind(mainMod .. "+ ALT + PRINT", hl.dsp.exec_cmd("hyprshot -m output -m active " .. hyprshotOptions))
 hl.bind(mainMod .. "+ N", hl.dsp.exec_cmd("quickshell -c desktop ipc call notifications toggle"))
+hl.bind(mainMod .. "+ A", hl.dsp.exec_cmd("quickshell -c desktop ipc call panels toggle system"))
 hl.bind(mainMod .. "+ SHIFT + D", hl.dsp.exec_cmd("quickshell -c desktop ipc call notifications toggleDnd"))
 hl.bind(mainMod .. "+ W", hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/rofi-hyprpaper.sh"))
 hl.bind(mainMod .. "+ X", hl.dsp.exec_cmd("wlogout"))
@@ -280,7 +281,7 @@ hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), { locked = true 
 
 -- layer rules
 hl.layer_rule({ match = { namespace = "wofi" }, no_anim = true })
-hl.layer_rule({ match = { namespace = "quickshell-notifications" }, blur = true })
+hl.layer_rule({ match = { namespace = "^quickshell-bar" }, no_anim = true })
 hl.layer_rule({ match = { namespace = "quickshell-osd" }, blur = true })
 
 hl.window_rule({ match = { class = "^(.*)$" }, idle_inhibit = "fullscreen" })

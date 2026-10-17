@@ -6,11 +6,11 @@ import Quickshell.Services.Notifications
 
 Singleton {
     id: root
-    property bool centerOpen: false
     property bool dnd: false
     property var popupIds: []
     property var deadlines: ({})
     property bool paused: false         // hovering popups keeps them on screen
+    property var times: ({})            // arrival time by id; the protocol has none
     readonly property var history: server.trackedNotifications.values.filter(item => !item.transient)
     readonly property var popups: server.trackedNotifications.values.filter(item => popupIds.includes(item.id))
     readonly property int count: history.length
@@ -21,10 +21,15 @@ Singleton {
     }
     function clear() {
         history.slice().forEach(item => item.dismiss());
-        centerOpen = false;
+        if (Panels.open === "clock") Panels.close();
+    }
+    function since(item) {
+        const minutes = Math.floor((Date.now() - (times[item.id] || Date.now())) / 60000);
+        return minutes < 1 ? "now" : minutes < 60 ? minutes + "m" : minutes < 1440 ? Math.floor(minutes / 60) + "h" : Math.floor(minutes / 1440) + "d";
     }
     function receive(item) {
         item.tracked = true;
+        times = Object.assign({}, times, {[item.id]: Date.now()});
         item.closed.connect(() => root.hidePopup(item.id));
         const hints = item.hints;
         const synchronous = hints["x-canonical-private-synchronous"];
@@ -76,11 +81,11 @@ Singleton {
     }
     IpcHandler {
         target: "notifications"
-        function toggle(): void { root.centerOpen = !root.centerOpen; }
+        function toggle(): void { Panels.toggle("clock", null); }
         function toggleDnd(): void { root.dnd = !root.dnd; }
         function clear(): void { root.clear(); }
         function status(): string {
-            return JSON.stringify({count: root.count, popups: root.popups.length, dnd: root.dnd, centerOpen: root.centerOpen});
+            return JSON.stringify({count: root.count, popups: root.popups.length, dnd: root.dnd, centerOpen: Panels.open === "clock"});
         }
     }
 }
