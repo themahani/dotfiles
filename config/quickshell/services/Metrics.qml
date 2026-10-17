@@ -7,7 +7,7 @@ Singleton {
     id: root
     property var data: ({cpu: 0, cores: [], memoryUsed: 0, memoryTotal: 0, memoryPercent: 0,
         diskPercent: 0, diskUsed: "", diskTotal: "", brightness: -1, temperature: -1, airplane: false,
-        keyboard: "", keyboardName: "", capsLock: false, interfaces: {}, profileDrivers: {}})
+        capsLock: false, interfaces: {}, profileDrivers: {}})
     // Last minute of samples for the system panel graphs.
     property var history: ({cpu: [], memory: [], disk: [], temperature: []})
     function record(sample) {

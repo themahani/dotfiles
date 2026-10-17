@@ -78,11 +78,16 @@ def airplane(root=Path("/sys/class/rfkill")):
     return bool(states) and all(states)
 
 
-def keyboard():
-    devices = command_json(["hyprctl", "-j", "devices"], {})
-    main = next((item for item in devices.get("keyboards", []) if item.get("main")), {})
-    return {"keyboard": main.get("active_keymap", ""), "keyboardName": main.get("name", ""),
-            "capsLock": bool(main.get("capsLock", False))}
+def caps_lock(root=Path("/sys/class/leds")):
+    """True when any keyboard's Caps Lock LED is lit. Hyprland has no event
+    for it, and reading the LED is cheaper than asking hyprctl every second."""
+    for led in root.glob("*::capslock"):
+        try:
+            if int((led / "brightness").read_text()) > 0:
+                return True
+        except (OSError, ValueError):
+            continue
+    return False
 
 
 def parse_profile_drivers(text):
@@ -139,7 +144,7 @@ def main():
         usage = cpu_usage(previous_cpu, current_cpu)
         data.update(cpu=usage[0], cores=usage[1:], brightness=brightness(),
                     temperature=temperature(), airplane=airplane())
-        data.update(keyboard())
+        data["capsLock"] = caps_lock()
         if tick % 10 == 0:
             data.update(memory())
         if tick % 30 == 0:

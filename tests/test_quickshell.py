@@ -281,6 +281,23 @@ class QuickshellTests(unittest.TestCase):
             (root / "rfkill1" / "soft").write_text("1")
             self.assertTrue(metrics.airplane(root))
 
+    def test_caps_lock_follows_any_keyboard_led(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.assertFalse(metrics.caps_lock(root))
+            for name, lit in (("input3::capslock", "0"), ("input7::capslock", "0"), ("input3::numlock", "1")):
+                (root / name).mkdir()
+                (root / name / "brightness").write_text(lit + "\n")
+            self.assertFalse(metrics.caps_lock(root))
+            (root / "input7::capslock" / "brightness").write_text("1\n")
+            self.assertTrue(metrics.caps_lock(root))
+
+    def test_keyboard_layout_follows_hyprland_events(self):
+        keyboard = (SHELL / "services/Keyboard.qml").read_text()
+        self.assertIn('event.name === "activelayout" || event.name === "configreloaded"', keyboard)
+        self.assertNotIn('["hyprctl"', (SHELL / "scripts/metrics.py").read_text())
+        self.assertIn("Keyboard.name", (SHELL / "bar/LayoutButton.qml").read_text())
+
     def test_power_profile_drivers(self):
         text = "  performance:\n    Driver: intel_pstate\n* balanced:\n    CPU Driver: amd_pstate\n    Platform Driver: platform_profile\n"
         self.assertEqual(metrics.parse_profile_drivers(text), {
@@ -292,7 +309,7 @@ class QuickshellTests(unittest.TestCase):
         try:
             sample = json.loads(process.stdout.readline())
             for key in ("cpu", "cores", "memoryUsed", "memoryTotal", "diskPercent", "brightness", "temperature",
-                        "airplane", "keyboard", "interfaces"):
+                        "airplane", "capsLock", "interfaces"):
                 self.assertIn(key, sample)
             self.assertGreater(sample["memoryTotal"], 0)
             self.assertGreaterEqual(sample["brightness"], -1)
