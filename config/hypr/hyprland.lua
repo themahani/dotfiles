@@ -181,7 +181,7 @@ hl.bind(mainMod .. "+ A", hl.dsp.exec_cmd("quickshell -c desktop ipc call panels
 hl.bind(mainMod .. "+ SHIFT + D", hl.dsp.exec_cmd("quickshell -c desktop ipc call notifications toggleDnd"))
 hl.bind(mainMod .. "+ W", hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/rofi-hyprpaper.sh"))
 hl.bind(mainMod .. "+ X", hl.dsp.exec_cmd("wlogout"))
-hl.bind(mainMod .. "+ escape", hl.dsp.exec_cmd("hyprlock"))
+hl.bind(mainMod .. "+ escape", hl.dsp.exec_cmd("loginctl lock-session"))
 
 -- Navigation
 hl.bind(mainMod .. "+ H", hl.dsp.focus({ direction = "l" }))
