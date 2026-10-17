@@ -1,8 +1,11 @@
 """Small Linux-only collector; native Quickshell services handle desktop state."""
 
 import json
+import os
 from pathlib import Path
+import select
 import shutil
+import struct
 import time
 
 
@@ -68,6 +71,45 @@ def airplane(root=Path("/sys/class/rfkill")):
     return bool(states) and all(states)
 
 
+class Radios:
+    """Soft-block state of every radio, kept current from /dev/rfkill events.
+    Opening the device delivers one event per existing radio, and another
+    follows each block, unblock, add or removal."""
+    EVENT = struct.Struct("=IBBBB")     # index, type, operation, soft, hard
+    DELETE = 1
+
+    def __init__(self, fd):
+        self.fd = fd
+        self.soft = {}
+        self.read()
+
+    @classmethod
+    def open(cls, path="/dev/rfkill"):
+        try:
+            return cls(os.open(path, os.O_RDONLY | os.O_NONBLOCK))
+        except OSError:
+            return None
+
+    def read(self):
+        """Applies the pending events; reads one event at a time, as the kernel hands them out."""
+        while True:
+            try:
+                event = os.read(self.fd, self.EVENT.size)
+            except BlockingIOError:
+                return
+            if len(event) < self.EVENT.size:
+                return
+            index, _type, operation, soft, _hard = self.EVENT.unpack(event)
+            if operation == self.DELETE:
+                self.soft.pop(index, None)
+            else:
+                self.soft[index] = bool(soft)
+
+    @property
+    def airplane(self):
+        return bool(self.soft) and all(self.soft.values())
+
+
 def caps_lock(root=Path("/sys/class/leds")):
     """True when any keyboard's Caps Lock LED is lit. Hyprland has no event
     for it, and reading the LED is cheaper than asking hyprctl every second."""
@@ -82,6 +124,7 @@ def caps_lock(root=Path("/sys/class/leds")):
 
 def main():
     previous_cpu = cpu_times()
+    radios = Radios.open()      # without /dev/rfkill, airplane mode is read from sysfs each second
     data = {}
     tick = 0
     while True:
@@ -89,7 +132,7 @@ def main():
         current_cpu = cpu_times()
         usage = cpu_usage(previous_cpu, current_cpu)
         data.update(cpu=usage[0], cores=usage[1:], brightness=brightness(),
-                    temperature=temperature(), airplane=airplane())
+                    temperature=temperature(), airplane=radios.airplane if radios else airplane())
         data["capsLock"] = caps_lock()
         if tick % 10 == 0:
             data.update(memory())
@@ -100,7 +143,19 @@ def main():
         print(json.dumps(data), flush=True)
         previous_cpu = current_cpu
         tick += 1
-        time.sleep(max(0.1, 1 - (time.monotonic() - started)))
+        # Wait out the second, but report an airplane mode change as it happens.
+        deadline = started + 1
+        while (remaining := deadline - time.monotonic()) > 0:
+            if not radios:
+                time.sleep(max(0.1, remaining))
+                break
+            ready, _, _ = select.select([radios.fd], [], [], remaining)
+            if not ready:
+                break
+            radios.read()
+            if radios.airplane != data["airplane"]:
+                data["airplane"] = radios.airplane
+                print(json.dumps(data), flush=True)
 
 
 if __name__ == "__main__":

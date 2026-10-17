@@ -281,6 +281,28 @@ class QuickshellTests(unittest.TestCase):
             (root / "rfkill1" / "soft").write_text("1")
             self.assertTrue(metrics.airplane(root))
 
+    def test_airplane_follows_rfkill_events(self):
+        read, write = os.pipe2(os.O_NONBLOCK)
+        try:
+            event = metrics.Radios.EVENT
+            # The kernel announces each radio on open: index, type, operation (0 add), soft, hard.
+            os.write(write, event.pack(0, 2, 0, 1, 0) + event.pack(1, 1, 0, 0, 0))
+            radios = metrics.Radios(read)
+            self.assertFalse(radios.airplane)
+            os.write(write, event.pack(1, 1, 2, 1, 0))      # wlan soft-blocked
+            radios.read()
+            self.assertTrue(radios.airplane)
+            os.write(write, event.pack(2, 2, 0, 0, 0))      # a new, unblocked radio
+            radios.read()
+            self.assertFalse(radios.airplane)
+            os.write(write, event.pack(2, 2, metrics.Radios.DELETE, 0, 0))
+            radios.read()
+            self.assertTrue(radios.airplane)
+        finally:
+            os.close(read)
+            os.close(write)
+        self.assertIsNone(metrics.Radios.open("/nonexistent/rfkill"))
+
     def test_caps_lock_follows_any_keyboard_led(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
