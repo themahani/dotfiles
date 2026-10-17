@@ -111,7 +111,7 @@ class QuickshellTests(unittest.TestCase):
 
     def test_matugen_runs_on_wallpaper_change(self):
         script = (ROOT / "config/hypr/scripts/rofi-hyprpaper.sh").read_text()
-        self.assertIn("matugen image --prefer saturation", script)
+        self.assertIn('"$HOME/.config/matugen/wallpaper.py" "$new_wallpaper"', script)
         config = (ROOT / "config/matugen/config.toml").read_text()
         self.assertIn("~/.local/state/matugen/quickshell.json", config)
         self.assertIn("/.local/state/matugen/quickshell.json", (SHELL / "theme/Theme.qml").read_text())

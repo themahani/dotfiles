@@ -1,6 +1,6 @@
 # Material You colors from the wallpaper. rofi-hyprpaper.sh and Hyprland's
-# autostart run:
-#   matugen image --prefer saturation <wallpaper>
+# autostart run wallpaper.py, which picks the source color (the most saturated
+# one, but red or pink only when it dominates) and runs matugen with it.
 # Quickshell watches its JSON and recolors live, Hyprland re-reads its border,
 # kitty reloads on SIGUSR1, and rofi and hyprlock read theirs when they start.
 # Each app also has a committed fallback rendered from these templates with

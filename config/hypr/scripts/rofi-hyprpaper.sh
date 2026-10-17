@@ -63,7 +63,7 @@ load_wallpaper() {
 
     # Material You colors for Quickshell and the Hyprland border (config/matugen)
     if command -v matugen >/dev/null 2>&1; then
-        matugen image --prefer saturation --quiet "$new_wallpaper" || true
+        "$HOME/.config/matugen/wallpaper.py" "$new_wallpaper" || true
     fi
 }
 

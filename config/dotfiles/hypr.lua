@@ -10,7 +10,7 @@ local config = {
   autostart = {
     "hyprpaper", "quickshell -c desktop --no-duplicate", "hypridle", "hyprlauncher -d",
     -- Regenerate wallpaper colors so every matugen template exists and is current.
-    "matugen image --prefer saturation --quiet $HOME/.wallpapers/.current",
+    "$HOME/.config/matugen/wallpaper.py $HOME/.wallpapers/.current",
     "systemctl start --user hyprpolkitagent.service",
     "nm-applet --appindicator", "Telegram",
   },
