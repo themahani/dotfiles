@@ -19,6 +19,7 @@ Singleton {
     property bool fingerprintEnrolled: false
     property string fingerprint: "off"  // "off", "listening", "mismatch" or "exhausted"
     property string fingerprintPrompt: ""   // fprintd's own wording, naming the enrolled finger
+    property bool sleeping: false       // from logind's PrepareForSleep until the wake-up
 
     function lock() {
         if (locked) return;
@@ -37,7 +38,7 @@ Singleton {
         fingerprint = "off";
     }
     function listenForFingerprint() {
-        if (!locked || !fingerprintEnrolled || finger.active) return;
+        if (!locked || sleeping || !fingerprintEnrolled || finger.active) return;
         fingerprint = "listening";
         finger.start();
         if (!finger.active) fingerprint = "off";     // fprintd or the PAM file is missing
@@ -104,6 +105,31 @@ Singleton {
     }
     Timer { id: backToListening; interval: 2000; onTriggered: if (root.fingerprint === "mismatch") root.fingerprint = "listening" }
     Timer { id: retry; interval: 5000; onTriggered: root.listenForFingerprint() }
+
+    // fprintd suspends the reader with the system and can't while a scan is
+    // open, and a scan left open across a suspend never reports again. The
+    // lock usually starts right before sleep (hypridle's before_sleep_cmd), so
+    // stop the scan for the suspend and start a new one after the wake-up,
+    // once the reader is back.
+    Process {
+        running: true
+        command: ["gdbus", "monitor", "--system", "--dest", "org.freedesktop.login1", "--object-path", "/org/freedesktop/login1"]
+        stdout: SplitParser {
+            onRead: line => {
+                const match = line.match(/\.PrepareForSleep \((true|false),\)/);
+                if (!match) return;
+                root.sleeping = match[1] === "true";
+                if (root.sleeping) {
+                    if (finger.active) finger.abort();
+                    retry.stop();
+                    afterWake.stop();
+                } else {
+                    afterWake.restart();
+                }
+            }
+        }
+    }
+    Timer { id: afterWake; interval: 2000; onTriggered: root.listenForFingerprint() }
 
     // Whether this account has fingerprints enrolled on any reader.
     Process {
