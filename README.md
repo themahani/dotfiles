@@ -200,9 +200,13 @@ Local Lua files execute as your user. Review copied code and startup commands.
 Git uses the `store` credential helper, which saves credentials in plaintext.
 Configure your preferred credential manager in `~/.gitconfig_local`.
 
-Waybar's layout and module definitions live in `config/waybar/config.jsonc`.
-Copy `examples/waybar.local.jsonc` for layout overrides and select it in the
-Waybar startup command in `hypr.local.lua`.
+The desktop shell lives in `config/quickshell`, targeting stable Quickshell
+0.3.2 (not the Git development package). It replaces Waybar and SwayNC with a
+multi-output bar, notification center/popups, and volume/microphone/brightness
+OSD. The original Catppuccin Mocha colors and module actions are preserved.
+See [the shell guide](config/quickshell/README.md) for dependencies, controls,
+and validation. The old Waybar/SwayNC configs are retained only as references;
+wlogout no longer depends on the Waybar palette path.
 
 MPD uses paths under `~/.config/mpd`; preserve the database, playlists, and sticker
 data when changing those paths. Desktop scripts assume the conventional

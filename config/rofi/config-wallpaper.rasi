@@ -1,6 +1,5 @@
-/* Standalone wallpaper selector: thumbnail grid with the same
- * Catppuccin Mocha look as config.rasi.
- * Self-contained: no @import, works as `rofi -theme config-wallpaper.rasi`. */
+/* Standalone wallpaper selector: thumbnail grid with the same look as
+ * config.rasi. Works as `rofi -theme config-wallpaper.rasi`. */
 
 configuration {
     modi: "dmenu";
@@ -8,20 +7,17 @@ configuration {
     font: "JetBrains Mono 12";
 }
 
-* {
-    bg:     #1e1e2e;
-    fg:     #cdd6f4;
-    lav:    #b4befe;
-    mauve:  #cba6f7;
-    pink:   #f38ba8;
-}
+/* Colors: the committed Material fallback, overridden by the wallpaper colors
+ * matugen generates (config/matugen). A missing import is ignored. */
+@import "matugen-fallback.rasi"
+@import "~/.local/state/matugen/rofi.rasi"
 
 window {
     width: 75%;
     height: inherit;
     background-color: @bg;
     border: 1px;
-    border-color: @lav;
+    border-color: @accent;
     border-radius: 6px;
     padding: 40px;
 }
@@ -41,7 +37,7 @@ inputbar {
 icon-search {
     expand: false;
     str: "";
-    text-color: @pink;
+    text-color: @icon-fg;
     background-color: transparent;
 }
 
@@ -50,7 +46,7 @@ entry {
     placeholder: " Search / Choose Wallpaper";
     horizontal-align: 0.5;
     text-color: @fg;
-    placeholder-color: @mauve;
+    placeholder-color: @selected-fg;
     background-color: transparent;
 }
 
@@ -87,7 +83,7 @@ element alternate.urgent {
     text-color: @fg;
 }
 
-/* selected: same 1px lavender border + mauve text as the main config */
+/* selected: same 1px accent border + highlight text as the main config */
 element selected.normal,
 element selected.active,
 element selected.urgent {
@@ -96,10 +92,10 @@ element selected.urgent {
     margin: 0px;
     spacing: 0px;
     border: 1px;
-    border-color: @lav;
+    border-color: @accent;
     border-radius: 6px;
     background-color: transparent;
-    text-color: @mauve;
+    text-color: @selected-fg;
 }
 
 element-icon {

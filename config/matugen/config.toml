@@ -1,0 +1,41 @@
+# Material You colors from the wallpaper. rofi-hyprpaper.sh and Hyprland's
+# autostart run wallpaper.py, which picks the source color (the most saturated
+# one, but red or pink only when it dominates) and runs matugen with it.
+# Quickshell watches its JSON and recolors live, Hyprland re-reads its border,
+# kitty reloads on SIGUSR1, and rofi and hyprlock read theirs when they start.
+# Each app also has a committed fallback rendered from these templates with
+# Mocha blue; regenerate it with render-fallbacks.py after editing a template.
+
+[config]
+
+# Terminal hues, blended toward the wallpaper so they match without losing
+# their meaning. Each gets a full tonal palette (red, on_red_container, …).
+[config.custom_colors]
+red = { color = "#e5534b", blend = true }
+green = { color = "#57ab5a", blend = true }
+yellow = { color = "#c69026", blend = true }
+blue = { color = "#539bf5", blend = true }
+magenta = { color = "#b083f0", blend = true }
+cyan = { color = "#39c5cf", blend = true }
+
+[templates.quickshell]
+input_path = "~/.config/matugen/templates/quickshell.json"
+output_path = "~/.local/state/matugen/quickshell.json"
+
+[templates.hyprland]
+input_path = "~/.config/matugen/templates/hyprland.lua"
+output_path = "~/.local/state/matugen/hyprland.lua"
+post_hook = "hyprctl eval 'dofile(os.getenv(\"HOME\") .. \"/.local/state/matugen/hyprland.lua\")' >/dev/null"
+
+[templates.kitty]
+input_path = "~/.config/matugen/templates/kitty.conf"
+output_path = "~/.local/state/matugen/kitty.conf"
+post_hook = "pkill -USR1 -x kitty || true"
+
+[templates.rofi]
+input_path = "~/.config/matugen/templates/rofi.rasi"
+output_path = "~/.local/state/matugen/rofi.rasi"
+
+[templates.hyprlock]
+input_path = "~/.config/matugen/templates/hyprlock.conf"
+output_path = "~/.local/state/matugen/hyprlock.conf"

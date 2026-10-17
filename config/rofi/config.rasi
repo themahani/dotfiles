@@ -1,5 +1,5 @@
-/* Standalone rofi config + theme (Catppuccin Mocha).
- * Self-contained: no @import, no external theme files. */
+/* Standalone rofi config + theme. Colors come from the wallpaper via an
+ * optional matugen import; no other external theme files. */
 
 configuration {
     modes: "drun,emoji,calc,combi";
@@ -10,19 +10,16 @@ configuration {
     font: "JetBrains Mono 12";
 }
 
-* {
-    bg:     #1e1e2e;
-    fg:     #cdd6f4;
-    lav:    #b4befe;
-    mauve:  #cba6f7;
-    pink:   #f38ba8;
-}
+/* Colors: the committed Material fallback, overridden by the wallpaper colors
+ * matugen generates (config/matugen). A missing import is ignored. */
+@import "matugen-fallback.rasi"
+@import "~/.local/state/matugen/rofi.rasi"
 
 window {
     width: 960px;
     background-color: @bg;
     border: 1px;
-    border-color: @lav;
+    border-color: @accent;
     border-radius: 6px;
     padding: 40px;
 }
@@ -42,7 +39,7 @@ inputbar {
 icon-search {
     expand: false;
     str: "";
-    text-color: @pink;
+    text-color: @icon-fg;
     background-color: transparent;
 }
 
@@ -78,9 +75,9 @@ element selected.normal,
 element selected.active,
 element selected.urgent {
     border: 1px;
-    border-color: @lav;
+    border-color: @accent;
     background-color: transparent;
-    text-color: @mauve;
+    text-color: @selected-fg;
 }
 
 element-text {

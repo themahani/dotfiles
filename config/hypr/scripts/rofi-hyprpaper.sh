@@ -60,6 +60,11 @@ load_wallpaper() {
     if [ -n "$old_wallpaper" ] && [ "$old_wallpaper" != "$new_wallpaper" ]; then
         hyprctl hyprpaper unload "$old_wallpaper" 2>/dev/null || true
     fi
+
+    # Material You colors for Quickshell and the Hyprland border (config/matugen)
+    if command -v matugen >/dev/null 2>&1; then
+        "$HOME/.config/matugen/wallpaper.py" "$new_wallpaper" || true
+    fi
 }
 
 # If a wallpaper was selected, point the symlink at it and apply via hyprctl

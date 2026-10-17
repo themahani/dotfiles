@@ -1,23 +1,17 @@
 #!/usr/bin/env bash
+# Battery label for hyprlock, using the quickshell bar's icons.
 
-bat_cap=""
-ac_online="0"
+icons=(󰂎 󰁺 󰁻 󰁼 󰁽 󰁾 󰁿 󰂀 󰂁 󰂂 󰁹)
 
 for supply in /sys/class/power_supply/*; do
-    type="$(cat "$supply/type" 2>/dev/null)"
-    case "$type" in
-        Battery)
-            cap="$(cat "$supply/capacity" 2>/dev/null)"
-            [ -n "$cap" ] && bat_cap="$cap%" && break
-            ;;
-        Mains)
-            online="$(cat "$supply/online" 2>/dev/null)"
-            [ "$online" = "1" ] && ac_online="1"
-            ;;
+    [ "$(cat "$supply/type" 2>/dev/null)" = "Battery" ] || continue
+    cap="$(cat "$supply/capacity" 2>/dev/null)"
+    [ -n "$cap" ] || continue
+    case "$(cat "$supply/status" 2>/dev/null)" in
+        Charging) icon="" ;;
+        Full|"Not charging") icon="󱘖" ;;
+        *) icon="${icons[$((cap >= 100 ? 10 : cap / 10))]}" ;;
     esac
+    [ "$cap" -ge 100 ] && echo "$icon Full" || echo "$icon $cap%"
+    exit
 done
-
-icon=""
-[ "$ac_online" = "1" ] && icon="⚡"
-
-echo "${bat_cap} ${icon}"

@@ -5,6 +5,8 @@ if not configHome or configHome == "" then
 end
 local settingsDir = configHome .. "/dotfiles/"
 local schema = dofile(settingsDir .. "schemas.lua")
+-- Global, so the bar can reach it through `hyprctl dispatch`.
+dynamic_workspaces = dofile(configHome .. "/hypr/dynamic-workspaces.lua")
 local function report(message)
 	print("[hyprland.lua] invalid settings " .. message)
 end
@@ -65,14 +67,6 @@ hl.config({
 		gaps_in = 2,
 		gaps_out = 2,
 		border_size = 2,
-
-		col = {
-			active_border = {
-				colors = { "rgba(33ccffee)", "rgba(00ff99ee)" },
-				angle = 45,
-			},
-			inactive_border = "rgba(595959aa)",
-		},
 		resize_on_border = true,
 		allow_tearing = false,
 		layout = "master",
@@ -109,6 +103,10 @@ hl.config({
 		new_on_top = true,
 		new_on_active = "none",
 		orientation = "left",
+	},
+	gestures = {
+		workspace_swipe_create_new = true,
+		workspace_swipe_forever = false,
 	},
 	scrolling = {
 		fullscreen_on_one_column = true,
@@ -184,11 +182,12 @@ local hyprshotOptions = "-z -oPictures/Screenshots"
 hl.bind("PRINT", hl.dsp.exec_cmd("hyprshot -m region " .. hyprshotOptions))
 hl.bind(mainMod .. "+ SHIFT + PRINT", hl.dsp.exec_cmd("hyprshot -m window -m active " .. hyprshotOptions))
 hl.bind(mainMod .. "+ ALT + PRINT", hl.dsp.exec_cmd("hyprshot -m output -m active " .. hyprshotOptions))
-hl.bind(mainMod .. "+ N", hl.dsp.exec_cmd("swaync-client -t"))
-hl.bind(mainMod .. "+ SHIFT + D", hl.dsp.exec_cmd("swaync-client --toggle-dnd"))
+hl.bind(mainMod .. "+ N", hl.dsp.exec_cmd("quickshell -c desktop ipc call notifications toggle"))
+hl.bind(mainMod .. "+ A", hl.dsp.exec_cmd("quickshell -c desktop ipc call panels toggle system"))
+hl.bind(mainMod .. "+ SHIFT + D", hl.dsp.exec_cmd("quickshell -c desktop ipc call notifications toggleDnd"))
 hl.bind(mainMod .. "+ W", hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/rofi-hyprpaper.sh"))
 hl.bind(mainMod .. "+ X", hl.dsp.exec_cmd("wlogout"))
-hl.bind(mainMod .. "+ escape", hl.dsp.exec_cmd("hyprlock"))
+hl.bind(mainMod .. "+ escape", hl.dsp.exec_cmd("loginctl lock-session"))
 
 -- Navigation
 hl.bind(mainMod .. "+ H", hl.dsp.focus({ direction = "l" }))
@@ -222,17 +221,22 @@ hl.bind(mainMod .. "+ SHIFT + L", hl.dsp.window.move({ direction = "r" }))
 hl.bind(mainMod .. "+ SHIFT + H", hl.dsp.window.move({ direction = "l" }))
 hl.bind(mainMod .. "+ SHIFT + K", hl.dsp.window.move({ direction = "u" }))
 hl.bind(mainMod .. "+ SHIFT + J", hl.dsp.window.move({ direction = "d" }))
-hl.bind(mainMod .. "+ ALT + L", hl.dsp.focus({ workspace = "r+1" }))
-hl.bind(mainMod .. "+ ALT + H", hl.dsp.focus({ workspace = "r-1" }))
+hl.bind(mainMod .. "+ ALT + L", dynamic_workspaces.focus(1))
+hl.bind(mainMod .. "+ ALT + H", dynamic_workspaces.focus(-1))
 hl.bind("ALT + TAB", function()
 	hl.dsp.window.cycle_next()
 	hl.dsp.window.bring_to_top()
 end)
 
-hl.bind(mainMod .. "+ bracketleft", hl.dsp.focus({ workspace = "r-1" }))
-hl.bind(mainMod .. "+ bracketright", hl.dsp.focus({ workspace = "r+1" }))
-hl.bind(mainMod .. "+ SHIFT + bracketright", hl.dsp.window.move({ workspace = "r+1" }))
-hl.bind(mainMod .. "+ SHIFT + bracketleft", hl.dsp.window.move({ workspace = "r-1" }))
+-- Workspaces by position on the focused monitor (see dynamic-workspaces.lua).
+hl.bind(mainMod .. "+ bracketleft", dynamic_workspaces.focus(-1))
+hl.bind(mainMod .. "+ bracketright", dynamic_workspaces.focus(1))
+hl.bind(mainMod .. "+ SHIFT + bracketright", dynamic_workspaces.move_window(1))
+hl.bind(mainMod .. "+ SHIFT + bracketleft", dynamic_workspaces.move_window(-1))
+for index = 1, 9 do
+	hl.bind(mainMod .. "+ " .. index, dynamic_workspaces.focus_index(index))
+	hl.bind(mainMod .. "+ SHIFT + " .. index, dynamic_workspaces.move_window_index(index))
+end
 
 -- resize and drag with mouse
 hl.bind(mainMod .. "+ mouse:272", hl.dsp.window.drag(), { mouse = true })
@@ -280,9 +284,7 @@ hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), { locked = true 
 
 -- layer rules
 hl.layer_rule({ match = { namespace = "wofi" }, no_anim = true })
-hl.layer_rule({ match = { namespace = "swaync-control-center" }, blur = true })
-hl.layer_rule({ match = { namespace = "swaync-notification-window" }, ignore_alpha = 0.5 })
-hl.layer_rule({ match = { namespace = "swaync-notification-window" }, ignore_alpha = 0.5 })
+hl.layer_rule({ match = { namespace = "^quickshell-bar" }, no_anim = true })
 
 hl.window_rule({ match = { class = "^(.*)$" }, idle_inhibit = "fullscreen" })
 hl.window_rule({ match = { title = "^(.*)$" }, idle_inhibit = "fullscreen" })
@@ -294,6 +296,22 @@ hl.window_rule({
 	float = true,
 	size = { "monitor_w * 0.75", "monitor_h * 0.8" },
 })
+
+-- Border colors: the committed Material fallback, then the wallpaper colors
+-- matugen generates (config/matugen) when they exist.
+for _, path in ipairs({
+	configHome .. "/hypr/matugen-fallback.lua",
+	os.getenv("HOME") .. "/.local/state/matugen/hyprland.lua",
+}) do
+	local file = io.open(path, "r")
+	if file then
+		file:close()
+		local ok, err = pcall(dofile, path)
+		if not ok then
+			print("[hyprland.lua] error in " .. path .. ": " .. tostring(err))
+		end
+	end
+end
 
 -- External layouts/advanced overrides run last, so shared config does not win.
 for _, name in ipairs({ "monitors.lua", "workspaces.lua", "hypr.extra.lua" }) do
