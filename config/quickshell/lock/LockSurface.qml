@@ -36,7 +36,9 @@ WlSessionLockSurface {
         anchors.fill: parent
         source: "file://" + Quickshell.env("HOME") + "/.wallpapers/.current"
         fillMode: Image.PreserveAspectCrop
-        sourceSize: Qt.size(surface.width / 2, surface.height / 2)   // it is blurred anyway
+        // No sourceSize: Qt's smooth downscale of the full image ran on a
+        // thread pool and left about 45 MB allocated after unlocking, more
+        // than decoding the wallpaper at full size costs.
         asynchronous: true
         visible: false
     }

@@ -318,6 +318,12 @@ class QuickshellTests(unittest.TestCase):
             self.assertEqual(backlight.value, 100)
             backlight.file.close()
 
+    def test_lock_wallpaper_is_not_downscaled_in_the_shell(self):
+        # A smooth downscale of the full wallpaper cost about 45 MB that stayed
+        # allocated after unlocking; the full-size image costs less.
+        surface = (SHELL / "lock/LockSurface.qml").read_text()
+        self.assertNotRegex(surface, r"(?m)^\s*sourceSize:")
+
     def test_shell_renders_on_the_gui_thread(self):
         self.assertRegex((SHELL / "shell.qml").read_text(), r"(?m)^//@ pragma Env QSG_RENDER_LOOP = basic$")
 
