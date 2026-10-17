@@ -3,7 +3,7 @@ import "../components"
 import "../services"
 import "../theme"
 
-// Bottom sheet with session actions. Restart and power off need a second
+// Bottom sheet with session actions. Reboot and shut down need a second
 // click within three seconds.
 Item {
     id: root
@@ -13,13 +13,7 @@ Item {
     visible: open || sheet.y < height
     onOpenChanged: confirming = ""
 
-    readonly property var actions: [
-        { id: "lock", icon: "lock", label: "Lock", command: ["loginctl", "lock-session"] },
-        { id: "suspend", icon: "bedtime", label: "Suspend", command: ["systemctl", "suspend"] },
-        { id: "logout", icon: "logout", label: "Log out", command: ["hyprshutdown"] },
-        { id: "reboot", icon: "restart_alt", label: "Restart", confirm: "Click again to restart", command: ["systemctl", "reboot"] },
-        { id: "poweroff", icon: "power_settings_new", label: "Power off", confirm: "Click again to power off", command: ["systemctl", "poweroff"] }
-    ]
+    readonly property var actions: Session.pick(["lock", "suspend", "logout", "reboot", "shutdown"])
 
     Rectangle {
         anchors.fill: parent
@@ -54,11 +48,11 @@ Item {
                     required property int index
                     readonly property bool asking: root.confirming === modelData.id
                     readonly property bool wide: index === root.actions.length - 1
-                    readonly property color content: asking ? Theme.onErrorColor : modelData.id === "poweroff" ? Theme.onPrimaryContainerColor : Theme.onSurfaceColor
+                    readonly property color content: asking ? Theme.onErrorColor : modelData.id === "shutdown" ? Theme.onPrimaryContainerColor : Theme.onSurfaceColor
                     width: wide ? grid.width : (grid.width - grid.spacing) / 2
                     height: 72
                     radius: 20
-                    color: asking ? Theme.error : modelData.id === "poweroff" ? Theme.primaryContainer : Theme.surfaceContainerHighest
+                    color: asking ? Theme.error : modelData.id === "shutdown" ? Theme.primaryContainer : Theme.surfaceContainerHighest
                     Behavior on color { ColorAnimation { duration: Theme.durationShort } }
                     Column {
                         anchors.centerIn: parent
@@ -66,7 +60,7 @@ Item {
                         Icon { anchors.horizontalCenter: parent.horizontalCenter; name: action.modelData.icon; color: action.content }
                         StyledText {
                             anchors.horizontalCenter: parent.horizontalCenter
-                            text: action.asking ? action.modelData.confirm : action.modelData.label
+                            text: action.asking ? "Click again to " + action.modelData.label.toLowerCase() : action.modelData.label
                             font.pixelSize: 13
                             font.weight: Font.DemiBold
                             color: action.content
@@ -81,8 +75,7 @@ Item {
                                 return;
                             }
                             reset.stop();
-                            Panels.close();
-                            Controls.run(action.modelData.command);
+                            Session.run(action.modelData.id);
                         }
                     }
                 }
