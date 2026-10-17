@@ -12,7 +12,15 @@ Item {
     readonly property var item: Panels.trayItem
     property var stack: []              // submenu entries, innermost last
     readonly property var current: stack.length ? stack[stack.length - 1] : (item ? item.menu : null)
-    readonly property var entries: opener.children ? opener.children.values : []
+    // Apps often leave separators at the edges or next to hidden items; keep
+    // only those that sit between two entries.
+    readonly property var entries: {
+        const all = opener.children ? opener.children.values : [];
+        const kept = all.filter((entry, index) => !entry.isSeparator || (index > 0 && !all[index - 1].isSeparator));
+        while (kept.length && kept[0].isSeparator) kept.shift();
+        while (kept.length && kept[kept.length - 1].isSeparator) kept.pop();
+        return kept;
+    }
     function label(text) { return (text || "").replace(/_(?!_)/g, "").replace(/__/g, "_"); }
 
     // Rows fill the menu's width, so measure their natural widths instead.
