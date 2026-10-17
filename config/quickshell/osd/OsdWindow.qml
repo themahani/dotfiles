@@ -11,7 +11,7 @@ PanelWindow {
     screen: Quickshell.screens.find(output => Hyprland.focusedMonitor && output.name === Hyprland.focusedMonitor.name) || Quickshell.screens[0]
     anchors.bottom: true
     margins.bottom: 80
-    implicitWidth: 300; implicitHeight: 90
+    implicitWidth: 300; implicitHeight: 60
     color: "transparent"
     exclusionMode: ExclusionMode.Ignore
     WlrLayershell.namespace: "quickshell-osd"
@@ -22,7 +22,7 @@ PanelWindow {
         color: Theme.base; radius: Theme.radius
         border.color: Theme.blue; border.width: 1
         Column {
-            anchors { fill: parent; margins: 18 }
+            anchors { fill: parent; margins: 10 }
             spacing: 12
             Label { width: parent.width; text: Controls.osdIcon + " " + Controls.osdLabel + " " + Controls.osdValue + "%"; color: Theme.sapphire }
             Rectangle {
