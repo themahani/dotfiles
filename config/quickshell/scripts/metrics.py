@@ -34,14 +34,34 @@ def memory():
             "memoryPercent": round(100 * used / total)}
 
 
-def brightness():
-    for device in sorted(Path("/sys/class/backlight").glob("*")):
+class Backlight:
+    """The first backlight's level in percent. The kernel signals a change of
+    actual_brightness (a sysfs write such as brightnessctl's, or a firmware
+    hotkey) as an exceptional condition for select()."""
+
+    def __init__(self, device):
+        self.maximum = int((device / "max_brightness").read_text())
+        self.file = open(device / "actual_brightness")
+        self.value = -1
+        self.read()
+
+    @classmethod
+    def open(cls, root=Path("/sys/class/backlight")):
+        for device in sorted(root.glob("*")):
+            try:
+                if int((device / "max_brightness").read_text()) > 0:
+                    return cls(device)
+            except (OSError, ValueError):
+                continue
+        return None
+
+    def read(self):
+        """Re-reads the level; reading also re-arms the change notification."""
         try:
-            return round(100 * int((device / "brightness").read_text())
-                         / int((device / "max_brightness").read_text()))
-        except (OSError, ValueError, ZeroDivisionError):
-            continue
-    return -1
+            self.file.seek(0)
+            self.value = round(100 * int(self.file.read()) / self.maximum)
+        except (OSError, ValueError):
+            self.value = -1
 
 
 CPU_SENSORS = ("coretemp", "k10temp", "zenpower", "cpu_thermal", "acpitz")
@@ -125,13 +145,14 @@ def caps_lock(root=Path("/sys/class/leds")):
 def main():
     previous_cpu = cpu_times()
     radios = Radios.open()      # without /dev/rfkill, airplane mode is read from sysfs each second
+    backlight = Backlight.open()
     data = {}
     tick = 0
     while True:
         started = time.monotonic()
         current_cpu = cpu_times()
         usage = cpu_usage(previous_cpu, current_cpu)
-        data.update(cpu=usage[0], cores=usage[1:], brightness=brightness(),
+        data.update(cpu=usage[0], cores=usage[1:], brightness=backlight.value if backlight else -1,
                     temperature=temperature(), airplane=radios.airplane if radios else airplane())
         data["capsLock"] = caps_lock()
         if tick % 10 == 0:
@@ -143,18 +164,22 @@ def main():
         print(json.dumps(data), flush=True)
         previous_cpu = current_cpu
         tick += 1
-        # Wait out the second, but report an airplane mode change as it happens.
+        # Wait out the second, but report airplane mode and brightness
+        # changes as they happen.
         deadline = started + 1
         while (remaining := deadline - time.monotonic()) > 0:
-            if not radios:
-                time.sleep(max(0.1, remaining))
+            readable, _, changed = select.select([radios.fd] if radios else [], [],
+                                                 [backlight.file] if backlight else [], remaining)
+            if not readable and not changed:
                 break
-            ready, _, _ = select.select([radios.fd], [], [], remaining)
-            if not ready:
-                break
-            radios.read()
-            if radios.airplane != data["airplane"]:
-                data["airplane"] = radios.airplane
+            if readable:
+                radios.read()
+            if changed:
+                backlight.read()
+            update = {"airplane": radios.airplane if radios else data["airplane"],
+                      "brightness": backlight.value if backlight else -1}
+            if any(data[key] != value for key, value in update.items()):
+                data.update(update)
                 print(json.dumps(data), flush=True)
 
 

@@ -303,6 +303,21 @@ class QuickshellTests(unittest.TestCase):
             os.close(write)
         self.assertIsNone(metrics.Radios.open("/nonexistent/rfkill"))
 
+    def test_backlight_reads_the_first_usable_device(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.assertIsNone(metrics.Backlight.open(root))
+            for name, maximum, actual in (("acpi_video0", "0", "0"), ("intel_backlight", "200", "50")):
+                (root / name).mkdir()
+                (root / name / "max_brightness").write_text(maximum + "\n")
+                (root / name / "actual_brightness").write_text(actual + "\n")
+            backlight = metrics.Backlight.open(root)
+            self.assertEqual(backlight.value, 25)
+            (root / "intel_backlight" / "actual_brightness").write_text("200\n")
+            backlight.read()
+            self.assertEqual(backlight.value, 100)
+            backlight.file.close()
+
     def test_caps_lock_follows_any_keyboard_led(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

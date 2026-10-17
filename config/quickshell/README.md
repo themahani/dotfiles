@@ -62,10 +62,10 @@ does not uninstall old packages or terminate your running desktop processes.
   output; hibernate only when logind's CanHibernate says yes. Each action
   keeps its wlogout key (l, r, s, e, u, h). Arrows or Tab move the
   highlight, Enter runs it, and Escape or a click outside closes the menu.
-- `scripts/metrics.py`: CPU and memory from `/proc`, brightness, CPU
-  temperature and the Caps Lock LED from `/sys`, and airplane mode from
-  `/dev/rfkill` events, which it reports as they happen. It reads files only
-  and starts no processes. Memory updates every 10 seconds, disk every 30
+- `scripts/metrics.py`: CPU and memory from `/proc`, CPU temperature and the
+  Caps Lock LED from `/sys`, and brightness and airplane mode from kernel
+  change notifications (`actual_brightness` and `/dev/rfkill`), which it
+  reports as they happen. It reads files only and starts no processes. Memory updates every 10 seconds, disk every 30
   seconds, everything else every second. The keyboard layout comes from
   Hyprland's events (`services/Keyboard.qml`).
 
