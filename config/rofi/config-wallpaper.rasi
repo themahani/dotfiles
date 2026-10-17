@@ -7,15 +7,9 @@ configuration {
     font: "JetBrains Mono 12";
 }
 
-/* Catppuccin Mocha fallback; matugen's wallpaper colors override it below
- * (config/matugen). A missing import is ignored. */
-* {
-    bg:          #1e1e2e;
-    fg:          #cdd6f4;
-    accent:      #b4befe;
-    selected-fg: #cba6f7;
-    icon-fg:     #f38ba8;
-}
+/* Colors: the committed Material fallback, overridden by the wallpaper colors
+ * matugen generates (config/matugen). A missing import is ignored. */
+@import "matugen-fallback.rasi"
 @import "~/.local/state/matugen/rofi.rasi"
 
 window {

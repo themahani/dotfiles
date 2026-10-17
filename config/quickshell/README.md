@@ -25,9 +25,12 @@ does not uninstall old packages or terminate your running desktop processes.
 - `theme/`: Material 3 color roles, type, shape and motion. Colors come from
   matugen (`config/matugen`), which `rofi-hyprpaper.sh` runs on every wallpaper
   change; `Theme` watches `~/.local/state/matugen/quickshell.json` and recolors
-  live. Until matugen has run, it uses the dark tonal-spot scheme of Mocha blue.
-  Hyprland also runs matugen at login, so the Hyprland border, kitty, rofi and
-  hyprlock templates in `config/matugen/templates` always exist and match.
+  live. Hyprland also runs matugen at login for its border, kitty, rofi and
+  hyprlock (templates in `config/matugen/templates`). Each app first reads a
+  committed fallback rendered from the same templates with Mocha blue
+  (`theme/fallback.json` here), so without matugen output they all still share
+  one Material 3 scheme. Run `config/matugen/render-fallbacks.py` after editing
+  a template; a test fails while the fallbacks are stale.
 - `components/`: Material building blocks (icons, state layers, buttons,
   switch, Pixel-style slider, concave fillet, sparkline, tooltip).
 - `services/`: PipeWire controls, notifications, metrics, players, power,

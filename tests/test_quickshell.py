@@ -37,10 +37,11 @@ class QuickshellTests(unittest.TestCase):
     def test_theme_roles_match_matugen_template(self):
         theme = (SHELL / "theme/Theme.qml").read_text()
         template = json.loads(re.sub(r"\{\{[^}]+\}\}", "x", (ROOT / "config/matugen/templates/quickshell.json").read_text()))
-        fallback = set(re.findall(r"(\w+): \"#[0-9a-f]{6}\"", theme))
+        fallback = json.loads((SHELL / "theme/fallback.json").read_text())
         roles = set(re.findall(r'role\("(\w+)"\)', theme))
-        self.assertEqual(set(template) - {"mode"}, fallback)
-        self.assertLessEqual(roles, fallback)
+        self.assertEqual(set(template), set(fallback))
+        self.assertLessEqual(roles, set(fallback))
+        self.assertIn('Quickshell.shellPath("theme/fallback.json")', theme)
 
     def test_theme_role_names_do_not_parse_as_handlers(self):
         # A property "onX" beside a property "x" is read as a change handler and never binds.

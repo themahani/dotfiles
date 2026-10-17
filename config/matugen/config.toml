@@ -3,6 +3,8 @@
 #   matugen image --prefer saturation <wallpaper>
 # Quickshell watches its JSON and recolors live, Hyprland re-reads its border,
 # kitty reloads on SIGUSR1, and rofi and hyprlock read theirs when they start.
+# Each app also has a committed fallback rendered from these templates with
+# Mocha blue; regenerate it with render-fallbacks.py after editing a template.
 
 [config]
 
