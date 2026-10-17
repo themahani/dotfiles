@@ -108,7 +108,8 @@ PipeWire/WirePlumber) must be running; installing packages does not enable them.
 
 Normal popups hide after 6 seconds, low urgency after 3, critical notifications
 remain until dismissed; explicit application timeouts take precedence for
-non-critical notifications. Non-transient notifications remain in session
+non-critical notifications. During Do not disturb only critical notifications
+pop up. Non-transient notifications remain in session
 history after the popup hides. Actions are invoked through the notification
 protocol. Inline replies remain disabled, matching the previous configuration.
 History survives QML reloads, but not a process/session restart. Verification

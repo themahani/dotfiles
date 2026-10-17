@@ -52,13 +52,10 @@ Singleton {
             server.trackedNotifications.values.filter(other => other.id !== item.id
                 && other.hints["x-canonical-private-synchronous"] === synchronous).forEach(other => other.dismiss());
         }
-        // Compatibility with progress notifications emitted by other desktop tools.
-        if (synchronous && hints.value !== undefined) {
-            Controls.showOsd(item.summary, /bright/i.test(item.appIcon + item.summary) ? "brightness_6" : "volume_up", Number(hints.value));
-            item.dismiss();
-            return;
-        }
-        if (item.lastGeneration || (dnd && !hints.SWAYNC_BYPASS_DND)) {
+        // Only critical notifications pop up during Do not disturb. Apps can't
+        // opt out of it with a hint, or draw the volume OSD: the shell shows
+        // that itself, from the volume and brightness IPC.
+        if (item.lastGeneration || (dnd && item.urgency !== NotificationUrgency.Critical)) {
             if (item.transient) item.expire();
             return;
         }

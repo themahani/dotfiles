@@ -96,6 +96,12 @@ class QuickshellTests(unittest.TestCase):
         self.assertIn("ipc call panels toggle system", lua)
         self.assertNotIn('"quickshell-notifications" }, blur', lua)
 
+    def test_notification_hints_cannot_draw_osd_or_skip_dnd(self):
+        server = (SHELL / "services/Notifications.qml").read_text()
+        self.assertNotIn("showOsd", server)
+        self.assertNotIn("SWAYNC_BYPASS_DND", server)
+        self.assertIn("dnd && item.urgency !== NotificationUrgency.Critical", server)
+
     def test_notifications_load_nothing_remote(self):
         server = (SHELL / "services/Notifications.qml").read_text()
         self.assertIn("bodyImagesSupported: false", server)
@@ -284,11 +290,15 @@ def smoke():
             subprocess.run(["notify-send", "DND test", "History only"], check=True, env=env)
             time.sleep(0.3)
             assert state()["count"] == 2 and state()["popups"] == 1
+            # Hints can neither draw the OSD nor get past DND; critical can.
             subprocess.run(["notify-send", "-h", "string:x-canonical-private-synchronous:volume_notif",
-                            "-h", "int:value:42", "Volume"], check=True, env=env)
+                            "-h", "int:value:42", "-h", "boolean:SWAYNC_BYPASS_DND:true", "Volume"], check=True, env=env)
             time.sleep(0.3)
-            osd = json.loads(ipc("controls", "status"))
-            assert osd["osdVisible"] and osd["value"] == 42
+            assert not json.loads(ipc("controls", "status"))["osdVisible"]
+            assert state()["count"] == 3 and state()["popups"] == 1
+            subprocess.run(["notify-send", "-u", "critical", "Critical", "Pops up"], check=True, env=env)
+            time.sleep(0.3)
+            assert state()["popups"] == 2
             ipc("notifications", "clear")
             assert state()["count"] == 0 and not state()["centerOpen"]
             time.sleep(0.3)
