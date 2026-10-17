@@ -65,6 +65,15 @@ class QuickshellTests(unittest.TestCase):
         # Icon names resolve in the GTK icon theme (set with nwg-look / gsettings).
         self.assertIn("//@ pragma DefaultEnv QT_QPA_PLATFORMTHEME = gtk3", shell)
 
+    def test_workspace_dots_follow_dynamic_workspaces(self):
+        dots = (SHELL / "bar/Workspaces.qml").read_text()
+        self.assertIn("model: root.slots", dots)
+        self.assertIn('Hyprland.dispatch("dynamic_workspaces."', dots)
+        self.assertNotIn('workspace = "m', dots)
+        lua = (ROOT / "config/hypr/hyprland.lua").read_text()
+        self.assertIn('dynamic_workspaces = dofile(configHome .. "/hypr/dynamic-workspaces.lua")', lua)
+        self.assertNotIn('workspace = "r', lua)
+
     def test_single_drawer_window_per_output(self):
         shell = (SHELL / "shell.qml").read_text()
         self.assertIn("Reserver { screen: output.modelData }", shell)

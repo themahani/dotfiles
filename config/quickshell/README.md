@@ -71,9 +71,9 @@ PipeWire/WirePlumber) must be running; installing packages does not enable them.
 
 - Left: tray icons (left or right click opens the app's menu in the bar, middle
   click is the secondary action, wheel scrolls) and the active window.
-- Middle: workspace dots (click switches, wheel cycles), the clock (opens
-  notifications and calendar), and the media chip (opens the player; its button
-  plays or pauses directly). The chip hides when nothing is playing.
+- Middle: workspace dots (click switches, wheel steps without wrapping), the
+  clock (opens notifications and calendar), and the media chip (opens the
+  player; its button plays or pauses directly). The chip hides when nothing is playing.
 - Right: CPU and RAM (click opens btop), keyboard layout (click switches), and the
   status icons, which open the system panel; the wheel there changes volume.
 - System panel: power menu (restart and power off need a second click), sliders,
@@ -83,6 +83,12 @@ PipeWire/WirePlumber) must be running; installing packages does not enable them.
 - Notifications: groups expand, swipe or close to dismiss, Do not disturb and
   Clear all in the header; Backspace or Delete also clears all. Popups pause
   while hovered and swipe away.
+- Workspaces are dynamic, as in GNOME, with one strip per monitor
+  (`config/hypr/dynamic-workspaces.lua`). Each strip ends with one empty
+  workspace, the outlined dot, once the last workspace has windows. An empty
+  workspace disappears when you leave it. Super+[ / ] and Super+Alt+H/L step
+  through the strip, Super+1..9 jump by position, and adding Shift takes the
+  focused window along.
 - Escape, clicking outside, clicking the same bar item or another output closes
   the open panel.
 - Super+N: notifications; Super+A: system panel; Super+Shift+D: DND;
