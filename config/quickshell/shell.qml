@@ -14,9 +14,10 @@ ShellRoot {
     property var metrics: Metrics
 
     Variants {
+        id: bars
         model: Quickshell.screens
         Bar { required property var modelData; screen: modelData }
     }
-    NotificationWindows {}
+    NotificationWindows { bars: bars.instances }
     OsdWindow {}
 }
