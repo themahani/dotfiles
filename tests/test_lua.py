@@ -32,6 +32,8 @@ assert(loadfile(root .. "/config/hypr/hyprland.lua"))
 for _, name in ipairs({ "schemas.lua", "nvim.lua", "hypr.lua" }) do
   vim.fn.writefile(vim.fn.readfile(root .. "/config/dotfiles/" .. name), settings .. name)
 end
+vim.fn.mkdir(home .. "/.config/hypr", "p")
+vim.fn.writefile(vim.fn.readfile(root .. "/config/hypr/dynamic-workspaces.lua"), home .. "/.config/hypr/dynamic-workspaces.lua")
 local schema = dofile(settings .. "schemas.lua")
 assert(schema.validate("nvim", {}))
 assert(schema.validate("hypr", {}))

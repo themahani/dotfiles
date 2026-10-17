@@ -5,6 +5,8 @@ if not configHome or configHome == "" then
 end
 local settingsDir = configHome .. "/dotfiles/"
 local schema = dofile(settingsDir .. "schemas.lua")
+-- Global, so the bar can reach it through `hyprctl dispatch`.
+dynamic_workspaces = dofile(configHome .. "/hypr/dynamic-workspaces.lua")
 local function report(message)
 	print("[hyprland.lua] invalid settings " .. message)
 end
@@ -101,6 +103,10 @@ hl.config({
 		new_on_top = true,
 		new_on_active = "none",
 		orientation = "left",
+	},
+	gestures = {
+		workspace_swipe_create_new = true,
+		workspace_swipe_forever = false,
 	},
 	scrolling = {
 		fullscreen_on_one_column = true,
@@ -215,17 +221,22 @@ hl.bind(mainMod .. "+ SHIFT + L", hl.dsp.window.move({ direction = "r" }))
 hl.bind(mainMod .. "+ SHIFT + H", hl.dsp.window.move({ direction = "l" }))
 hl.bind(mainMod .. "+ SHIFT + K", hl.dsp.window.move({ direction = "u" }))
 hl.bind(mainMod .. "+ SHIFT + J", hl.dsp.window.move({ direction = "d" }))
-hl.bind(mainMod .. "+ ALT + L", hl.dsp.focus({ workspace = "r+1" }))
-hl.bind(mainMod .. "+ ALT + H", hl.dsp.focus({ workspace = "r-1" }))
+hl.bind(mainMod .. "+ ALT + L", dynamic_workspaces.focus(1))
+hl.bind(mainMod .. "+ ALT + H", dynamic_workspaces.focus(-1))
 hl.bind("ALT + TAB", function()
 	hl.dsp.window.cycle_next()
 	hl.dsp.window.bring_to_top()
 end)
 
-hl.bind(mainMod .. "+ bracketleft", hl.dsp.focus({ workspace = "r-1" }))
-hl.bind(mainMod .. "+ bracketright", hl.dsp.focus({ workspace = "r+1" }))
-hl.bind(mainMod .. "+ SHIFT + bracketright", hl.dsp.window.move({ workspace = "r+1" }))
-hl.bind(mainMod .. "+ SHIFT + bracketleft", hl.dsp.window.move({ workspace = "r-1" }))
+-- Workspaces by position on the focused monitor (see dynamic-workspaces.lua).
+hl.bind(mainMod .. "+ bracketleft", dynamic_workspaces.focus(-1))
+hl.bind(mainMod .. "+ bracketright", dynamic_workspaces.focus(1))
+hl.bind(mainMod .. "+ SHIFT + bracketright", dynamic_workspaces.move_window(1))
+hl.bind(mainMod .. "+ SHIFT + bracketleft", dynamic_workspaces.move_window(-1))
+for index = 1, 9 do
+	hl.bind(mainMod .. "+ " .. index, dynamic_workspaces.focus_index(index))
+	hl.bind(mainMod .. "+ SHIFT + " .. index, dynamic_workspaces.move_window_index(index))
+end
 
 -- resize and drag with mouse
 hl.bind(mainMod .. "+ mouse:272", hl.dsp.window.drag(), { mouse = true })
