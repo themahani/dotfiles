@@ -36,6 +36,8 @@ Rectangle {
         cursorShape: Qt.PointingHandCursor
         onPressed: event => root.setFrom(event.x)
         onPositionChanged: event => { if (pressed) root.setFrom(event.x); }
-        onWheel: event => root.moved(Math.max(0, Math.min(1, root.value + (event.angleDelta.y > 0 ? 0.05 : -0.05))))
+        // 5% per wheel notch (120 units); smooth and high-resolution wheels
+        // send many smaller events per notch.
+        onWheel: event => root.moved(Math.max(0, Math.min(1, root.value + event.angleDelta.y / 120 * 0.05)))
     }
 }

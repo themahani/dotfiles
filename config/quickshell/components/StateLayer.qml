@@ -13,8 +13,16 @@ MouseArea {
     enabled: !disabled
     cursorShape: disabled ? Qt.ArrowCursor : Qt.PointingHandCursor
     acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
+    // One scrolled() per wheel notch (120 units), however finely the wheel
+    // reports; partial movement carries over to the next event.
+    property real wheelRemainder: 0
     onWheel: event => {
-        if (event.angleDelta.y !== 0) root.scrolled(event.angleDelta.y > 0 ? 1 : -1);
+        wheelRemainder += event.angleDelta.y;
+        while (Math.abs(wheelRemainder) >= 120) {
+            const direction = wheelRemainder > 0 ? 1 : -1;
+            wheelRemainder -= direction * 120;
+            root.scrolled(direction);
+        }
     }
     Rectangle {
         anchors.fill: parent
