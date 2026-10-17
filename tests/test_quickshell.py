@@ -160,7 +160,9 @@ class QuickshellTests(unittest.TestCase):
         self.assertIn("org.freedesktop.login1.Session.SetLockedHint", lock)
         self.assertIn('Binding { target: Lock; property: "secure"; value: lock.secure }',
                       (SHELL / "lock/LockScreen.qml").read_text())
-        self.assertIn('"+ escape", hl.dsp.exec_cmd("loginctl lock-session")', (ROOT / "config/hypr/hyprland.lua").read_text())
+        hyprland = (ROOT / "config/hypr/hyprland.lua").read_text()
+        self.assertIn('"+ escape", hl.dsp.exec_cmd("loginctl lock-session")', hyprland)
+        self.assertIn("session_lock_xray = false", hyprland)
 
     def test_matugen_runs_on_wallpaper_change(self):
         script = (ROOT / "config/hypr/scripts/rofi-hyprpaper.sh").read_text()

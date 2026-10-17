@@ -130,7 +130,7 @@ hl.config({
 		enable_swallow = false,
 		swallow_regex = "kitty",
 		allow_session_lock_restore = true,
-		session_lock_xray = true,
+		session_lock_xray = false, -- never draw windows under the lock screen
 		initial_workspace_tracking = false,
 		focus_on_activate = true,
 	},
