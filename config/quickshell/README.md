@@ -26,8 +26,8 @@ does not uninstall old packages or terminate your running desktop processes.
   matugen (`config/matugen`), which `rofi-hyprpaper.sh` runs on every wallpaper
   change; `Theme` watches `~/.local/state/matugen/quickshell.json` and recolors
   live. Until matugen has run, it uses the dark tonal-spot scheme of Mocha blue.
-  Run `matugen image --prefer saturation ~/.wallpapers/.current` once after
-  installing.
+  Hyprland also runs matugen at login, so the Hyprland border, kitty, rofi and
+  hyprlock templates in `config/matugen/templates` always exist and match.
 - `components/`: Material building blocks (icons, state layers, buttons,
   switch, Pixel-style slider, concave fillet, sparkline, tooltip).
 - `services/`: PipeWire controls, notifications, metrics, players, power,
