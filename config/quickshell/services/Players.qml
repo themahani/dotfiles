@@ -7,7 +7,8 @@ import Quickshell.Services.Mpris
 // exists, else whichever is playing, else the first.
 Singleton {
     id: root
-    readonly property var players: Mpris.players.values
+    // playerctld re-exports whichever player is active; skip the duplicate.
+    readonly property var players: Mpris.players.values.filter(item => !item.dbusName.includes("playerctld"))
     property var selected: null
     readonly property var player: players.includes(selected) ? selected
         : players.find(item => item.isPlaying) || players[0] || null
