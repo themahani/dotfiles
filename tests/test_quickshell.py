@@ -96,6 +96,27 @@ class QuickshellTests(unittest.TestCase):
         self.assertIn("ipc call panels toggle system", lua)
         self.assertNotIn('"quickshell-notifications" }, blur', lua)
 
+    def test_notifications_load_nothing_remote(self):
+        server = (SHELL / "services/Notifications.qml").read_text()
+        self.assertIn("bodyImagesSupported: false", server)
+        item = (SHELL / "panels/NotificationItem.qml").read_text()
+        self.assertIn("if (Markup.isWebLink(link)) Qt.openUrlExternally(link)", item)
+        self.assertIn("Markup.isLocalImage(root.notification.image)", item)
+        self.assertIn("Markup.isLocalImage(source)", (SHELL / "panels/AppIcon.qml").read_text())
+        if not shutil.which("node"):
+            self.skipTest("node is not installed")
+        script = (SHELL / "panels/Markup.js").read_text().replace(".pragma library", "") + """
+            console.log(JSON.stringify([
+                readableBody("<img src='http://x/a.png'>Hi <IMG SRC=x> <b style='color:red'>b</b>"),
+                ["https://a", "HTTP://a", "mailto:a@b", "file:///etc/passwd", "steam://run/1", "javascript:x"].map(isWebLink),
+                ["/usr/a.png", "file:///a.png", "image://qsimage/1", "https://a/b.png", "ftp://a"].map(isLocalImage),
+            ]));"""
+        result = subprocess.run(["node", "-e", script], capture_output=True, text=True, check=True)
+        body, links, images = json.loads(result.stdout)
+        self.assertEqual(body, "Hi  <b>b</b>")
+        self.assertEqual(links, [True, True, True, False, False, False])
+        self.assertEqual(images, [True, True, True, False, False])
+
     def test_lock_screen_is_password_only_and_ipc_cannot_unlock(self):
         lock = (SHELL / "services/Lock.qml").read_text()
         ipc = lock[lock.index("IpcHandler"):]

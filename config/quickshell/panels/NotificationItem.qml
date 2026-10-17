@@ -19,6 +19,7 @@ Column {
         maximumLineCount: 2
     }
     StyledText {
+        id: body
         width: parent.width
         visible: text.length > 0
         text: Markup.readableBody(root.notification.body)
@@ -30,11 +31,13 @@ Column {
         color: Theme.onSurfaceVariantColor
         linkColor: Theme.primary
         lineHeight: 1.1
-        onLinkActivated: link => Qt.openUrlExternally(link)
+        onLinkActivated: link => { if (Markup.isWebLink(link)) Qt.openUrlExternally(link); }
+        // The link text can differ from where it goes; show the target.
+        Tooltip { target: body; text: body.hoveredLink; shown: body.hoveredLink !== "" }
     }
     Image {
-        visible: root.notification.image !== ""
-        source: root.notification.image
+        visible: source !== ""
+        source: Markup.isLocalImage(root.notification.image) ? root.notification.image : ""
         width: Math.min(220, parent.width)
         height: visible ? 110 : 0
         fillMode: Image.PreserveAspectFit
