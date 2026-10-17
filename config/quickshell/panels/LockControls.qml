@@ -23,7 +23,7 @@ Item {
             width: parent.width
             spacing: 8
             PillSlider {
-                visible: Metrics.data.brightness >= 0
+                visible: Metrics.brightness >= 0
                 width: parent.width
                 name: "Brightness"
                 icon: "brightness_6"

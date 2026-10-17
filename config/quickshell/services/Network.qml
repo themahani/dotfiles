@@ -12,7 +12,7 @@ Singleton {
     readonly property bool wiredConnected: wired !== null && wired.connected
     readonly property var network: wifi ? wifi.networks.values.find(item => item.connected) || null : null
     readonly property bool wifiEnabled: Net.Networking.wifiEnabled
-    readonly property bool airplane: Metrics.data.airplane
+    readonly property bool airplane: Metrics.airplane
     readonly property string icon: airplane ? "airplanemode_active" : wiredConnected ? "lan"
         : network ? signalIcon(network.signalStrength)
         : wifiEnabled && wifi ? "signal_wifi_0_bar" : "wifi_off"

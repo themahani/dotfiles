@@ -318,6 +318,16 @@ class QuickshellTests(unittest.TestCase):
             self.assertEqual(backlight.value, 100)
             backlight.file.close()
 
+    def test_metrics_notify_only_changed_values(self):
+        metrics_qml = (SHELL / "services/Metrics.qml").read_text()
+        self.assertIn("if (key in sample) root[key] = sample[key];", metrics_qml)
+        # Updates between samples (brightness, airplane mode) add no history.
+        self.assertIn("if (sample.sample === lastSample) return;", metrics_qml)
+        self.assertIn('data["sample"] = tick', (SHELL / "scripts/metrics.py").read_text())
+        self.assertIn('text: Metrics.cpuAverage + "%"', (SHELL / "bar/StatsButton.qml").read_text())
+        for path in SHELL.rglob("*.qml"):
+            self.assertNotIn("Metrics.data", path.read_text(), path.name)
+
     def test_media_position_is_polled_only_while_shown(self):
         players = (SHELL / "services/Players.qml").read_text()
         self.assertIn('readonly property bool positionShown: Panels.open === "media" || Lock.locked', players)
@@ -351,7 +361,7 @@ class QuickshellTests(unittest.TestCase):
         try:
             sample = json.loads(process.stdout.readline())
             for key in ("cpu", "cores", "memoryUsed", "memoryTotal", "diskPercent", "brightness", "temperature",
-                        "airplane", "capsLock"):
+                        "airplane", "capsLock", "sample"):
                 self.assertIn(key, sample)
             self.assertGreater(sample["memoryTotal"], 0)
             self.assertGreaterEqual(sample["brightness"], -1)

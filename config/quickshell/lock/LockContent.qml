@@ -83,7 +83,7 @@ Item {
                 Row {
                     anchors.centerIn: parent
                     spacing: 6
-                    visible: Lock.failed || Metrics.data.capsLock
+                    visible: Lock.failed || Metrics.capsLock
                     Icon {
                         anchors.verticalCenter: parent.verticalCenter
                         name: Lock.failed ? "error" : "keyboard_capslock"

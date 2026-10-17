@@ -161,6 +161,7 @@ def main():
             disk = shutil.disk_usage("/")
             data.update(diskPercent=round(100 * disk.used / disk.total),
                         diskUsed=f"{disk.used / 1024**3:.1f} GiB", diskTotal=f"{disk.total / 1024**3:.1f} GiB")
+        data["sample"] = tick        # repeated on the event updates below, which add no new sample
         print(json.dumps(data), flush=True)
         previous_cpu = current_cpu
         tick += 1

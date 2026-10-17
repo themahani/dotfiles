@@ -89,7 +89,7 @@ Item {
             width: parent.width
             spacing: 8
             PillSlider {
-                visible: Metrics.data.brightness >= 0
+                visible: Metrics.brightness >= 0
                 width: parent.width
                 name: "Brightness"
                 icon: "brightness_6"
@@ -203,10 +203,10 @@ Item {
                 Rectangle {
                     required property string modelData
                     readonly property string label: modelData
-                    readonly property string value: label === "CPU" ? Metrics.data.cpu + "%"
-                        : label === "RAM" ? Metrics.data.memoryUsed.toFixed(1) + "G"
-                        : label === "DISK" ? Metrics.data.diskPercent + "%"
-                        : Metrics.data.temperature >= 0 ? Metrics.data.temperature + "°C" : "—"
+                    readonly property string value: label === "CPU" ? Metrics.cpu + "%"
+                        : label === "RAM" ? Metrics.memoryUsed.toFixed(1) + "G"
+                        : label === "DISK" ? Metrics.diskPercent + "%"
+                        : Metrics.temperature >= 0 ? Metrics.temperature + "°C" : "—"
                     readonly property var values: (label === "CPU" ? Metrics.history.cpu : label === "RAM" ? Metrics.history.memory
                         : label === "DISK" ? Metrics.history.disk : Metrics.history.temperature).slice(-20)
                     width: parent.cell

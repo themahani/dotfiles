@@ -13,7 +13,7 @@ Singleton {
     property string osdIcon: ""          // Material Symbols name
     property real osdValue: 0
     property bool osdVisible: false
-    property int brightnessValue: Metrics.data.brightness
+    property int brightnessValue: Metrics.brightness
     property int pendingBrightness: -1
     property int appliedBrightness: -1
 
@@ -72,9 +72,9 @@ Singleton {
     }
     Connections {
         target: Metrics
-        function onDataChanged() {
+        function onBrightnessChanged() {
             if (!brightnessProcess.running && root.pendingBrightness < 0)
-                root.brightnessValue = Metrics.data.brightness;
+                root.brightnessValue = Metrics.brightness;
         }
     }
     Process {
@@ -83,7 +83,7 @@ Singleton {
             if (code === 0) root.showOsd("Brightness", "brightness_6", root.appliedBrightness);
             else {
                 console.warn("brightnessctl failed with exit code", code);
-                root.brightnessValue = Metrics.data.brightness;
+                root.brightnessValue = Metrics.brightness;
             }
             root.applyBrightness();
         }
