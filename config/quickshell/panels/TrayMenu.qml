@@ -71,7 +71,7 @@ Item {
                 required property var modelData
                 width: list.width
                 implicitWidth: modelData.isSeparator ? 0 : 16 + 20 + 12 + text.implicitWidth + 16 + (modelData.hasChildren ? 28 : 0)
-                height: modelData.isSeparator ? 9 : 40
+                height: modelData.isSeparator ? 5 : 40
                 opacity: modelData.enabled ? 1 : 0.38
                 Rectangle {
                     visible: entry.modelData.isSeparator
