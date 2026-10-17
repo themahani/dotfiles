@@ -33,6 +33,7 @@ Item {
     }
 
     Flickable {
+        id: networks
         anchors { top: header.bottom; topMargin: 8; bottom: footer.top; bottomMargin: 8; left: parent.left; right: parent.right }
         contentHeight: list.implicitHeight
         clip: true
@@ -160,6 +161,7 @@ Item {
             }
         }
         Column {
+            parent: networks       // the content item has no height when empty
             anchors.centerIn: parent
             visible: !Network.wifiEnabled || Network.airplane || !root.device
             spacing: 10

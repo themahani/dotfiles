@@ -88,6 +88,7 @@ Item {
         }
 
         Flickable {
+            id: history
             width: parent.width
             height: Math.min(Math.max(list.implicitHeight, 120), 440)
             contentHeight: list.implicitHeight
@@ -110,6 +111,7 @@ Item {
                 }
             }
             Column {
+                parent: history        // the content item has no height when empty
                 anchors.centerIn: parent
                 visible: Notifications.count === 0
                 spacing: 8

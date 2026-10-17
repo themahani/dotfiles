@@ -15,7 +15,8 @@ Row {
         monitor && monitor.activeWorkspace && window.address === monitor.activeWorkspace.lastIpcObject.lastwindow)
         || (monitor && monitor.activeWorkspace ? monitor.activeWorkspace.toplevels.values[0] || null : null)
     readonly property string appId: toplevel ? (toplevel.wayland && toplevel.wayland.appId) || toplevel.lastIpcObject["class"] || "" : ""
-    readonly property var entry: appId ? DesktopEntries.heuristicLookup(appId) : null
+    // Depend on the application list so the lookup reruns once it has loaded.
+    readonly property var entry: appId && DesktopEntries.applications.values.length >= 0 ? DesktopEntries.heuristicLookup(appId) : null
     readonly property string iconSource: entry && entry.icon ? Quickshell.iconPath(entry.icon, true) : appId ? Quickshell.iconPath(appId, true) : ""
     visible: toplevel !== null
     spacing: 8
