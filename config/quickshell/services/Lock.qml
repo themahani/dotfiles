@@ -19,6 +19,10 @@ Singleton {
     property bool fingerprintEnrolled: false
     property string fingerprint: "off"  // "off", "listening", "mismatch" or "exhausted"
     property string fingerprintPrompt: ""   // fprintd's own wording, naming the enrolled finger
+    // Misses over the whole lock. pam_fprintd's max-tries counts per PAM
+    // session, and a new session starts after every wake-up or error.
+    property int fingerprintMisses: 0
+    readonly property int fingerprintTries: 5
     property bool sleeping: false       // from logind's PrepareForSleep until the wake-up
 
     // A reload starts the config over with locked false, and the new
@@ -32,6 +36,7 @@ Singleton {
         password = "";
         failed = false;
         message = "";
+        fingerprintMisses = 0;
         locked = true;
         enrolled.running = true;        // fingers may have been enrolled since the last lock
     }
@@ -44,6 +49,7 @@ Singleton {
     }
     function listenForFingerprint() {
         if (!locked || sleeping || !fingerprintEnrolled || finger.active) return;
+        if (fingerprintMisses >= fingerprintTries) { fingerprint = "exhausted"; return; }
         fingerprint = "listening";
         finger.start();
         if (!finger.active) fingerprint = "off";     // fprintd or the PAM file is missing
@@ -94,6 +100,13 @@ Singleton {
             if (responseRequired) respond("");
             else if (!messageIsError) root.fingerprintPrompt = message;
             else if (root.locked) {
+                // Counts retry hints ("too fast") too, which errs toward the password.
+                root.fingerprintMisses++;
+                if (root.fingerprintMisses >= root.fingerprintTries) {
+                    Qt.callLater(() => { if (finger.active) finger.abort(); });
+                    root.fingerprint = "exhausted";
+                    return;
+                }
                 root.fingerprint = "mismatch";
                 backToListening.restart();
             }

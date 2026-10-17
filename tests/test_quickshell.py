@@ -132,6 +132,9 @@ class QuickshellTests(unittest.TestCase):
         ipc = lock[lock.index("IpcHandler"):]
         self.assertIn("function lock()", ipc)
         self.assertNotIn("unlock", ipc.lower())
+        # The fingerprint budget spans the whole lock, not one PAM session.
+        self.assertIn("fingerprintMisses = 0;", lock[lock.index("function lock()"):lock.index("function unlock()")])
+        self.assertIn("if (fingerprintMisses >= fingerprintTries) { fingerprint = \"exhausted\"; return; }", lock)
         # A reload while locked would release the session.
         self.assertIn('Binding { target: Quickshell; property: "watchFiles"; value: !root.locked }', lock)
         self.assertIn('configDirectory: Quickshell.shellPath("lock/pam")', lock)
