@@ -105,6 +105,27 @@ Item {
             clip: true
             Fillet { mirrored: true }
         }
+        // The panel's rounded corners antialias its straight sides too, which
+        // leaves its outermost column slightly see-through. Where a curve
+        // joins it, an unantialiased strip over both columns hides that.
+        Rectangle {
+            x: root.edgeLeft - 1
+            y: Theme.barSize
+            width: 2
+            height: Math.min(Theme.fillet, root.panelHeight)
+            visible: root.edgeLeft > 0
+            antialiasing: false
+            color: Theme.surfaceContainer
+        }
+        Rectangle {
+            x: root.edgeRight - 1
+            y: Theme.barSize
+            width: 2
+            height: Math.min(Theme.fillet, root.panelHeight)
+            visible: root.edgeRight < root.width
+            antialiasing: false
+            color: Theme.surfaceContainer
+        }
     }
 
     Item {
