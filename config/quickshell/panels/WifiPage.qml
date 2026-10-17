@@ -51,7 +51,8 @@ Item {
                 selected: true
             }
             Repeater {
-                model: Network.wifiEnabled && !Network.airplane ? root.networks : []
+                // ScriptModel keeps rows (hover, a half-typed password) as signal strengths change.
+                model: ScriptModel { values: Network.wifiEnabled && !Network.airplane ? root.networks : [] }
                 Rectangle {
                     id: entry
                     required property var modelData

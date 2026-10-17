@@ -52,7 +52,7 @@ Item {
                 color: Theme.primary
             }
             Repeater {
-                model: root.paired
+                model: ScriptModel { values: root.paired }
                 ListRow {
                     id: device
                     required property var modelData
@@ -83,7 +83,7 @@ Item {
                 Spinner { visible: root.adapter !== null && root.adapter.discovering; size: 14; color: Theme.primary; anchors.verticalCenter: parent.verticalCenter }
             }
             Repeater {
-                model: root.found
+                model: ScriptModel { values: root.found }
                 ListRow {
                     id: candidate
                     required property var modelData

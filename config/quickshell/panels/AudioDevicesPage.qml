@@ -33,7 +33,7 @@ Item {
             width: parent.width
             spacing: 4
             Repeater {
-                model: root.nodes
+                model: ScriptModel { values: root.nodes }
                 ListRow {
                     id: device
                     required property var modelData

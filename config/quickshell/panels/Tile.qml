@@ -28,7 +28,13 @@ Rectangle {
             StyledText { width: parent.width; text: root.label; font.weight: Font.DemiBold; color: root.content }
             StyledText { width: parent.width; text: root.subtitle; font.pixelSize: 12; font.weight: Font.Normal; color: root.content; opacity: 0.82 }
         }
-        StateLayer { color: root.content; radius: 0; onClicked: root.toggled() }
+        StateLayer {
+            color: root.content
+            radius: root.radius
+            topRightRadius: chevron.visible ? 0 : root.radius
+            bottomRightRadius: chevron.visible ? 0 : root.radius
+            onClicked: root.toggled()
+        }
         Accessible.role: Accessible.CheckBox
         Accessible.name: root.label
         Accessible.checked: root.active
@@ -40,7 +46,13 @@ Rectangle {
         width: 44
         Rectangle { width: 1; height: parent.height - 24; anchors.verticalCenter: parent.verticalCenter; color: root.content; opacity: 0.25 }
         Icon { anchors.centerIn: parent; name: "chevron_right"; color: root.content }
-        StateLayer { color: root.content; radius: 0; onClicked: root.details() }
+        StateLayer {
+            color: root.content
+            radius: root.radius
+            topLeftRadius: 0
+            bottomLeftRadius: 0
+            onClicked: root.details()
+        }
         Accessible.role: Accessible.Button
         Accessible.name: root.label + " settings"
     }

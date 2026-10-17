@@ -6,6 +6,11 @@ MouseArea {
     id: root
     property color color: Theme.onSurfaceColor
     property real radius: parent ? parent.radius || 0 : 0
+    // Per-corner overrides, for layers covering only part of a rounded shape.
+    property real topLeftRadius: radius
+    property real topRightRadius: radius
+    property real bottomLeftRadius: radius
+    property real bottomRightRadius: radius
     property bool disabled: false
     signal scrolled(int direction)
     anchors.fill: parent
@@ -26,7 +31,10 @@ MouseArea {
     }
     Rectangle {
         anchors.fill: parent
-        radius: root.radius
+        topLeftRadius: root.topLeftRadius
+        topRightRadius: root.topRightRadius
+        bottomLeftRadius: root.bottomLeftRadius
+        bottomRightRadius: root.bottomRightRadius
         color: root.color
         opacity: root.pressed ? 0.12 : root.containsMouse ? 0.08 : 0
         Behavior on opacity { NumberAnimation { duration: 120 } }

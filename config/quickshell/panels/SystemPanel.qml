@@ -192,14 +192,17 @@ Item {
             columnSpacing: 8
             readonly property real cell: (width - columnSpacing * 3) / 4
             Repeater {
-                model: [
-                    { label: "CPU", value: Metrics.data.cpu + "%", values: Metrics.history.cpu, max: 100 },
-                    { label: "RAM", value: Metrics.data.memoryUsed.toFixed(1) + "G", values: Metrics.history.memory, max: 100 },
-                    { label: "DISK", value: Metrics.data.diskPercent + "%", values: Metrics.history.disk, max: 100 },
-                    { label: "TEMP", value: Metrics.data.temperature >= 0 ? Metrics.data.temperature + "°C" : "—", values: Metrics.history.temperature, max: 100 }
-                ]
+                // A fixed model keeps the cards (and their hover) across metric updates.
+                model: ["CPU", "RAM", "DISK", "TEMP"]
                 Rectangle {
-                    required property var modelData
+                    required property string modelData
+                    readonly property string label: modelData
+                    readonly property string value: label === "CPU" ? Metrics.data.cpu + "%"
+                        : label === "RAM" ? Metrics.data.memoryUsed.toFixed(1) + "G"
+                        : label === "DISK" ? Metrics.data.diskPercent + "%"
+                        : Metrics.data.temperature >= 0 ? Metrics.data.temperature + "°C" : "—"
+                    readonly property var values: (label === "CPU" ? Metrics.history.cpu : label === "RAM" ? Metrics.history.memory
+                        : label === "DISK" ? Metrics.history.disk : Metrics.history.temperature).slice(-20)
                     width: parent.cell
                     height: 92
                     radius: 16
@@ -207,19 +210,19 @@ Item {
                     Column {
                         x: 12; y: 10
                         width: parent.width - 24
-                        StyledText { text: modelData.label; font.pixelSize: 11; font.weight: Font.DemiBold; font.letterSpacing: 0.6; color: Theme.onSurfaceVariantColor }
-                        StyledText { text: modelData.value; font.pixelSize: 17; font.weight: Font.DemiBold }
+                        StyledText { text: parent.parent.label; font.pixelSize: 11; font.weight: Font.DemiBold; font.letterSpacing: 0.6; color: Theme.onSurfaceVariantColor }
+                        StyledText { text: parent.parent.value; font.pixelSize: 17; font.weight: Font.DemiBold }
                     }
                     Sparkline {
                         x: 12; y: parent.height - height - 10
                         width: parent.width - 24; height: 26
-                        values: modelData.values.slice(-20)
-                        minimum: modelData.label === "TEMP" ? Math.min.apply(null, modelData.values.slice(-20).concat([30])) : 0
-                        maximum: modelData.max
+                        values: parent.values
+                        minimum: parent.label === "TEMP" ? Math.min.apply(null, parent.values.concat([30])) : 0
+                        maximum: 100
                     }
                     StateLayer { onClicked: { Panels.close(); Controls.btop(); } }
                     Accessible.role: Accessible.Button
-                    Accessible.name: modelData.label + " " + modelData.value + ", open btop"
+                    Accessible.name: label + " " + value + ", open btop"
                 }
             }
         }
