@@ -185,6 +185,26 @@ class QuickshellTests(unittest.TestCase):
         self.assertIn('"+ escape", hl.dsp.exec_cmd("loginctl lock-session")', hyprland)
         self.assertIn("session_lock_xray = false", hyprland)
 
+    def test_session_menu_replaces_wlogout(self):
+        session = (SHELL / "services/Session.qml").read_text()
+        # wlogout's keys and commands carry over.
+        for key, command in (("l", '["loginctl", "lock-session"]'), ("r", '["systemctl", "reboot"]'),
+                             ("s", '["systemctl", "poweroff"]'), ("e", '["hyprshutdown"]'),
+                             ("u", '["systemctl", "suspend"]'), ("h", '["systemctl", "hibernate"]')):
+            self.assertRegex(session, rf'key: "{key}",[^\n]*command: {re.escape(command)}')
+        self.assertIn("if (Lock.locked) return;", session)
+        self.assertIn("CanHibernate", session)
+        ipc = session[session.index("IpcHandler"):]
+        self.assertNotIn("function run", ipc)
+        menu = (SHELL / "session/SessionMenu.qml").read_text()
+        self.assertIn("WlrKeyboardFocus.Exclusive", menu)
+        self.assertIn("event.key === Qt.Key_Escape) Session.close()", menu)
+        self.assertIn("SessionMenu {}", (SHELL / "shell.qml").read_text())
+        hyprland = (ROOT / "config/hypr/hyprland.lua").read_text()
+        self.assertIn('"+ X", hl.dsp.exec_cmd("quickshell -c desktop ipc call session toggle")', hyprland)
+        self.assertNotIn("wlogout", hyprland)
+        self.assertFalse((ROOT / "config/wlogout").exists())
+
     @unittest.skipUnless(Path("/etc/pam.d/system-auth").exists(), "no system-auth on this system")
     def test_lock_pam_matches_system_auth(self):
         # The lock reads its own PAM files; a system policy change must not
