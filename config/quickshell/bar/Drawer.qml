@@ -170,6 +170,13 @@ PanelWindow {
         clip: true
         focus: window.active
         Keys.onEscapePressed: Panels.close()
+        Keys.onPressed: event => {
+            // Backspace or Delete clears notifications while their panel is open.
+            if (window.mode === "clock" && (event.key === Qt.Key_Backspace || event.key === Qt.Key_Delete)) {
+                Notifications.clear();
+                event.accepted = true;
+            }
+        }
         onFocusChanged: if (focus) forceActiveFocus()
         MouseArea { anchors.fill: parent; acceptedButtons: Qt.AllButtons }   // swallow background clicks
         HoverHandler { onHoveredChanged: Notifications.paused = hovered && window.mode === "popup" }

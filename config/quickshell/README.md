@@ -70,7 +70,8 @@ PipeWire/WirePlumber) must be running; installing packages does not enable them.
   off, and system monitor cards that open btop. Chevrons open Wi-Fi, Bluetooth
   and sound device pages. Right-click a saved network to forget it.
 - Notifications: groups expand, swipe or close to dismiss, Do not disturb and
-  Clear all in the header. Popups pause while hovered and swipe away.
+  Clear all in the header; Backspace or Delete also clears all. Popups pause
+  while hovered and swipe away.
 - Escape, clicking outside, clicking the same bar item or another output closes
   the open panel.
 - Super+N: notifications; Super+A: system panel; Super+Shift+D: DND.
