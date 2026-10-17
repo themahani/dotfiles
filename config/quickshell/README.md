@@ -45,7 +45,8 @@ does not uninstall old packages or terminate your running desktop processes.
   volume and power). The focused output adds the clock, account, password
   field, fingerprint prompt and player. Password and fingerprint are two PAM
   sessions running side by side, and whichever succeeds first unlocks:
-  `lock/pam/password` is a password-only copy of system-auth, and
+  `lock/pam/password` is a password-only copy of system-auth (a test fails
+  when their auth or account rules differ), and
   `lock/pam/fingerprint` listens with pam_fprintd for as long as the screen is
   locked (five mismatches end it until the next lock). The fingerprint prompt
   only appears when `fprintd-list` shows enrolled fingers. Only a successful
