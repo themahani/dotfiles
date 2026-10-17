@@ -175,7 +175,10 @@ class QuickshellTests(unittest.TestCase):
         self.assertIn("lock_cmd = pgrep -x quickshell >/dev/null || pidof hyprlock || hyprlock", idle)
         self.assertRegex(idle, r"(?m)^\s*inhibit_sleep = 3\b")
         # The shell locks on logind's signals and holds suspend until the lock is shown.
-        self.assertIn('"systemd-inhibit", "--what=sleep", "--mode=delay"', lock)
+        self.assertIn('"systemd-inhibit", "--no-ask-password", "--what=sleep", "--mode=delay"', lock)
+        # Long-lived helpers end with the shell, so a crash leaves no inhibitor behind.
+        self.assertIn('"--why=Lock the screen before sleep", "cat"]\n        stdinEnabled: true', lock)
+        self.assertIn('["setpriv", "--pdeathsig", "TERM", "gdbus", "monitor"', lock)
         self.assertIn("function updateSleepDelay() { sleepDelay.running = !(locked && secure); }", lock)
         self.assertIn('line.startsWith(root.sessionPath + ": org.freedesktop.login1.Session.Lock ")', lock)
         self.assertIn("org.freedesktop.login1.Session.SetLockedHint", lock)

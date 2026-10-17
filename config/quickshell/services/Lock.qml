@@ -169,11 +169,14 @@ Singleton {
 
     // Suspend waits for this delay inhibitor, held whenever the screen isn't
     // securely locked, and released once the lock is shown. If locking fails,
-    // logind suspends anyway after InhibitDelayMaxSec.
+    // logind suspends anyway after InhibitDelayMaxSec. It holds the inhibitor
+    // with cat on the shell's stdin pipe, so it ends when the shell does:
+    // an inhibitor left behind by a crashed shell would delay every suspend.
     Process {
         id: sleepDelay
-        command: ["systemd-inhibit", "--what=sleep", "--mode=delay", "--who=Quickshell",
-            "--why=Lock the screen before sleep", "sleep", "infinity"]
+        command: ["systemd-inhibit", "--no-ask-password", "--what=sleep", "--mode=delay", "--who=Quickshell",
+            "--why=Lock the screen before sleep", "cat"]
+        stdinEnabled: true
         onExited: holdAgain.restart()     // taken again below if still needed
     }
     function updateSleepDelay() { sleepDelay.running = !(locked && secure); }
@@ -192,10 +195,12 @@ Singleton {
     // before a suspend. fprintd suspends the reader with the system and can't
     // while a scan is open, and a scan left open across a suspend never
     // reports again, so stop the scan for the suspend and start a new one
-    // after the wake-up, once the reader is back.
+    // after the wake-up, once the reader is back. gdbus only writes when
+    // logind signals, so it gets SIGTERM when the shell exits instead of
+    // waiting for a write to fail.
     Process {
         running: true
-        command: ["gdbus", "monitor", "--system", "--dest", "org.freedesktop.login1"]
+        command: ["setpriv", "--pdeathsig", "TERM", "gdbus", "monitor", "--system", "--dest", "org.freedesktop.login1"]
         stdout: SplitParser {
             onRead: line => {
                 if (root.sessionPath && line.startsWith(root.sessionPath + ": org.freedesktop.login1.Session.Lock ")) {
