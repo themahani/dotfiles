@@ -51,7 +51,8 @@
       "$CONFIG/dotfiles/schemas.lua": "config/dotfiles/schemas.lua",
       "$CONFIG/dotfiles/.luarc.json": "config/dotfiles/.luarc.json",
       "$CONFIG/wireplumber/wireplumber.conf.d/50-headphone-jack.conf": "config/wireplumber/wireplumber.conf.d/50-headphone-jack.conf",
-      "~/.local/share/wireplumber/scripts/headphone-jack.lua": "config/wireplumber/scripts/headphone-jack.lua"
+      "~/.local/share/wireplumber/scripts/headphone-jack.lua": "config/wireplumber/scripts/headphone-jack.lua",
+      "$CONFIG/pipewire/pipewire-pulse.conf.d/50-discord-sounds.conf": "config/pipewire/pipewire-pulse.conf.d/50-discord-sounds.conf"
     },
     "requires": ["kitty", "fonts"],
     "packages": ["hyprland", "hypridle", "hyprlock", "hyprpaper", "hyprlauncher", "hyprpolkitagent", "hyprshot", "hyprshutdown", "quickshell", "matugen", "qt6ct", "qt6-declarative", "qt6-wayland", "qt6-svg", "python", "upower", "power-profiles-daemon", "util-linux", "glib2", "sound-theme-freedesktop", "rofi", "rofi-calc", "rofi-emoji", "nautilus", "wl-clipboard", "brightnessctl", "pavucontrol", "playerctl", "libnotify", "network-manager-applet", "networkmanager", "nm-connection-editor", "btop", "bluez", "bluez-utils", "pipewire", "pipewire-pulse", "wireplumber", "xdg-desktop-portal-hyprland", "xdg-desktop-portal-gtk", "xorg-xwayland", "telegram-desktop"],

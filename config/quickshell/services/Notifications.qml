@@ -3,6 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Notifications
+import Quickshell.Services.Pipewire
 import Quickshell.Wayland
 
 Singleton {
@@ -16,6 +17,10 @@ Singleton {
     readonly property var popups: server.trackedNotifications.values.filter(item => popupIds.includes(item.id))
     readonly property int count: history.length
     readonly property int historyLimit: 100
+    // Discord plays its own message sounds, through "Chromium" streams, so
+    // hiding its popups doesn't silence it. Its calls use a separate
+    // "WEBRTC VoiceEngine" stream that stays audible.
+    readonly property var appSounds: Pipewire.nodes.values.filter(node => node.type === PwNodeType.AudioOutStream && node.name === "Chromium")
 
     function hidePopup(id) {
         popupIds = popupIds.filter(value => value !== id);
@@ -87,6 +92,17 @@ Singleton {
         bodyImagesSupported: false
         persistenceSupported: true
         onNotification: item => root.receive(item)
+    }
+    PwObjectTracker { objects: root.appSounds }
+    Variants {
+        model: root.appSounds
+        Binding {
+            required property PwNode modelData
+            target: modelData?.audio ?? null
+            property: "muted"
+            value: true
+            when: root.dnd && !!modelData?.ready && modelData.properties["application.process.binary"] === "Discord"
+        }
     }
     Timer {
         interval: 250; running: root.popupIds.length > 0; repeat: true
