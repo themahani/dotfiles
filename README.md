@@ -30,12 +30,12 @@ the selected Git submodules and creates links. Review the plan before applying.
 
 ### Profiles
 
-| Profile     | Modules                                                                     |
-| ----------- | --------------------------------------------------------------------------- |
-| `minimal`   | Git, Neovim, Bash                                                           |
-| `developer` | Git, Bash, Zsh, Neovim, tmux, CLI tools                                     |
-| `desktop`   | Developer profile plus Kitty, fonts, and the Hyprland desktop               |
-| `personal`  | Desktop profile plus music, Java, LaTeX, Rust, Irssi, and desktop utilities |
+| Profile     | Modules                                                                                  |
+| ----------- | ---------------------------------------------------------------------------------------- |
+| `minimal`   | Git, Neovim, Bash                                                                        |
+| `developer` | Git, Bash, Zsh, Neovim, tmux, CLI tools                                                  |
+| `desktop`   | Developer profile plus Kitty, fonts, and the Hyprland desktop                            |
+| `personal`  | Desktop profile plus music, Java, LaTeX, Rust, Irssi, Claude Code, and desktop utilities |
 
 Add modules to a profile for a single command:
 
@@ -207,6 +207,24 @@ OSD. The original Catppuccin Mocha colors and module actions are preserved.
 See [the shell guide](config/quickshell/README.md) for dependencies, controls,
 and validation. The old Waybar/SwayNC configs are retained only as references.
 The shell's session menu (Super+X) replaced wlogout.
+
+The `claude` module links Claude Code's user settings, status line script, and
+skills from `config/claude/` into `~/.claude/`. Install Claude Code with its
+native installer first; the status line needs `jq`. Add the module to another
+profile with `--modules claude`:
+
+```bash
+./install plan --profile developer --modules claude --backup-conflicts
+./install apply --profile developer --modules claude --backup-conflicts
+```
+
+Changes made inside Claude Code, such as `/model` or a new skill, write to the
+checkout, so commit them to sync other machines. Skills synced from claude.ai
+land in `config/claude/skills/synced/`, which Git ignores. Credentials, history,
+sessions, and project memory stay in `~/.claude/` and never enter the repository.
+If `plan` reports a conflict on `settings.json`, Claude Code replaced the link
+with a regular file; copy your changes into the checkout and apply again with
+`--backup-conflicts`.
 
 MPD uses paths under `~/.config/mpd`; preserve the database, playlists, and sticker
 data when changing those paths. Desktop scripts assume the conventional
