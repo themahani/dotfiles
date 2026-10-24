@@ -90,8 +90,8 @@ if (( $+commands[nvim] )); then
     alias vi="nvim"
 fi
 if (( $+commands[eza] )); then
-    alias el="eza -lh"
-    alias ela="eza -lha"
+    alias el="eza -lh --icons=auto"
+    alias ela="eza -lha --icons=auto"
 fi
 (( $+commands[lazygit] )) && alias lg="lazygit"
 (( $+commands[lazydocker] )) && alias ld="lazydocker"
