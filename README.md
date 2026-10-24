@@ -30,12 +30,12 @@ the selected Git submodules and creates links. Review the plan before applying.
 
 ### Profiles
 
-| Profile     | Modules                                                                                  |
-| ----------- | ---------------------------------------------------------------------------------------- |
-| `minimal`   | Git, Neovim, Bash                                                                        |
-| `developer` | Git, Bash, Zsh, Neovim, tmux, CLI tools                                                  |
-| `desktop`   | Developer profile plus Kitty, fonts, and the Hyprland desktop                            |
-| `personal`  | Desktop profile plus music, Java, LaTeX, Rust, Irssi, Claude Code, and desktop utilities |
+| Profile     | Modules                                                                                            |
+| ----------- | -------------------------------------------------------------------------------------------------- |
+| `minimal`   | Git, Neovim, Bash                                                                                  |
+| `developer` | Git, Bash, Zsh, Neovim, tmux, CLI tools                                                            |
+| `desktop`   | Developer profile plus Kitty, fonts, and the Hyprland desktop                                      |
+| `personal`  | Desktop profile plus music, Java, LaTeX, Rust, Irssi, Claude Code, opencode, and desktop utilities |
 
 Add modules to a profile for a single command:
 
@@ -226,6 +226,14 @@ sessions, and project memory stay in `~/.claude/` and never enter the repository
 If `plan` reports a conflict on `settings.json`, Claude Code replaced the link
 with a regular file; copy your changes into the checkout and apply again with
 `--backup-conflicts`.
+
+The `opencode` module links `opencode.jsonc`, `tui.jsonc`, and `cli.json` from
+`config/opencode/` into `~/.config/opencode/`. The rest of that directory stays
+local: `service.json` holds the server password, and opencode installs its
+plugin packages there. Credentials and sessions stay in `~/.local/share/opencode/`.
+The `milo-csound` MCP server in `opencode.jsonc` points at a project under my
+home directory; change or remove it on machines without that checkout. Add the
+module to another profile with `--modules opencode`.
 
 MPD uses paths under `~/.config/mpd`; preserve the database, playlists, and sticker
 data when changing those paths. Desktop scripts assume the conventional

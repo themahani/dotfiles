@@ -72,6 +72,14 @@
     },
     "packages": ["jq"], "commands": ["claude", "jq"]
   },
+  "opencode": {
+    "links": {
+      "$CONFIG/opencode/opencode.jsonc": "config/opencode/opencode.jsonc",
+      "$CONFIG/opencode/tui.jsonc": "config/opencode/tui.jsonc",
+      "$CONFIG/opencode/cli.json": "config/opencode/cli.json"
+    },
+    "packages": ["opencode"], "commands": ["opencode"]
+  },
   "irssi": {
     "links": {"~/.irssi/tzu.theme": "irssi/tzu.theme"},
     "packages": ["irssi"], "commands": ["irssi"]

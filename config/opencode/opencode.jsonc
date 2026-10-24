@@ -1,0 +1,24 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "shell": "/bin/zsh",
+  "watcher": {
+    "ignore": ["node_modules/**", "dist/**", ".git/**"]
+  },
+  "permission": {
+    "bash": "allow",
+    "webfetch": "allow",
+    "websearch": "allow",
+    "question": "allow"
+  },
+  "mcp": {
+    "milo-csound": {
+      "type": "stdio",
+      "command": "python3",
+      "args": ["-m", "milo_csound.server"],
+      "cwd": "/home/ali/Code/side-projects/slow-milo/muse1.3/milo-csound",
+      "env": {
+        "PYTHONPATH": "/home/ali/Code/side-projects/slow-milo/muse1.3/milo-csound/src"
+      }
+    }
+  }
+}
