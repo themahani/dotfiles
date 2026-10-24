@@ -1,6 +1,6 @@
 {
   "description": "Custom user profile",
   "extends": "desktop",
-  "modules": ["music", "java", "latex", "rust", "irssi"],
+  "modules": ["music", "java", "latex", "rust", "irssi", "claude"],
   "packages": ["nwg-displays", "nwg-look", "nvtop"]
 }

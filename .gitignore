@@ -8,3 +8,5 @@ tmux/plugins/*
 config/git/gitconfig_local
 *.local
 __pycache__/
+# claude.ai manages these and rewrites them on startup.
+config/claude/skills/synced/

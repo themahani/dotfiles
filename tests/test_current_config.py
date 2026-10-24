@@ -31,6 +31,14 @@ class CurrentConfigTests(unittest.TestCase):
             for source in json.loads(path.read_text()).get("links", {}).values():
                 self.assertTrue((ROOT / source).exists(), f"{path.name}: {source}")
 
+    def test_claude_settings_use_linked_files(self):
+        links = json.loads((ROOT / "manifests/modules.json").read_text())["claude"]["links"]
+        settings = json.loads((ROOT / "config/claude/settings.json").read_text())
+        script = settings["statusLine"]["command"].split()[-1]
+        self.assertIn(script, links)
+        # claude.ai writes its synced skills into the linked directory.
+        self.assertIn("config/claude/skills/synced/", (ROOT / ".gitignore").read_text().split())
+
     def test_no_inactive_editor_backups_remain(self):
         self.assertEqual(list((ROOT / "config/nvim").rglob("*.bak")), [])
         self.assertFalse((ROOT / "config/kitty/kitty.conf.bak").exists())

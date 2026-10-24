@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"Apply the unslop skill to all prose in your reply (chat text, commit/PR messages, docs, comments). Load it with the Skill tool if not already loaded this session.\""
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  },
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "high"
+    }
+  },
+  "autoUpdatesChannel": "stable",
+  "theme": "dark",
+  "model": "opus"
+}

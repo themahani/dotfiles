@@ -63,6 +63,14 @@
     "links": {"$CONFIG/mpd": "config/mpd", "$CONFIG/rmpc": "config/rmpc"},
     "packages": ["mpd", "rmpc"], "commands": ["mpd", "rmpc"]
   },
+  "claude": {
+    "links": {
+      "~/.claude/settings.json": "config/claude/settings.json",
+      "~/.claude/statusline-command.sh": "config/claude/statusline-command.sh",
+      "~/.claude/skills": "config/claude/skills"
+    },
+    "packages": ["jq"], "commands": ["claude", "jq"]
+  },
   "irssi": {
     "links": {"~/.irssi/tzu.theme": "irssi/tzu.theme"},
     "packages": ["irssi"], "commands": ["irssi"]
