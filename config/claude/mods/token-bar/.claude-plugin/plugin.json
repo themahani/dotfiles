@@ -1,0 +1,7 @@
+{
+  "name": "token-bar",
+  "version": "0.1.0",
+  "description": "Bars above the prompt showing the tokens each tool and subagent cost this session",
+  "author": { "name": "Ali Mahani" },
+  "types": "./types/index.d.ts"
+}

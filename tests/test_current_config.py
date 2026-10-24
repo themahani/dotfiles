@@ -39,6 +39,13 @@ class CurrentConfigTests(unittest.TestCase):
         # claude.ai writes its synced skills into the linked directory.
         self.assertIn("config/claude/skills/synced/", (ROOT / ".gitignore").read_text().split())
 
+    def test_claude_mods_load_from_the_checkout(self):
+        settings = json.loads((ROOT / "config/claude/settings.json").read_text())
+        for folder in settings["env"]["CLAUDE_CODE_PLUGIN_DIRS"].split(":"):
+            self.assertTrue(folder.startswith("~/.dotfiles/config/claude/mods/"), folder)
+            mod = ROOT / folder.removeprefix("~/.dotfiles/")
+            self.assertTrue((mod / ".claude-plugin/plugin.json").is_file(), folder)
+
     def test_no_inactive_editor_backups_remain(self):
         self.assertEqual(list((ROOT / "config/nvim").rglob("*.bak")), [])
         self.assertFalse((ROOT / "config/kitty/kitty.conf.bak").exists())

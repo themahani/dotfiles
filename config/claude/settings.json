@@ -20,6 +20,9 @@
       "effortLevel": "high"
     }
   },
+  "env": {
+    "CLAUDE_CODE_PLUGIN_DIRS": "~/.dotfiles/config/claude/mods/token-bar"
+  },
   "autoUpdatesChannel": "stable",
   "theme": "dark",
   "model": "opus"

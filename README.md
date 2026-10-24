@@ -210,9 +210,9 @@ The shell's session menu (Super+X) replaced wlogout.
 
 The `claude` module links Claude Code's user settings, status line script,
 skills, and global `CLAUDE.md` from `config/claude/` into `~/.claude/`. The
-`CLAUDE.md` imports the unslop skill so every session starts with it loaded. Install Claude Code with its
-native installer first; the status line needs `jq`. Add the module to another
-profile with `--modules claude`:
+`CLAUDE.md` imports the unslop skill so every session starts with it loaded.
+Install Claude Code with its native installer first; the status line needs
+`jq`. Add the module to another profile with `--modules claude`:
 
 ```bash
 ./install plan --profile developer --modules claude --backup-conflicts
@@ -226,6 +226,14 @@ sessions, and project memory stay in `~/.claude/` and never enter the repository
 If `plan` reports a conflict on `settings.json`, Claude Code replaced the link
 with a regular file; copy your changes into the checkout and apply again with
 `--backup-conflicts`.
+
+Mods in `config/claude/mods/` load in every session through
+`CLAUDE_CODE_PLUGIN_DIRS` in `settings.json`; separate several folders with `:`.
+The `token-bar` mod draws bars above the prompt with the tokens each tool and
+subagent has cost this session. Tool counts are estimates (characters ÷ 4 of
+the call's arguments and result); subagent counts are the real usage of their
+model requests. `/token-bar` hides or shows it. Test a mod with
+`claude plugin test config/claude/mods/token-bar`.
 
 The `opencode` module links `opencode.jsonc`, `tui.jsonc`, and `cli.json` from
 `config/opencode/` into `~/.config/opencode/`. The rest of that directory stays
