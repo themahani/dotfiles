@@ -208,8 +208,9 @@ See [the shell guide](config/quickshell/README.md) for dependencies, controls,
 and validation. The old Waybar/SwayNC configs are retained only as references.
 The shell's session menu (Super+X) replaced wlogout.
 
-The `claude` module links Claude Code's user settings, status line script, and
-skills from `config/claude/` into `~/.claude/`. Install Claude Code with its
+The `claude` module links Claude Code's user settings, status line script,
+skills, and global `CLAUDE.md` from `config/claude/` into `~/.claude/`. The
+`CLAUDE.md` imports the unslop skill so every session starts with it loaded. Install Claude Code with its
 native installer first; the status line needs `jq`. Add the module to another
 profile with `--modules claude`:
 

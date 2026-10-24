@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo \"Apply the unslop skill to all prose in your reply (chat text, commit/PR messages, docs, comments). Load it with the Skill tool if not already loaded this session.\""
+            "command": "echo \"Apply the unslop rules from CLAUDE.md to all prose in your reply (chat text, commit/PR messages, docs, comments).\""
           }
         ]
       }

@@ -65,6 +65,7 @@
   },
   "claude": {
     "links": {
+      "~/.claude/CLAUDE.md": "config/claude/CLAUDE.md",
       "~/.claude/settings.json": "config/claude/settings.json",
       "~/.claude/statusline-command.sh": "config/claude/statusline-command.sh",
       "~/.claude/skills": "config/claude/skills"
