@@ -1,9 +1,21 @@
 ---
+# pacman -T resolves provides, so an installed replacement such as tlp-pd
+# satisfies power-profiles-daemon. The pacman module only matches exact names
+# and would try to install the conflicting package.
+- name: Find selected packages that nothing installed provides
+  ansible.builtin.command:
+    argv: "{{ ['pacman', '-T'] + (dotfiles_packages | unique | sort) }}"
+  register: dotfiles_unsatisfied
+  changed_when: false
+  failed_when: dotfiles_unsatisfied.rc not in [0, 127]
+  check_mode: false
+  when: dotfiles_packages | length > 0
+
 - name: Ensure selected official packages are present
   community.general.pacman:
-    name: "{{ dotfiles_packages | unique | sort }}"
+    name: "{{ dotfiles_unsatisfied.stdout_lines }}"
     state: present
     update_cache: false
   # Check mode only reads the package database; no sudo/password required.
   become: "{{ not ansible_check_mode }}"
-  when: dotfiles_packages | length > 0
+  when: dotfiles_unsatisfied.stdout_lines | default([]) | length > 0

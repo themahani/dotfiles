@@ -370,9 +370,11 @@ def doctor(spec, entries):
         if not compatible:
             log("WARNING: This Neovim version is below the supported minimum.", "warning")
     if shutil.which("pacman"):
-        installed = set(subprocess.check_output(["pacman", "-Qq"], text=True).splitlines())
-        log("Missing official packages: " + (", ".join(sorted(set(spec["packages"]) - installed)) or "none"))
-        log("Missing manual prerequisites: " + (", ".join(sorted(set(spec["aur"]) - installed)) or "none"))
+        # -T resolves provides, so a replacement such as tlp-pd counts as installed.
+        def unsatisfied(names):
+            return sorted(subprocess.run(["pacman", "-T", *names], capture_output=True, text=True).stdout.split()) if names else []
+        log("Missing official packages: " + (", ".join(unsatisfied(spec["packages"])) or "none"))
+        log("Missing manual prerequisites: " + (", ".join(unsatisfied(spec["aur"])) or "none"))
     if "hyprland-desktop" in spec["modules"]:
         log("Desktop config uses Hyprland's Lua API (tested on 0.56.2).")
     return compatible and not missing and not any(entry["missing"] or entry["action"] in ("conflict", "blocked") for entry in entries)

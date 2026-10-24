@@ -6,6 +6,9 @@
   become: false
   vars:
     dotfiles_packages: []
+    # Discovery can pick a user-installed Python from ~/.local/bin, which
+    # become would then run as root.
+    ansible_python_interpreter: /usr/bin/python3
   pre_tasks:
     - name: Require Arch Linux before any changes
       ansible.builtin.assert:
