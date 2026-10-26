@@ -1,4 +1,8 @@
 {
+  "env": {
+    "CLAUDE_CODE_PLUGIN_DIRS": "~/.dotfiles/config/claude/mods/token-bar"
+  },
+  "model": "opus",
   "hooks": {
     "UserPromptSubmit": [
       {
@@ -20,10 +24,7 @@
       "effortLevel": "high"
     }
   },
-  "env": {
-    "CLAUDE_CODE_PLUGIN_DIRS": "~/.dotfiles/config/claude/mods/token-bar"
-  },
   "autoUpdatesChannel": "stable",
   "theme": "dark",
-  "model": "opus"
+  "tui": "fullscreen"
 }
