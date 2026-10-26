@@ -118,9 +118,9 @@ PipeWire/WirePlumber) must be running; installing packages does not enable them.
   <wifi|bluetooth|output|input|power>`, `panels tray <id>`, `panels close`,
   `session toggle`, `session close`.
 
-Normal popups hide after 6 seconds, low urgency after 3, critical notifications
-remain until dismissed; explicit application timeouts take precedence for
-non-critical notifications. During Do not disturb only critical notifications
+Normal popups hide after 6 seconds, low urgency after 3, critical after 12.
+A positive application timeout takes precedence; a timeout of 0 ("never
+expire") gets the default for its urgency. During Do not disturb only critical notifications
 pop up. Non-transient notifications remain in session
 history after the popup hides. Actions are invoked through the notification
 protocol. Inline replies remain disabled, matching the previous configuration.
@@ -134,7 +134,7 @@ python3 -B -m unittest discover -s tests -v
 DOTFILES_TEST_QUICKSHELL=1 python3 -B -m unittest discover -s tests -p test_quickshell.py -v
 quickshell -p ./config/quickshell
 notify-send 'Shell test' 'Normal notification'
-notify-send -u critical 'Critical test' 'Dismiss manually'
+notify-send -u critical 'Critical test' 'Hides after 12 seconds'
 notify-send -A open=Open 'Action test' 'Try the action'
 quickshell -c desktop ipc call controls volume inc
 quickshell -c desktop ipc call notifications toggleDnd

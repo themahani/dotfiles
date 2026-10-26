@@ -75,11 +75,13 @@ Singleton {
             if (item.transient) item.expire();
             return;
         }
+        // Every popup hides, even one sent with "never expire" (0); the
+        // notification stays in history.
         popupIds = popupIds.filter(id => id !== item.id).concat([item.id]);
-        const timeout = item.urgency === NotificationUrgency.Critical ? 0
-            : item.expireTimeout >= 0 ? item.expireTimeout
+        const timeout = item.expireTimeout > 0 ? item.expireTimeout
+            : item.urgency === NotificationUrgency.Critical ? 12
             : item.urgency === NotificationUrgency.Low ? 3 : 6;
-        if (timeout > 0) deadlines[item.id] = Date.now() + timeout * 1000;
+        deadlines[item.id] = Date.now() + timeout * 1000;
     }
     // Both load on first use; start them now so the first click finds the app.
     Component.onCompleted: { DesktopEntries.applications; ToplevelManager.toplevels; }
