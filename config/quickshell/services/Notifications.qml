@@ -76,12 +76,13 @@ Singleton {
             return;
         }
         // Every popup hides, even one sent with "never expire" (0); the
-        // notification stays in history.
+        // notification stays in history. expireTimeout is documented in
+        // seconds, but Quickshell 0.3.2 passes the protocol's milliseconds.
         popupIds = popupIds.filter(id => id !== item.id).concat([item.id]);
         const timeout = item.expireTimeout > 0 ? item.expireTimeout
-            : item.urgency === NotificationUrgency.Critical ? 12
-            : item.urgency === NotificationUrgency.Low ? 3 : 6;
-        deadlines[item.id] = Date.now() + timeout * 1000;
+            : item.urgency === NotificationUrgency.Critical ? 12000
+            : item.urgency === NotificationUrgency.Low ? 3000 : 6000;
+        deadlines[item.id] = Date.now() + timeout;
     }
     // Both load on first use; start them now so the first click finds the app.
     Component.onCompleted: { DesktopEntries.applications; ToplevelManager.toplevels; }
