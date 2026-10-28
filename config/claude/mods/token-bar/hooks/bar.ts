@@ -1,6 +1,8 @@
-import type { Tally } from '../types'
+import type { ContextCategory } from 'claude-code'
 
-export type Kind = 'tool' | 'mcp' | 'agent' | 'other'
+import type { Part, Snapshot } from '../types'
+
+export type Kind = 'category' | 'tool' | 'mcp' | 'text' | 'room' | 'other'
 
 export type Item = {
   key: string
@@ -18,83 +20,89 @@ export type Row = { name: string; total: string; segments: Segment[] }
 
 export type View = { rows: Row[]; legend: Item[] }
 
-export const EMPTY: Tally = { tools: {}, agents: {}, order: [] }
+export const EMPTY: Snapshot = { window: 0, categories: [], buffer: 0, tools: [] }
 
-// Catppuccin Mocha, in the order tools first appear.
-const PALETTE = [
-  '#89b4fa', '#fab387', '#a6e3a1', '#cba6f7', '#f9e2af',
-  '#94e2d5', '#f5c2e7', '#89dceb', '#f38ba8', '#b4befe',
-]
+export const MESSAGES = 'Messages'
+
+// Catppuccin Mocha. Each category keeps one color; tools take the palette's,
+// none of them a category's, in the order they were first used.
+const CATEGORIES: Record<string, { label: string; color: string }> = {
+  'System prompt': { label: 'system prompt', color: '#7f849c' },
+  'System tools': { label: 'system tools', color: '#9399b2' },
+  'MCP tools': { label: 'mcp tools', color: '#74c7ec' },
+  'MCP server instructions': { label: 'mcp instructions', color: '#94e2d5' },
+  'Custom agents': { label: 'agents', color: '#f5c2e7' },
+  'Memory files': { label: 'memory', color: '#fab387' },
+  'Skills': { label: 'skills', color: '#f9e2af' },
+  [MESSAGES]: { label: 'messages', color: '#cba6f7' },
+}
+const PALETTE = ['#89b4fa', '#a6e3a1', '#f38ba8', '#b4befe', '#89dceb', '#eba0ac', '#f2cdcd', '#f5e0dc']
 const OTHER_COLOR = '#6c7086'
+const TEXT_COLOR = '#a6adc8'
+const ROOM_COLOR = '#585b70'
 
-const FILL: Record<Exclude<Kind, 'other'>, string> = { tool: '█', mcp: '╲', agent: '⣿' }
+const FILL = { solid: '█', mcp: '╲', free: '·', buffer: '░' }
 
-// Fields every tool.call input carries that are not the tool's arguments.
-const ENVELOPE = new Set(['tool', 'tool_use_id', 'agentId', 'requestMeta', 'consent'])
+// What an image or a document costs, roughly; its base64 would count many
+// times that.
+const MEDIA_CHARS = 1600 * 4
 
-const ROW_LABEL = 7
+const ROW_LABEL = 9
 
-export function isEmpty(tally: Tally): boolean {
-  return Object.keys(tally.tools).length === 0 && Object.keys(tally.agents).length === 0
+type Block = { type: string; [field: string]: unknown }
+type Message = { content: readonly Block[] }
+type Breakdown = { rawMaxTokens: number; categories: readonly Pick<ContextCategory, 'name' | 'tokens' | 'kind'>[] }
+
+export function isEmpty(snapshot: Snapshot): boolean {
+  return snapshot.window <= 0
 }
 
-export function isTally(value: unknown): value is Tally {
-  if (typeof value !== 'object' || value === null) return false
-  const t = value as Record<string, unknown>
-  return typeof t.tools === 'object' && t.tools !== null
-    && typeof t.agents === 'object' && t.agents !== null
-    && Array.isArray(t.order)
+function sum(parts: readonly { tokens: number }[]): number {
+  return parts.reduce((n, part) => n + part.tokens, 0)
 }
 
-// Roughly 4 characters per token for English and code.
-export function estimate(input: Readonly<Record<string, unknown>>, text: string | undefined): number {
-  const args: Record<string, unknown> = {}
-  for (const [key, value] of Object.entries(input)) {
-    if (!ENVELOPE.has(key)) args[key] = value
+function chars(value: unknown): number {
+  if (value === undefined) return 0
+  if (typeof value === 'string') return value.length
+  if (Array.isArray(value)) return value.reduce<number>((n, part) => n + chars(part), 0)
+  if (typeof value === 'object' && value !== null) {
+    const block = value as Block
+    if (block.type === 'text') return chars(block.text)
+    if (block.type === 'image' || block.type === 'document') return MEDIA_CHARS
   }
-  return Math.ceil((JSON.stringify(args).length + (text?.length ?? 0)) / 4)
+  return JSON.stringify(value).length
 }
 
-function remember(order: string[], key: string): string[] {
-  return order.includes(key) ? order : [...order, key]
+// Each tool's calls and results in the window, as /context splits Messages: a
+// call by its name and input, a result by its content, roughly 4 characters
+// per token. A result whose call is gone is left to the text.
+export function toolParts(messages: readonly Message[]): Part[] {
+  const names = new Map<string, string>()
+  const sizes = new Map<string, number>()
+  const add = (name: string, n: number) => sizes.set(name, (sizes.get(name) ?? 0) + n)
+  for (const { content } of messages) {
+    for (const block of content) {
+      if (block.type === 'tool_use' && typeof block.name === 'string') {
+        if (typeof block.id === 'string') names.set(block.id, block.name)
+        add(block.name, block.name.length + JSON.stringify(block.input ?? {}).length)
+      } else if (block.type === 'tool_result' && typeof block.tool_use_id === 'string') {
+        const name = names.get(block.tool_use_id)
+        if (name !== undefined) add(name, chars(block.content))
+      }
+    }
+  }
+  return [...sizes].map(([name, n]) => ({ name, tokens: Math.ceil(n / 4) }))
 }
 
-export function addTool(tally: Tally, tool: string, tokens: number): Tally {
+export function toSnapshot(breakdown: Breakdown, messages: readonly Message[]): Snapshot {
   return {
-    ...tally,
-    tools: { ...tally.tools, [tool]: (tally.tools[tool] ?? 0) + tokens },
-    order: remember(tally.order, `tool:${tool}`),
+    window: breakdown.rawMaxTokens,
+    categories: breakdown.categories
+      .filter(category => category.kind === 'used' && category.tokens > 0)
+      .map(({ name, tokens }) => ({ name, tokens })),
+    buffer: sum(breakdown.categories.filter(category => category.kind === 'buffer')),
+    tools: toolParts(messages),
   }
-}
-
-function agentKey(type: string | null): string {
-  return `agent:${type ?? 'subagent'}`
-}
-
-export function nameAgent(tally: Tally, agentId: string, type: string): Tally {
-  const agent = tally.agents[agentId] ?? { type: null, tokens: 0 }
-  if (agent.type === type) return tally
-  return {
-    ...tally,
-    agents: { ...tally.agents, [agentId]: { ...agent, type } },
-    order: remember(tally.order, agentKey(type)),
-  }
-}
-
-export function addAgent(tally: Tally, agentId: string, tokens: number): Tally {
-  const agent = tally.agents[agentId] ?? { type: null, tokens: 0 }
-  return {
-    ...tally,
-    agents: { ...tally.agents, [agentId]: { ...agent, tokens: agent.tokens + tokens } },
-    order: remember(tally.order, agentKey(agent.type)),
-  }
-}
-
-// A final figure for an agent: keep whichever is larger, the live sum or it.
-export function settleAgent(tally: Tally, agentId: string, tokens: number): Tally {
-  const agent = tally.agents[agentId] ?? { type: null, tokens: 0 }
-  if (tokens <= agent.tokens) return tally
-  return addAgent(tally, agentId, tokens - agent.tokens)
 }
 
 export function compact(n: number): string {
@@ -110,48 +118,82 @@ function mcpParts(tool: string): { server: string; name: string } | null {
   return { server: parts.slice(1, -1).join('__'), name: parts[parts.length - 1] ?? tool }
 }
 
-function colorOf(order: string[], key: string): string {
-  const index = order.indexOf(key)
-  return index < 0 ? OTHER_COLOR : PALETTE[index % PALETTE.length] ?? OTHER_COLOR
-}
-
 function bySize(a: Item, b: Item): number {
   return b.tokens - a.tokens
 }
 
-export function toolItems(tally: Tally): Item[] {
+function categoryItem(part: Part): Item {
+  const known = CATEGORIES[part.name]
+  return {
+    key: `category:${part.name}`,
+    label: known?.label ?? part.name.toLowerCase(),
+    tokens: part.tokens,
+    kind: 'category',
+    isEstimate: false,
+    color: known?.color ?? OTHER_COLOR,
+    fill: FILL.solid,
+  }
+}
+
+function roomItem(label: 'free' | 'buffer', tokens: number): Item {
+  return { key: label, label, tokens, kind: 'room', isEstimate: false, color: ROOM_COLOR, fill: FILL[label] }
+}
+
+// The context row: the categories in the engine's order, then the free space
+// and the compaction buffer, so the row spans the whole window.
+export function contextItems(snapshot: Snapshot): Item[] {
+  const used = snapshot.categories.map(categoryItem)
+  const free = Math.max(0, snapshot.window - sum(used) - snapshot.buffer)
+  return [...used, roomItem('free', free), roomItem('buffer', snapshot.buffer)].filter(item => item.tokens > 0)
+}
+
+export function toolItems(tools: readonly Part[]): Item[] {
   const mcpNames = new Map<string, number>()
-  for (const tool of Object.keys(tally.tools)) {
-    const mcp = mcpParts(tool)
+  for (const { name } of tools) {
+    const mcp = mcpParts(name)
     if (mcp) mcpNames.set(mcp.name, (mcpNames.get(mcp.name) ?? 0) + 1)
   }
-  return Object.entries(tally.tools).map(([tool, tokens]): Item => {
-    const key = `tool:${tool}`
-    const mcp = mcpParts(tool)
-    const label = mcp === null ? tool
+  return tools.map(({ name, tokens }, index): Item => {
+    const mcp = mcpParts(name)
+    const label = mcp === null ? name
       : (mcpNames.get(mcp.name) ?? 0) > 1 ? `${mcp.server}.${mcp.name}` : mcp.name
-    const kind = mcp === null ? 'tool' : 'mcp'
-    return { key, label, tokens, kind, isEstimate: true, color: colorOf(tally.order, key), fill: FILL[kind] }
+    return {
+      key: `tool:${name}`,
+      label,
+      tokens,
+      kind: mcp === null ? 'tool' : 'mcp',
+      isEstimate: true,
+      color: PALETTE[index % PALETTE.length] ?? OTHER_COLOR,
+      fill: mcp === null ? FILL.solid : FILL.mcp,
+    }
   }).sort(bySize)
 }
 
-export function agentItems(tally: Tally): Item[] {
-  const byType = new Map<string, number>()
-  for (const agent of Object.values(tally.agents)) {
-    const type = agent.type ?? 'subagent'
-    byType.set(type, (byType.get(type) ?? 0) + agent.tokens)
-  }
-  return [...byType].filter(([, tokens]) => tokens > 0).map(([type, tokens]): Item => {
-    const key = agentKey(type === 'subagent' ? null : type)
-    return { key, label: type, tokens, kind: 'agent', isEstimate: false, color: colorOf(tally.order, key), fill: FILL.agent }
-  }).sort(bySize)
+function messagesTotal(snapshot: Snapshot): number {
+  return snapshot.categories.find(category => category.name === MESSAGES)?.tokens ?? 0
+}
+
+// The messages row: each tool's share, then the text around them. The
+// engine's Messages total is the real figure, so tool estimates past it scale
+// down to fit.
+export function messageItems(snapshot: Snapshot): Item[] {
+  const total = messagesTotal(snapshot)
+  const tools = toolItems(snapshot.tools)
+  const estimated = sum(tools)
+  const scale = estimated > total ? total / estimated : 1
+  const shares = tools
+    .map(item => ({ ...item, tokens: Math.floor(item.tokens * scale) }))
+    .filter(item => item.tokens > 0)
+  const text = total - sum(shares)
+  if (text <= 0) return shares
+  return [...shares, { key: 'text', label: 'text', tokens: text, kind: 'text', isEstimate: true, color: TEXT_COLOR, fill: FILL.solid }]
 }
 
 function merge(items: Item[], fill: string): Item {
   return {
     key: 'other',
     label: 'other',
-    tokens: items.reduce((sum, item) => sum + item.tokens, 0),
+    tokens: sum(items),
     kind: 'other',
     isEstimate: items.some(item => item.isEstimate),
     color: OTHER_COLOR,
@@ -166,11 +208,11 @@ export function layout(items: Item[], width: number, otherFill: string): Segment
   const shown = items.length <= width ? items : items.slice(0, width - 1)
   const rest = items.slice(shown.length)
   const all = rest.length > 0 ? [...shown, merge(rest, otherFill)] : shown
-  const total = all.reduce((sum, item) => sum + item.tokens, 0)
+  const total = sum(all)
   const spare = width - all.length
   const shares = all.map(item => (total > 0 ? (item.tokens / total) * spare : 0))
   const cells = shares.map(share => 1 + Math.floor(share))
-  let left = width - cells.reduce((sum, n) => sum + n, 0)
+  let left = width - cells.reduce((n, c) => n + c, 0)
   const byRemainder = shares
     .map((share, index) => ({ index, remainder: share - Math.floor(share) }))
     .sort((a, b) => b.remainder - a.remainder)
@@ -194,35 +236,37 @@ export function fitLegend(items: Item[], width: number): Item[] {
   const named = items.filter(item => item.kind !== 'other').sort(bySize)
   const others = items.filter(item => item.kind === 'other')
   const sizeOf = (list: Item[]) =>
-    list.reduce((sum, item) => sum + legendText(item).length, 0) + LEGEND_GAP * Math.max(0, list.length - 1)
+    list.reduce((n, item) => n + legendText(item).length, 0) + LEGEND_GAP * Math.max(0, list.length - 1)
   for (let count = named.length; count >= 0; count -= 1) {
     const rest = [...named.slice(count), ...others]
-    const list = rest.length > 0 ? [...named.slice(0, count), merge(rest, '█')] : named
+    const list = rest.length > 0 ? [...named.slice(0, count), merge(rest, FILL.solid)] : named
     if (sizeOf(list) <= width) return list
   }
   return []
 }
 
-function total(items: Item[]): string {
-  const sum = items.reduce((n, item) => n + item.tokens, 0)
-  return `${items.some(item => item.isEstimate) ? '~' : ''}${compact(sum)}`
+function percent(tokens: number, window: number): number {
+  return window > 0 ? Math.round((tokens / window) * 100) : 0
 }
 
-// Plain data for the band: one row per non-empty kind, then the legend when
-// a row is left for it.
-export function draw(tally: Tally, columns: number, maxRows: number): View {
+// Plain data for the band: the context row, the messages row when there are
+// messages, then the legend when a row is left for it. The legend leaves out
+// the free space, the buffer, and Messages, which its own row splits.
+export function draw(snapshot: Snapshot, columns: number, maxRows: number): View {
   const kinds = [
-    { name: 'tools', items: toolItems(tally), otherFill: FILL.tool },
-    { name: 'agents', items: agentItems(tally), otherFill: FILL.agent },
+    { name: 'context', items: contextItems(snapshot), total: `${percent(sum(snapshot.categories), snapshot.window)}%` },
+    { name: 'messages', items: messageItems(snapshot), total: compact(messagesTotal(snapshot)) },
   ].filter(kind => kind.items.length > 0)
-  const totals = kinds.map(kind => total(kind.items))
-  const totalWidth = Math.max(0, ...totals.map(text => text.length))
+  const totalWidth = Math.max(0, ...kinds.map(kind => kind.total.length))
   const barWidth = columns - ROW_LABEL - 1 - totalWidth
-  const rows = kinds.slice(0, Math.max(0, maxRows)).map((kind, index) => ({
+  const rows = kinds.slice(0, Math.max(0, maxRows)).map(kind => ({
     name: kind.name.padEnd(ROW_LABEL),
-    total: (totals[index] ?? '').padStart(totalWidth),
-    segments: layout(kind.items, barWidth, kind.otherFill),
+    total: kind.total.padStart(totalWidth),
+    segments: layout(kind.items, barWidth, FILL.solid),
   }))
-  const legend = rows.length < maxRows ? fitLegend(rows.flatMap(row => row.segments), columns) : []
+  const entries = rows
+    .flatMap(row => row.segments)
+    .filter(item => item.kind !== 'room' && item.key !== `category:${MESSAGES}`)
+  const legend = rows.length < maxRows ? fitLegend(entries, columns) : []
   return { rows, legend }
 }

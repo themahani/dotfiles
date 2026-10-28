@@ -1,16 +1,19 @@
-export type AgentTally = { type: string | null; tokens: number }
+export type Part = { name: string; tokens: number }
 
-export type Tally = {
-  // Estimated tokens per tool name, main loop only.
-  tools: Record<string, number>
-  // Real tokens per subagent id.
-  agents: Record<string, AgentTally>
-  // Segment keys in first-use order; a key's index picks its color.
-  order: string[]
+// The context window as the band last measured it.
+export type Snapshot = {
+  // The window the categories measure against (the breakdown's rawMaxTokens).
+  window: number
+  // In-window categories in the engine's order, Messages among them.
+  categories: Part[]
+  // The compaction reserve, 0 when there is none.
+  buffer: number
+  // Estimated tokens per tool across its calls and results, in first-use order.
+  tools: Part[]
 }
 
 declare module 'claude-code' {
   interface PluginState {
-    'token-bar': { tally: Tally; isHidden: boolean }
+    'token-bar': { snapshot: Snapshot; isHidden: boolean }
   }
 }

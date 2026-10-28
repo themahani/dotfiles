@@ -1,7 +1,7 @@
 {
   "name": "token-bar",
   "version": "0.1.0",
-  "description": "Bars above the prompt showing the tokens each tool and subagent cost this session",
+  "description": "Bars above the prompt showing what fills the context window, by category and by tool",
   "author": { "name": "Ali Mahani" },
   "types": "./types/index.d.ts"
 }

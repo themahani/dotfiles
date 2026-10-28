@@ -229,10 +229,14 @@ with a regular file; copy your changes into the checkout and apply again with
 
 Mods in `config/claude/mods/` load in every session through
 `CLAUDE_CODE_PLUGIN_DIRS` in `settings.json`; separate several folders with `:`.
-The `token-bar` mod draws bars above the prompt with the tokens each tool and
-subagent has cost this session. Tool counts are estimates (characters ÷ 4 of
-the call's arguments and result); subagent counts are the real usage of their
-model requests. `/token-bar` hides or shows it. Test a mod with
+The `token-bar` mod draws two bars above the prompt that show what fills the
+context window now, by the categories `/context` and the desktop app's context
+viewer use. The first spans the window: system prompt, tools, memory, skills,
+messages, free space and the compaction buffer. The second splits the messages
+by tool, estimated at characters ÷ 4 of each call's input and result, with the
+rest shown as text. Both shrink after a compaction. The mod recounts 250 ms
+after the main loop's last model request, so no turn waits on it.
+`/token-bar` hides or shows it. Test a mod with
 `claude plugin test config/claude/mods/token-bar`.
 
 The `opencode` module links `opencode.jsonc`, `tui.jsonc`, and `cli.json` from

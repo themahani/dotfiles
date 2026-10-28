@@ -1,58 +1,83 @@
 import { atom, read, update } from 'claude-code'
-import type { EngineInterface, Register } from 'claude-code'
+import type { EngineInterface, Register, Timer } from 'claude-code'
 
-import type { Tally } from '../types'
-import {
-  EMPTY, LEGEND_GAP, addAgent, addTool, draw, estimate, isEmpty, isTally,
-  legendText, nameAgent, settleAgent,
-} from './bar'
+import { EMPTY, LEGEND_GAP, draw, isEmpty, legendText, toSnapshot } from './bar'
 
-const tally = atom({ plugin: 'token-bar', key: 'tally' } as const, EMPTY)
+const snapshot = atom({ plugin: 'token-bar', key: 'snapshot' } as const, EMPTY)
 const isHidden = atom({ plugin: 'token-bar', key: 'isHidden' } as const, false)
 
-// Saved tallies kept for resuming; older sessions' are dropped.
-const KEEP_SESSIONS = 20
-const SAVED = 'tally:'
+// How long the main loop must go quiet before a recount, so a burst of model
+// requests is counted once.
+export const SETTLE_MS = 250
 
-async function change($: EngineInterface, fn: (value: Tally) => Tally): Promise<void> {
-  const value = await update($, tally, fn)
-  await $.store.set(SAVED + (await $.session.id()), value)
+// The per-call tallies saved before the band measured the context.
+const OLD_TALLY = 'tally:'
+
+let timer: Timer | undefined
+let isCounting = false
+let isStale = false
+
+// Hooks only set a timer, so no turn waits on a count.
+function schedule($: EngineInterface): void {
+  timer?.cancel()
+  // A failed count leaves the last snapshot; the next turn counts again.
+  timer = $.clock.after(SETTLE_MS, () => {
+    recount($).catch(() => undefined)
+  })
 }
 
-async function prune($: EngineInterface, current: string): Promise<void> {
-  const saved = (await $.store.keys()).filter(key => key.startsWith(SAVED) && key !== current)
-  for (const key of saved.slice(0, Math.max(0, saved.length - (KEEP_SESSIONS - 1)))) {
-    await $.store.delete(key)
+// One count at a time: a timer that fires during one runs it once more after.
+async function recount($: EngineInterface): Promise<void> {
+  timer = undefined
+  if (isCounting) {
+    isStale = true
+    return
+  }
+  isCounting = true
+  try {
+    do {
+      isStale = false
+      await measure($)
+    } while (isStale)
+  } finally {
+    isCounting = false
   }
 }
 
-function usageSum(usage: { input_tokens: number; output_tokens: number; cache_read_input_tokens: number; cache_creation_input_tokens: number }): number {
-  return usage.input_tokens + usage.output_tokens + usage.cache_read_input_tokens + usage.cache_creation_input_tokens
+// `summary` estimates locally and sends no token-count requests.
+async function measure($: EngineInterface): Promise<void> {
+  if (await read($, isHidden)) return
+  const [usage, messages] = await Promise.all([
+    $.session.usage({ breakdown: 'summary' }),
+    $.session.messages({ as: 'api' }),
+  ])
+  const breakdown = usage.context.breakdown
+  if (breakdown === undefined || !Array.isArray(messages)) return
+  await update($, snapshot, () => toSnapshot(breakdown, messages))
 }
 
 export const register: Register = on => {
   on('session.start', async ($, e, next) => {
     await $.command.register({
       name: 'token-bar',
-      description: 'Show or hide the token bar above the prompt',
+      description: 'Show or hide the context bar above the prompt',
     })
     const hidden = (await $.store.get('hidden')) === true
     await update($, isHidden, () => hidden)
-
-    // A reload keeps the atom; a resumed session starts from what it saved.
-    const key = SAVED + (await $.session.id())
-    const saved = await $.store.get(key)
-    if (isTally(saved)) {
-      await update($, tally, value => (isEmpty(value) ? saved : value))
+    for (const key of await $.store.keys()) {
+      if (key.startsWith(OLD_TALLY)) await $.store.delete(key)
     }
-    await prune($, key)
+
+    // A resumed session has a context to show before its first turn.
+    schedule($)
 
     return next(e)
   })
 
   on('session.end', async ($, e, next) => {
     if (e.reason === 'clear') {
-      await update($, tally, () => EMPTY)
+      timer?.cancel()
+      await update($, snapshot, () => EMPTY)
     }
 
     return next(e)
@@ -61,76 +86,35 @@ export const register: Register = on => {
   on('command.run', { command: 'token-bar' }, async $ => {
     const hidden = await update($, isHidden, value => !value)
     await $.store.set('hidden', hidden)
+    if (!hidden) schedule($)
 
     return { text: hidden ? 'Token bar hidden.' : 'Token bar shown.' }
   })
 
-  on('tool.call', async ($, e, next) => {
-    const ran = await next(e)
-    // A subagent's own calls are part of that agent's spend.
-    if (e.agentId !== undefined) return ran
-
-    if (e.tool === 'Agent') {
-      if (ran.deny === undefined && ran.isError !== true) {
-        const result: unknown = ran.result
-        const record = (typeof result === 'object' && result !== null ? result : {}) as {
-          agentId?: unknown; agentType?: unknown; status?: unknown; totalTokens?: unknown
-        }
-        if (typeof record.agentId === 'string') {
-          const agentId = record.agentId
-          const type = typeof record.agentType === 'string' ? record.agentType : e.subagent_type ?? 'general-purpose'
-          await change($, value => {
-            const named = nameAgent(value, agentId, type)
-            return record.status === 'completed' && typeof record.totalTokens === 'number'
-              ? settleAgent(named, agentId, record.totalTokens)
-              : named
-          })
-        }
-      }
-      return ran
-    }
-
-    const tokens = estimate(e, ran.deny === undefined ? ran.text : undefined)
-    await change($, value => addTool(value, e.tool, tokens))
-
-    return ran
-  }).catch(($, e, next) => next(e))
-
-  on('agent.spawn', async ($, e, next) => {
-    const spawned = await next(e)
-    const agentId = spawned.deny === undefined ? spawned.agentId : undefined
-    if (agentId !== undefined) {
-      await change($, value => nameAgent(value, agentId, e.subagentType))
-    }
-
-    return spawned
-  }).catch(($, e, next) => next(e))
-
-  // A subagent's run is one turn, so its steps are what grow it live.
+  // A subagent's requests fill its own window, not this one.
   on('turn.step', async function* ($, e, next) {
     const step = yield* next(e)
-    const agentId = e.agentId
-    if (agentId !== undefined && step.usage) {
-      const tokens = usageSum(step.usage)
-      await change($, value => addAgent(value, agentId, tokens))
-    }
+    if (e.agentId === undefined) schedule($)
 
     return step
   })
 
   on('turn.complete', async ($, e, next) => {
     const done = await next(e)
-    const agentId = e.agentId
-    if (agentId !== undefined && e.usage) {
-      const tokens = usageSum(e.usage)
-      await change($, value => settleAgent(value, agentId, tokens))
-    }
+    if (e.agentId === undefined) schedule($)
 
     return done
   }).catch(($, e, next) => next(e))
 
+  on('session.compact', async ($, e, next) => {
+    const compacted = await next(e)
+    if (e.agentId === undefined) schedule($)
+
+    return compacted
+  }).catch(($, e, next) => next(e))
+
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
-    const value = await read($, tally)
+    const value = await read($, snapshot)
     if (e.props.hasSurvey || isEmpty(value) || (await read($, isHidden))) {
       return next(e)
     }
