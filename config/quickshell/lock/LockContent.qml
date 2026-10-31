@@ -12,7 +12,7 @@ Item {
     property bool primary: true
     property string userName: Quickshell.env("USER") || ""
 
-    SystemClock { id: clock; precision: SystemClock.Minutes }
+    SystemClock { id: clock; precision: SystemClock.Minutes; enabled: !Lock.sleeping }
     // The account's real name, if the passwd entry has one.
     Process {
         running: true

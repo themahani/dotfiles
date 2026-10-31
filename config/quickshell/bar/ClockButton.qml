@@ -11,7 +11,7 @@ BarButton {
     tooltip: "Notifications and calendar"
     padding: 14
     onClicked: Panels.toggle("clock", screen)
-    SystemClock { id: clock; precision: SystemClock.Minutes }
+    SystemClock { id: clock; precision: SystemClock.Minutes; enabled: !Lock.sleeping }
     StyledText {
         anchors.verticalCenter: parent.verticalCenter
         text: Qt.formatDateTime(clock.date, "ddd MMM d")

@@ -21,7 +21,7 @@ Item {
     implicitWidth: 400
     implicitHeight: content.implicitHeight + 32
 
-    SystemClock { id: clock; precision: SystemClock.Minutes }
+    SystemClock { id: clock; precision: SystemClock.Minutes; enabled: !Lock.sleeping }
 
     Column {
         id: content

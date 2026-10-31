@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import "../components"
+import "../services"
 import "../theme"
 
 // This week as a strip; expands into a month grid with navigation.
@@ -23,7 +24,7 @@ Rectangle {
     radius: 20
     color: Theme.surfaceContainerHigh
     clip: true
-    SystemClock { id: clock; precision: SystemClock.Hours }
+    SystemClock { id: clock; precision: SystemClock.Hours; enabled: !Lock.sleeping }
 
     Row {
         visible: !root.expanded
