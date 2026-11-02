@@ -36,6 +36,8 @@ class CurrentConfigTests(unittest.TestCase):
         settings = json.loads((ROOT / "config/claude/settings.json").read_text())
         script = settings["statusLine"]["command"].split()[-1]
         self.assertIn(script, links)
+        format_hook = settings["hooks"]["PostToolUse"][0]["hooks"][0]["command"].split()[-1]
+        self.assertIn(format_hook, links)
         # claude.ai writes its synced skills into the linked directory.
         self.assertIn("config/claude/skills/synced/", (ROOT / ".gitignore").read_text().split())
 
