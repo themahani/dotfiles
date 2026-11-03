@@ -121,7 +121,7 @@ return {
     },
     -- git
     {
-      "<leader>gb",
+      "<leader>gB",
       function()
         Snacks.picker.git_branches()
       end,
@@ -492,15 +492,7 @@ return {
       desc = "Rename File",
     },
     {
-      "<leader>gB",
-      function()
-        Snacks.gitbrowse()
-      end,
-      desc = "Git Browse",
-      mode = { "n", "v" },
-    },
-    {
-      "<leader>ga",
+      "<leader>gbl",
       function()
         Snacks.git.blame_line()
       end,

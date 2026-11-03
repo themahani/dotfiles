@@ -10,6 +10,7 @@ return {
     -- refer to the configuration section below
     spec = {
       { "<leader>g", group = "Git" },
+      { "<leader>gb", group = "Blame" },
       { "<leader>gh", group = "Hunks" },
     },
   },

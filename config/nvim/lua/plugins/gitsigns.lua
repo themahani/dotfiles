@@ -34,15 +34,17 @@ return {
       map("n", "<leader>ghS", gs.stage_buffer, "Stage Buffer")
       map("n", "<leader>ghR", gs.reset_buffer, "Reset Buffer")
       map("n", "<leader>ghp", gs.preview_hunk_inline, "Preview Hunk Inline")
-      map("n", "<leader>ghb", function()
-        gs.blame_line({ full = true })
-      end, "Blame Line")
-      map("n", "<leader>ghB", gs.blame, "Blame Buffer")
-      map("n", "<leader>ghl", gs.toggle_current_line_blame, "Toggle Line Blame")
       map("n", "<leader>ghd", gs.diffthis, "Diff This")
       map("n", "<leader>ghD", function()
         gs.diffthis("~")
       end, "Diff This ~")
+
+      -- blame
+      map("n", "<leader>gbb", function()
+        gs.blame_line({ full = true })
+      end, "Blame Line Commit")
+      map("n", "<leader>gbB", gs.blame, "Blame Buffer")
+      map("n", "<leader>gbL", gs.toggle_current_line_blame, "Toggle Line Blame")
 
       -- text object
       map({ "o", "x" }, "ih", gs.select_hunk, "Select Hunk")
