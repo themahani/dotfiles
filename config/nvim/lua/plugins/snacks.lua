@@ -500,6 +500,13 @@ return {
       mode = { "n", "v" },
     },
     {
+      "<leader>ga",
+      function()
+        Snacks.git.blame_line()
+      end,
+      desc = "Git Blame Line",
+    },
+    {
       "<leader>gg",
       function()
         Snacks.lazygit()
