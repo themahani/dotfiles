@@ -1,6 +1,7 @@
 {
   "env": {
-    "CLAUDE_CODE_PLUGIN_DIRS": "~/.dotfiles/config/claude/mods/token-bar"
+    "CLAUDE_CODE_PLUGIN_DIRS": "~/.dotfiles/config/claude/mods/token-bar",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
   },
   "model": "opus",
   "hooks": {
@@ -36,6 +37,35 @@
     }
   },
   "autoUpdatesChannel": "stable",
+  "tui": "fullscreen",
   "theme": "dark",
-  "tui": "fullscreen"
+  "enabledPlugins": {
+    "clangd-lsp@claude-plugins-official": false,
+    "design@synced": false
+  },
+  "skillOverrides": {
+    "anthropic-skills:built-in-browser": "off",
+    "anthropic-skills:chrome-browser": "off",
+    "anthropic-skills:computer-use": "off",
+    "anthropic-skills:deep-research": "off",
+    "anthropic-skills:docs": "off",
+    "anthropic-skills:docx": "off",
+    "anthropic-skills:google-workspace": "off",
+    "anthropic-skills:import-memory": "off",
+    "anthropic-skills:learn": "off",
+    "anthropic-skills:morning": "off",
+    "anthropic-skills:pdf": "off",
+    "anthropic-skills:pptx": "off",
+    "anthropic-skills:skill-creator": "off",
+    "anthropic-skills:unslop": "off",
+    "anthropic-skills:xlsx": "off",
+    "benchmark-checklist": "off",
+    "blast-radius": "off",
+    "principle-explain-the-number": "off",
+    "principle-prove-it-works": "off",
+    "principle-subtract-before-you-add": "off"
+  },
+  "permissions": {
+    "defaultMode": "auto"
+  }
 }
