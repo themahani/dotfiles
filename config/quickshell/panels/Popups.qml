@@ -59,7 +59,8 @@ Item {
                     id: close
                     anchors { right: parent.right; rightMargin: 8; top: parent.top; topMargin: 8 }
                     width: 32; height: 32; icon: "close"; iconSize: 18; tooltip: "Dismiss"
-                    onClicked: Notifications.hidePopup(card.modelData.id)
+                    // Dismissing closes the notification, which also hides its popup.
+                    onClicked: card.modelData.dismiss()
                 }
             }
         }
