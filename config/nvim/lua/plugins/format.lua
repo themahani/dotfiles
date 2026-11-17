@@ -18,7 +18,7 @@ return {
   opts = {
     formatters_by_ft = {
       lua = { "stylua" },
-      python = { "black" },
+      python = { "ruff_format" },
       javascript = { "prettier" },
       typescript = { "prettier" },
       javascriptreact = { "prettier" },
@@ -40,7 +40,7 @@ return {
 
     -- Native Mason check to ensure formatters are installed
     local mr = require("mason-registry")
-    local formatters = require("dotfiles-options").formatters or { "stylua", "black", "prettier" }
+    local formatters = require("dotfiles-options").formatters or { "stylua", "ruff", "prettier" }
 
     for _, tool in ipairs(formatters) do
       local p = mr.get_package(tool)

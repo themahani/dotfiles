@@ -14,7 +14,7 @@ local config = {
 		"ltex_plus",
 		"ruff",
 	},
-	formatters = { "stylua", "prettier" },
+	formatters = { "stylua", "ruff", "prettier" },
 	debuggers = { "debugpy", "codelldb" },
 }
 return config
