@@ -2,10 +2,11 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
--- # Set tab options for the Python standard
+-- # Indentation
+-- vim-sleuth sets indentation per buffer from modelines, EditorConfig, or the
+-- file's contents. These values apply only when it finds nothing to go on.
 vim.opt.expandtab = true
 vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.smartindent = true
 vim.opt.breakindent = true -- Enable break indent
