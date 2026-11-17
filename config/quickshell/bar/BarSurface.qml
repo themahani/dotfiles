@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Effects
 import Quickshell
 import Quickshell.Hyprland
+import "../components"
 import "../panels"
 import "../services"
 import "../theme"
@@ -45,8 +46,9 @@ Item {
     }
     property real panelX: targetX
     property real panelWidth: targetWidth
-    // The drawn edges, on whole pixels, so the panel's sides stay sharp.
-    // Rounded per frame, so slides stay seamless.
+    // The drawn edges, on whole pixels: on a fractional edge the panel and the
+    // curve beside it both antialias the same pixel column and let what's
+    // underneath show through. Rounded per frame, so slides stay seamless.
     readonly property int edgeLeft: Math.round(panelX)
     readonly property int edgeRight: Math.round(panelX + panelWidth)
     property real panelHeight: mode !== "" && content.item ? content.item.implicitHeight : 0
@@ -62,7 +64,7 @@ Item {
         onClicked: Panels.close()
     }
 
-    // Bar and panel form one shape with one shadow.
+    // Bar, panel and joints form one shape with one shadow.
     Item {
         anchors.fill: parent
         layer.enabled: true
@@ -79,6 +81,47 @@ Item {
             y: Theme.barSize
             width: root.edgeRight - root.edgeLeft
             height: root.panelHeight
+            color: Theme.surfaceContainer
+            bottomLeftRadius: Math.min(Theme.panelRadius, height)
+            bottomRightRadius: Math.min(Theme.panelRadius, height)
+        }
+        Item {
+            x: root.edgeLeft - Theme.fillet
+            y: Theme.barSize
+            width: Theme.fillet
+            height: Math.min(Theme.fillet, root.panelHeight)
+            visible: root.edgeLeft > 0
+            clip: true
+            Fillet {}
+        }
+        Item {
+            x: root.edgeRight
+            y: Theme.barSize
+            width: Theme.fillet
+            height: Math.min(Theme.fillet, root.panelHeight)
+            visible: root.edgeRight < root.width
+            clip: true
+            Fillet { mirrored: true }
+        }
+        // The panel's rounded corners antialias its straight sides too, which
+        // leaves its outermost column slightly see-through. Where a curve
+        // joins it, an unantialiased strip over both columns hides that.
+        Rectangle {
+            x: root.edgeLeft - 1
+            y: Theme.barSize
+            width: 2
+            height: Math.min(Theme.fillet, root.panelHeight)
+            visible: root.edgeLeft > 0
+            antialiasing: false
+            color: Theme.surfaceContainer
+        }
+        Rectangle {
+            x: root.edgeRight - 1
+            y: Theme.barSize
+            width: 2
+            height: Math.min(Theme.fillet, root.panelHeight)
+            visible: root.edgeRight < root.width
+            antialiasing: false
             color: Theme.surfaceContainer
         }
     }

@@ -73,6 +73,8 @@ Singleton {
     readonly property string font: "Roboto"
     readonly property string iconFont: "Material Symbols Rounded"
     readonly property int barSize: 40
+    readonly property int fillet: 10          // the curves joining a panel to the bar
+    readonly property int panelRadius: 16
     readonly property var emphasized: [0.2, 0, 0, 1, 1, 1]
     readonly property int durationShort: 200
     readonly property int durationMedium: 350
