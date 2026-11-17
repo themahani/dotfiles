@@ -101,7 +101,7 @@ return {
       desc = "DAP: Set [L]og [B]reakpoint",
     },
     {
-      "<leader>dbc",
+      "<leader>dbr",
       function()
         require("dap").clear_breakpoints()
       end,
