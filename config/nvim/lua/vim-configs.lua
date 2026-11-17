@@ -75,4 +75,34 @@ vim.opt.cursorline = true -- Show which line your cursor is on
 
 vim.keymap.set("n", ";", ":") -- Map ; to : for easier access to vim cmd
 
+-- # Transparent background
+-- Clear the background so the terminal's own background and opacity show through.
+-- Runs on every ColorScheme event, so it also applies after switching themes.
+vim.api.nvim_create_autocmd("ColorScheme", {
+  desc = "Clear background highlights for terminal transparency",
+  group = vim.api.nvim_create_augroup("nvim-transparent-bg", { clear = true }),
+  callback = function()
+    for _, group in ipairs({
+      "Normal",
+      "NormalNC",
+      "NormalFloat",
+      "FloatBorder",
+      "SignColumn",
+      "EndOfBuffer",
+      "LineNr",
+      "FoldColumn",
+    }) do
+      vim.api.nvim_set_hl(
+        0,
+        group,
+        vim.tbl_extend(
+          "force",
+          vim.api.nvim_get_hl(0, { name = group, link = false }),
+          { bg = "NONE", ctermbg = "NONE" }
+        )
+      )
+    end
+  end,
+})
+
 vim.cmd.colorscheme("catppuccin")
