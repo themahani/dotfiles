@@ -31,70 +31,70 @@ return {
   },
   keys = {
     {
-      "<F5>",
+      "<leader>dc",
       function()
         require("dap").continue()
       end,
       desc = "DAP: Start/Continue",
     },
     {
-      "<F10>",
+      "<leader>dsO",
       function()
         require("dap").step_over()
       end,
       desc = "DAP: Step Over",
     },
     {
-      "<F11>",
+      "<leader>dsi",
       function()
         require("dap").step_into()
       end,
       desc = "DAP: Step Into",
     },
     {
-      "<F12>",
+      "<leader>dso",
       function()
         require("dap").step_out()
       end,
       desc = "DAP: Step Out",
     },
     {
-      "<leader>bb",
+      "<leader>dbb",
       function()
         require("dap").toggle_breakpoint()
       end,
       desc = "DAP: Toggle [B]reakpoint",
     },
     {
-      "<leader>bc",
+      "<leader>dbc",
       function()
         require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
       end,
       desc = "DAP: Set [B]reakpoint [C]onditional",
     },
     {
-      "<leader>bl",
+      "<leader>dbl",
       function()
         require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
       end,
       desc = "DAP: Set [L]og [B]reakpoint",
     },
     {
-      "<leader>br",
+      "<leader>dbc",
       function()
         require("dap").clear_breakpoints()
       end,
       desc = "DAP: Clear breakpoints",
     },
     {
-      "<leader>bq",
+      "<leader>dq",
       function()
         require("dap").terminate()
       end,
       desc = "DAP: [Q]uit session",
     },
     {
-      "<leader>bv",
+      "<leader>dv",
       function()
         require("dap-view").toggle()
       end,
