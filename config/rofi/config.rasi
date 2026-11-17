@@ -20,7 +20,7 @@ window {
     background-color: @bg;
     border: 1px;
     border-color: @accent;
-    border-radius: 6px;
+    border-radius: 0;
     padding: 40px;
 }
 
@@ -66,7 +66,7 @@ element alternate.active,
 element normal.urgent,
 element alternate.urgent {
     padding: 8px;
-    border-radius: 6px;
+    border-radius: 0;
     background-color: transparent;
     text-color: @fg;
 }
