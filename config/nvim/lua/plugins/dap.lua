@@ -1,7 +1,16 @@
 -- Debug Adapter Configuration
 local function python_path()
   local venv = vim.env.VIRTUAL_ENV or vim.env.CONDA_PREFIX
-  if venv then
+  if not venv then
+    -- uv and `python -m venv` projects usually aren't activated in the shell,
+    -- so look for a project venv above the file being debugged.
+    local dir = vim.fn.expand("%:p:h")
+    if dir == "" then
+      dir = vim.fn.getcwd()
+    end
+    venv = vim.fs.find({ ".venv", "venv" }, { upward = true, type = "directory", path = dir })[1]
+  end
+  if venv and vim.fn.executable(venv .. "/bin/python") == 1 then
     return venv .. "/bin/python"
   end
   return vim.fn.exepath("python3")
