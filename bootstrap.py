@@ -27,7 +27,9 @@ COLORS = {"info": "36", "success": "32", "warning": "33", "error": "31"}
 def log(message, level="info", *, file=None, flush=False):
     stream = file or sys.stdout
     enabled = COLOR_MODE == "always" or (
-        COLOR_MODE == "auto" and stream.isatty() and "NO_COLOR" not in os.environ
+        COLOR_MODE == "auto"
+        and stream.isatty()
+        and "NO_COLOR" not in os.environ
         and os.environ.get("TERM") != "dumb"
     )
     if enabled:
@@ -53,7 +55,9 @@ def load_profile(name, root=ROOT, seen=()):
     if name in seen:
         raise ValueError(f"Profile inheritance cycle: {' -> '.join((*seen, name))}")
     data = read_json(root / "profiles" / f"{name}.json")
-    parent = load_profile(data["extends"], root, (*seen, name)) if "extends" in data else {}
+    parent = (
+        load_profile(data["extends"], root, (*seen, name)) if "extends" in data else {}
+    )
     result = {**parent, **data}
     for key in ("modules", "packages", "aur"):
         result[key] = list(dict.fromkeys(parent.get(key, []) + data.get(key, [])))
@@ -87,12 +91,16 @@ def expand_target(value, home, config):
     if value == "~" or value.startswith("~/"):
         path = home / value[2:] if value != "~" else home
     elif value == "$CONFIG" or value.startswith("$CONFIG/"):
-        path = config / value[len("$CONFIG/"):] if value != "$CONFIG" else config
+        path = config / value[len("$CONFIG/") :] if value != "$CONFIG" else config
     else:
         raise ValueError(f"Destination must start with ~/ or $CONFIG/: {value}")
     path = Path(os.path.abspath(path))
-    if path not in (home, config) and not (path.is_relative_to(home) or path.is_relative_to(config)):
-        raise ValueError(f"Destination escapes the target home/config directory: {value}")
+    if path not in (home, config) and not (
+        path.is_relative_to(home) or path.is_relative_to(config)
+    ):
+        raise ValueError(
+            f"Destination escapes the target home/config directory: {value}"
+        )
     if path in (home, config):
         raise ValueError(f"Refusing to manage an entire home/config directory: {value}")
     return path
@@ -130,7 +138,9 @@ def build_spec(profile_name, extra, home, config, root=ROOT):
         aur.update(module.get("aur", []))
         commands.update(module.get("commands", []))
     # Overrides may only affect destinations belonging to selected modules.
-    links.update({key: value for key, value in profile["links"].items() if key in links})
+    links.update(
+        {key: value for key, value in profile["links"].items() if key in links}
+    )
     entries = []
     for target, relative in links.items():
         source = Path(os.path.abspath(root / relative))
@@ -138,20 +148,33 @@ def build_spec(profile_name, extra, home, config, root=ROOT):
             raise ValueError(f"Source outside repository: {relative}")
         destination = expand_target(target, home, config)
         if destination.is_relative_to(root) and destination != source:
-            raise ValueError(f"Refusing to install a link inside the source checkout: {destination}")
+            raise ValueError(
+                f"Refusing to install a link inside the source checkout: {destination}"
+            )
         if root.is_relative_to(destination) and destination != root:
-            raise ValueError(f"Refusing to replace a directory containing the checkout: {destination}")
+            raise ValueError(
+                f"Refusing to replace a directory containing the checkout: {destination}"
+            )
         entries.append({"destination": str(destination), "source": str(source)})
     destinations = [Path(entry["destination"]) for entry in entries]
     if len(set(destinations)) != len(destinations):
         raise ValueError("Duplicate destination after expanding paths")
     for target in destinations:
-        if any(other != target and target.is_relative_to(other) for other in destinations):
+        if any(
+            other != target and target.is_relative_to(other) for other in destinations
+        ):
             raise ValueError(f"Overlapping link destinations: {target}")
     return {
-        "profile": profile_name, "modules": modules, "links": entries,
-        "directories": [str(expand_target(value, home, config)) for value in dict.fromkeys(directories)],
-        "packages": sorted(packages), "aur": sorted(aur), "commands": sorted(commands),
+        "profile": profile_name,
+        "modules": modules,
+        "links": entries,
+        "directories": [
+            str(expand_target(value, home, config))
+            for value in dict.fromkeys(directories)
+        ],
+        "packages": sorted(packages),
+        "aur": sorted(aur),
+        "commands": sorted(commands),
     }
 
 
@@ -178,36 +201,74 @@ def inspect_spec(spec, relink=False):
 def display_plan(spec, entries):
     log(f"Profile: {spec['profile']}\nModules: {', '.join(spec['modules'])}")
     for entry in entries:
-        suffix = " [missing source; initialize selected submodules]" if entry["missing"] else ""
+        suffix = (
+            " [missing source; initialize selected submodules]"
+            if entry["missing"]
+            else ""
+        )
         reason = f" ({entry['reason']})" if "reason" in entry else ""
-        level = "error" if entry["action"] in ("conflict", "blocked") else (
-            "warning" if entry["missing"] or entry["action"] == "relink" else "success" if entry["action"] == "keep" else "info")
-        log(f"{entry['action'].upper():8} {entry['destination']} -> {entry['source']}{suffix}{reason}", level)
+        level = (
+            "error"
+            if entry["action"] in ("conflict", "blocked")
+            else (
+                "warning"
+                if entry["missing"] or entry["action"] == "relink"
+                else "success"
+                if entry["action"] == "keep"
+                else "info"
+            )
+        )
+        log(
+            f"{entry['action'].upper():8} {entry['destination']} -> {entry['source']}{suffix}{reason}",
+            level,
+        )
     for directory in spec["directories"]:
         log(f"DIRECTORY {directory}")
     log(f"\nArch packages ({len(spec['packages'])}, never installed by config apply):")
     log("  " + " ".join(spec["packages"]))
     if spec["aur"]:
-        log("Manual AUR/foreign prerequisites (not automatically installed): " + ", ".join(spec["aur"]), "warning")
+        log(
+            "Manual AUR/foreign prerequisites (not automatically installed): "
+            + ", ".join(spec["aur"]),
+            "warning",
+        )
 
 
 def check_conflicts(spec, entries, backup):
-    problems = [entry for entry in entries if entry["action"] == "blocked" or
-                (entry["action"] == "conflict" and not backup)]
+    problems = [
+        entry
+        for entry in entries
+        if entry["action"] == "blocked"
+        or (entry["action"] == "conflict" and not backup)
+    ]
     if problems:
-        raise ValueError("Conflicts found; no links changed. Review the plan, or explicitly use "
-                         "--backup-conflicts for direct destinations. Symlinked parents are never replaced.")
+        raise ValueError(
+            "Conflicts found; no links changed. Review the plan, or explicitly use "
+            "--backup-conflicts for direct destinations. Symlinked parents are never replaced."
+        )
     for value in spec["directories"]:
         path = Path(value)
-        if path.is_symlink() or (path.exists() and not path.is_dir()) or unsafe_parent(path):
+        if (
+            path.is_symlink()
+            or (path.exists() and not path.is_dir())
+            or unsafe_parent(path)
+        ):
             raise ValueError(f"Unsafe writable directory: {path}")
 
 
 def ensure_submodules(spec):
     required = {"dotbot"}
     output = subprocess.check_output(
-        ["git", "config", "--file", str(ROOT / ".gitmodules"), "--get-regexp", r"submodule\..*\.path"],
-        cwd=ROOT, text=True,
+        [
+            "git",
+            "config",
+            "--file",
+            str(ROOT / ".gitmodules"),
+            "--get-regexp",
+            r"submodule\..*\.path",
+        ],
+        cwd=ROOT,
+        text=True,
     )
     paths = [line.split(None, 1)[1] for line in output.splitlines()]
     for entry in spec["links"]:
@@ -217,8 +278,19 @@ def ensure_submodules(spec):
                 required.add(path)
             elif (ROOT / path).is_relative_to(source) and source != ROOT:
                 required.add(path)
-    subprocess.run(["git", "submodule", "update", "--init", "--recursive", "--", *sorted(required)],
-                   cwd=ROOT, check=True)
+    subprocess.run(
+        [
+            "git",
+            "submodule",
+            "update",
+            "--init",
+            "--recursive",
+            "--",
+            *sorted(required),
+        ],
+        cwd=ROOT,
+        check=True,
+    )
 
 
 @contextlib.contextmanager
@@ -256,7 +328,11 @@ def restore_journal(journal_path):
             target.unlink()
         elif os.path.lexists(target):
             # A failed move may have left the original destination untouched.
-            if backup is not None and not os.path.lexists(backup) and entry.get("restored"):
+            if (
+                backup is not None
+                and not os.path.lexists(backup)
+                and entry.get("restored")
+            ):
                 continue
             issues.append(f"{target}: changed since installation; left untouched")
             continue
@@ -285,22 +361,34 @@ def apply(spec, state, backup, relink=False):
     entries = inspect_spec(spec, relink)
     check_conflicts(spec, entries, backup)
     if any(entry["missing"] for entry in entries):
-        raise ValueError("Required source files are missing even after submodule initialization.")
+        raise ValueError(
+            "Required source files are missing even after submodule initialization."
+        )
     with state_lock(state):
         # Recheck after taking the lock: another bootstrap may have completed.
         entries = inspect_spec(spec, relink)
         check_conflicts(spec, entries, backup)
         changes = [entry for entry in entries if entry["action"] != "keep"]
-        missing_directories = any(not Path(value).exists() for value in spec["directories"])
+        missing_directories = any(
+            not Path(value).exists() for value in spec["directories"]
+        )
         if not changes and not missing_directories:
             log("Already applied; no changes.", "success")
             return
-        transaction = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ-") + uuid.uuid4().hex[:8]
+        transaction = (
+            datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ-")
+            + uuid.uuid4().hex[:8]
+        )
         directory = state / "transactions" / transaction
         directory.mkdir(parents=True, mode=0o700)
         journal_path = directory / "journal.json"
-        journal = {"version": 1, "profile": spec["profile"], "status": "applying",
-                   "changes": [], "created_directories": []}
+        journal = {
+            "version": 1,
+            "profile": spec["profile"],
+            "status": "applying",
+            "changes": [],
+            "created_directories": [],
+        }
         write_json(journal_path, journal)
         try:
             for index, entry in enumerate(changes):
@@ -318,15 +406,39 @@ def apply(spec, state, backup, relink=False):
             for value in spec["directories"]:
                 make_directories(Path(value), journal, journal_path)
             config = directory / "dotbot.json"
-            write_json(config, [
-                {"defaults": {"link": {"create": False, "relink": False, "force": False}}},
-                {"link": {entry["destination"]: {"path": entry["source"]} for entry in changes}},
-            ])
+            write_json(
+                config,
+                [
+                    {
+                        "defaults": {
+                            "link": {"create": False, "relink": False, "force": False}
+                        }
+                    },
+                    {
+                        "link": {
+                            entry["destination"]: {"path": entry["source"]}
+                            for entry in changes
+                        }
+                    },
+                ],
+            )
             if changes:
-                color_arg = "--force-color" if COLOR_MODE == "always" else "--no-color" if (
-                    COLOR_MODE == "never" or "NO_COLOR" in os.environ) else None
-                command = [sys.executable, str(ROOT / "dotbot" / "bin" / "dotbot"),
-                           "-d", str(ROOT), "-c", str(config), "--exit-on-failure"]
+                color_arg = (
+                    "--force-color"
+                    if COLOR_MODE == "always"
+                    else "--no-color"
+                    if (COLOR_MODE == "never" or "NO_COLOR" in os.environ)
+                    else None
+                )
+                command = [
+                    sys.executable,
+                    str(ROOT / "dotbot" / "bin" / "dotbot"),
+                    "-d",
+                    str(ROOT),
+                    "-c",
+                    str(config),
+                    "--exit-on-failure",
+                ]
                 if color_arg:
                     command.append(color_arg)
                 subprocess.run(command, check=True)
@@ -334,11 +446,17 @@ def apply(spec, state, backup, relink=False):
             write_json(journal_path, journal)
         except BaseException:
             restore_journal(journal_path)
-            log(f"Apply failed. Recovery journal: {journal_path}", "error", file=sys.stderr)
+            log(
+                f"Apply failed. Recovery journal: {journal_path}",
+                "error",
+                file=sys.stderr,
+            )
             raise
         log(f"Applied. Transaction: {transaction}", "success")
         log(f"Restore with: ./install restore --transaction {transaction}")
-        log("Packages, services, login shell, and existing local overrides were not changed.")
+        log(
+            "Packages, services, login shell, and existing local overrides were not changed."
+        )
 
 
 def arch_packages(spec, install):
@@ -347,12 +465,26 @@ def arch_packages(spec, install):
         raise ValueError("Package provisioning currently supports Arch Linux only.")
     ansible = shutil.which("ansible-playbook")
     if not ansible:
-        raise ValueError("Ansible is not installed. Install ansible-core, then run "
-                         "ansible-galaxy collection install -r ansible/requirements.yml.")
+        raise ValueError(
+            "Ansible is not installed. Install ansible-core, then run "
+            "ansible-galaxy collection install -r ansible/requirements.yml."
+        )
     if spec["aur"]:
-        log("Not installing AUR/foreign prerequisites: " + ", ".join(spec["aur"]), "warning", flush=True)
-    command = [ansible, "-i", "localhost,", "-c", "local", str(ROOT / "ansible" / "playbook.yml"),
-               "--extra-vars", json.dumps({"dotfiles_packages": spec["packages"]})]
+        log(
+            "Not installing AUR/foreign prerequisites: " + ", ".join(spec["aur"]),
+            "warning",
+            flush=True,
+        )
+    command = [
+        ansible,
+        "-i",
+        "localhost,",
+        "-c",
+        "local",
+        str(ROOT / "ansible" / "playbook.yml"),
+        "--extra-vars",
+        json.dumps({"dotfiles_packages": spec["packages"]}),
+    ]
     command += ["--ask-become-pass"] if install else ["--check", "--diff"]
     subprocess.run(command, cwd=ROOT, check=True)
 
@@ -360,7 +492,10 @@ def arch_packages(spec, install):
 def doctor(spec, entries):
     display_plan(spec, entries)
     missing = [name for name in spec["commands"] if not shutil.which(name)]
-    log("\nMissing commands: " + (", ".join(missing) if missing else "none"), "warning" if missing else "success")
+    log(
+        "\nMissing commands: " + (", ".join(missing) if missing else "none"),
+        "warning" if missing else "success",
+    )
     compatible = True
     if shutil.which("nvim") and "neovim" in spec["modules"]:
         output = subprocess.check_output(["nvim", "--version"], text=True)
@@ -368,34 +503,87 @@ def doctor(spec, entries):
         version = re.search(r"NVIM v(\d+)\.(\d+)", output)
         compatible = bool(version and tuple(map(int, version.groups())) >= (0, 12))
         if not compatible:
-            log("WARNING: This Neovim version is below the supported minimum.", "warning")
+            log(
+                "WARNING: This Neovim version is below the supported minimum.",
+                "warning",
+            )
     if shutil.which("pacman"):
         # -T resolves provides, so a replacement such as tlp-pd counts as installed.
         def unsatisfied(names):
-            return sorted(subprocess.run(["pacman", "-T", *names], capture_output=True, text=True).stdout.split()) if names else []
-        log("Missing official packages: " + (", ".join(unsatisfied(spec["packages"])) or "none"))
-        log("Missing manual prerequisites: " + (", ".join(unsatisfied(spec["aur"])) or "none"))
+            return (
+                sorted(
+                    subprocess.run(
+                        ["pacman", "-T", *names], capture_output=True, text=True
+                    ).stdout.split()
+                )
+                if names
+                else []
+            )
+
+        log(
+            "Missing official packages: "
+            + (", ".join(unsatisfied(spec["packages"])) or "none")
+        )
+        log(
+            "Missing manual prerequisites: "
+            + (", ".join(unsatisfied(spec["aur"])) or "none")
+        )
     if "hyprland-desktop" in spec["modules"]:
         log("Desktop config uses Hyprland's Lua API (tested on 0.56.2).")
-    return compatible and not missing and not any(entry["missing"] or entry["action"] in ("conflict", "blocked") for entry in entries)
+    return (
+        compatible
+        and not missing
+        and not any(
+            entry["missing"] or entry["action"] in ("conflict", "blocked")
+            for entry in entries
+        )
+    )
 
 
 def main(argv=None):
     global COLOR_MODE
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", nargs="?", default="plan",
-                        choices=["plan", "apply", "doctor", "packages", "restore", "profiles"])
+    parser.add_argument(
+        "command",
+        nargs="?",
+        default="plan",
+        choices=["plan", "apply", "doctor", "packages", "restore", "profiles"],
+    )
     parser.add_argument("--profile", default="developer")
-    parser.add_argument("--modules", nargs="+", action="extend", default=[], metavar="MODULE",
-                        help="Add one or more modules; repeatable")
+    parser.add_argument(
+        "--modules",
+        nargs="+",
+        action="extend",
+        default=[],
+        metavar="MODULE",
+        help="Add one or more modules; repeatable",
+    )
     parser.add_argument("--backup-conflicts", action="store_true")
-    parser.add_argument("--relink", action="store_true", help="Back up and replace broken destination symlinks only")
-    parser.add_argument("--color", choices=["auto", "always", "never"], default="auto",
-                        help="ANSI log colors (default: auto; respects NO_COLOR)")
-    parser.add_argument("--apply", action="store_true", help="Actually install packages (packages command only)")
-    parser.add_argument("--check", action="store_true", help="Package preview; already the default")
+    parser.add_argument(
+        "--relink",
+        action="store_true",
+        help="Back up and replace broken destination symlinks only",
+    )
+    parser.add_argument(
+        "--color",
+        choices=["auto", "always", "never"],
+        default="auto",
+        help="ANSI log colors (default: auto; respects NO_COLOR)",
+    )
+    parser.add_argument(
+        "--apply",
+        action="store_true",
+        help="Actually install packages (packages command only)",
+    )
+    parser.add_argument(
+        "--check", action="store_true", help="Package preview; already the default"
+    )
     parser.add_argument("--transaction", help="Exact transaction ID to restore")
-    parser.add_argument("--home", type=Path, help="Isolated target home for config tests; not for packages")
+    parser.add_argument(
+        "--home",
+        type=Path,
+        help="Isolated target home for config tests; not for packages",
+    )
     args = parser.parse_args(argv)
     COLOR_MODE = args.color
     if args.relink and args.command not in ("plan", "apply", "doctor"):
@@ -411,10 +599,20 @@ def main(argv=None):
     if args.command == "packages" and args.home:
         parser.error("--home does not isolate system packages; use a disposable VM")
     if args.command in ("apply", "restore", "packages") and os.geteuid() == 0:
-        parser.error("Run as the target user, not root; only Ansible package tasks use become")
+        parser.error(
+            "Run as the target user, not root; only Ansible package tasks use become"
+        )
     home = (args.home or Path.home()).expanduser().resolve()
-    config = home / ".config" if args.home else Path(os.environ.get("XDG_CONFIG_HOME") or home / ".config")
-    state_base = home / ".local/state" if args.home else Path(os.environ.get("XDG_STATE_HOME") or home / ".local/state")
+    config = (
+        home / ".config"
+        if args.home
+        else Path(os.environ.get("XDG_CONFIG_HOME") or home / ".config")
+    )
+    state_base = (
+        home / ".local/state"
+        if args.home
+        else Path(os.environ.get("XDG_STATE_HOME") or home / ".local/state")
+    )
     if not config.is_absolute() or not state_base.is_absolute():
         parser.error("XDG_CONFIG_HOME and XDG_STATE_HOME must be absolute paths")
     state = state_base / "dotfiles"
@@ -424,12 +622,22 @@ def main(argv=None):
                 log(f"{path.stem:12} {read_json(path).get('description', '')}")
             return 0
         if args.command == "restore":
-            if not args.transaction or not re.fullmatch(r"[0-9]{8}T[0-9]{6}Z-[a-f0-9]{8}", args.transaction):
-                raise ValueError("Provide an exact transaction ID from an apply operation.")
+            if not args.transaction or not re.fullmatch(
+                r"[0-9]{8}T[0-9]{6}Z-[a-f0-9]{8}", args.transaction
+            ):
+                raise ValueError(
+                    "Provide an exact transaction ID from an apply operation."
+                )
             with state_lock(state):
-                success = restore_journal(state / "transactions" / args.transaction / "journal.json")
-            log("Config restoration complete." if success else "Some changed destinations were left untouched.",
-                "success" if success else "warning")
+                success = restore_journal(
+                    state / "transactions" / args.transaction / "journal.json"
+                )
+            log(
+                "Config restoration complete."
+                if success
+                else "Some changed destinations were left untouched.",
+                "success" if success else "warning",
+            )
             return 0 if success else 1
         spec = build_spec(args.profile, args.modules, home, config)
         entries = inspect_spec(spec, args.relink)
