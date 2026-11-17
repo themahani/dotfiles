@@ -24,7 +24,7 @@ return {
     picker = { enabled = true },
     quickfile = { enabled = true },
     scope = { enabled = true },
-    scroll = { enabled = true },
+    scroll = { enabled = false }, -- Smooth scrolling animation costs too much CPU
     statuscolumn = { enabled = true },
     words = { enabled = true },
     styles = {
