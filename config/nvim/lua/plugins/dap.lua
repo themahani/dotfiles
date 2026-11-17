@@ -135,8 +135,8 @@ return {
   config = function()
     local dap = require("dap")
 
-    -- Sign column icons (Nerd Font codicons) and their colors. The built-in
-    -- catppuccin has no Diagnostic* groups, so link to core groups it defines.
+    -- Sign column icons (Nerd Font codicons). The colorscheme colors them; the
+    -- links below only apply to colorschemes without Dap* groups.
     local signs = {
       DapBreakpoint = { text = "", hl = "Error" }, -- circle_filled
       DapBreakpointCondition = { text = "", hl = "WarningMsg" }, -- debug_breakpoint_conditional
