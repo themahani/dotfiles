@@ -216,13 +216,6 @@ return {
       desc = "Autocmds",
     },
     {
-      "<leader>sb",
-      function()
-        Snacks.picker.lines()
-      end,
-      desc = "Buffer Lines",
-    },
-    {
       "<leader>sc",
       function()
         Snacks.picker.command_history()
@@ -420,13 +413,6 @@ return {
         Snacks.scratch.select()
       end,
       desc = "Select Scratch Buffer",
-    },
-    {
-      "<leader>n",
-      function()
-        Snacks.notifier.show_history()
-      end,
-      desc = "Notification History",
     },
     {
       "<leader>bd",
