@@ -137,9 +137,6 @@ return {
         -- Actions
         map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
         map("gx", vim.lsp.buf.code_action, "[C]ode [A]ction")
-
-        -- Formatting
-        vim.keymap.set("n", "<leader>fb", vim.lsp.buf.format, { desc = "[F]ormat Current [B]uffer" })
       end,
     })
   end,

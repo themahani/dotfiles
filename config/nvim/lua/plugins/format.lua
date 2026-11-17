@@ -2,6 +2,18 @@ return {
   "stevearc/conform.nvim",
   event = { "BufWritePre" },
   cmd = { "ConformInfo" },
+  keys = {
+    {
+      "<leader>fb",
+      function()
+        require("conform").format({
+          lsp_format = "fallback",
+          async = true,
+        })
+      end,
+      desc = "[F]ormat Current [B]uffer",
+    },
+  },
   dependencies = { "mason-org/mason.nvim" }, -- Ensure mason is loaded
   opts = {
     formatters_by_ft = {
@@ -36,13 +48,5 @@ return {
         p:install()
       end
     end
-
-    -- Manual format keybind
-    vim.keymap.set("n", "<leader>fb", function()
-      conform.format({
-        lsp_format = "fallback",
-        async = true,
-      })
-    end, { desc = "[F]ormat Current [B]uffer" })
   end,
 }
