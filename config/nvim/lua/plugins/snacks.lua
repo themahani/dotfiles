@@ -21,7 +21,14 @@ return {
       enabled = true,
       timeout = 3000,
     },
-    picker = { enabled = true },
+    picker = {
+      enabled = true,
+      sources = {
+        explorer = {
+          layout = { layout = { width = 30, min_width = 30 } },
+        },
+      },
+    },
     quickfile = { enabled = true },
     scope = { enabled = true },
     scroll = { enabled = false }, -- Smooth scrolling animation costs too much CPU
