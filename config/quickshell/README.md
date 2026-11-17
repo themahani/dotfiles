@@ -32,7 +32,7 @@ does not uninstall old packages or terminate your running desktop processes.
   one Material 3 scheme. Run `config/matugen/render-fallbacks.py` after editing
   a template; a test fails while the fallbacks are stale.
 - `components/`: Material building blocks (icons, state layers, buttons,
-  switch, Pixel-style slider, concave fillet, sparkline, tooltip).
+  switch, Pixel-style slider, sparkline, tooltip).
 - `services/`: PipeWire controls, notifications, metrics, players, power,
   network summaries, and `Panels`, which tracks the one open dropdown.
 - `bar/`: `Drawer` is one full-output window per screen holding the bar and the
@@ -69,10 +69,9 @@ does not uninstall old packages or terminate your running desktop processes.
   seconds, everything else every second. The keyboard layout comes from
   Hyprland's events (`services/Keyboard.qml`).
 
-The bar is a single full-width surface whose bottom corners curve into the
-screen edges at radius 10, concentric with Hyprland's window corners (rounding 8
-plus gaps 2). Dropdowns grow out of it as the same surface, joined by the same
-curves, and slide between anchors when you switch from one to another. Text uses
+The bar is a single full-width surface with square corners, matching
+Hyprland's unrounded windows. Dropdowns grow out of it as the same surface, also
+square, and slide between anchors when you switch from one to another. Text uses
 Roboto and icons use Material Symbols Rounded (`ttf-material-symbols-variable`).
 Tray and window icons come from the GTK icon theme (as set with nwg-look):
 `shell.qml` selects Qt's gtk3 platform theme, which needs a full Quickshell
