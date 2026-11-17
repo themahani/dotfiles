@@ -37,15 +37,17 @@ return {
     local conform = require("conform")
     conform.setup(opts)
 
-    -- Native Mason check to ensure formatters are installed
-    local mr = require("mason-registry")
+    -- Install missing formatters from the Mason registry
+    local registry = require("mason-registry")
     local formatters = require("dotfiles-options").formatters or { "stylua", "ruff", "prettier" }
-
-    for _, tool in ipairs(formatters) do
-      local p = mr.get_package(tool)
-      if not p:is_installed() then
-        p:install()
+    registry.refresh(function()
+      for _, name in ipairs(formatters) do
+        if not registry.has_package(name) then
+          vim.notify("Unknown Mason package for formatter: " .. name, vim.log.levels.WARN)
+        elseif not registry.is_installed(name) then
+          registry.get_package(name):install()
+        end
       end
-    end
+    end)
   end,
 }

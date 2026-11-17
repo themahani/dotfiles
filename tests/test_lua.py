@@ -100,7 +100,7 @@ local installed, warnings = {}, {}
 package.loaded.dap = dap_stub
 package.loaded["mason-registry"] = {
   refresh = function(callback) callback() end,
-  has_package = function(name) return name ~= "missing-adapter" end,
+  has_package = function(name) return not name:find("^missing%-") end,
   is_installed = function() return false end,
   get_package = function(name) return { install = function() table.insert(installed, name) end } end,
 }
@@ -112,6 +112,18 @@ assert(dap_stub.adapters.debugpy and dap_stub.configurations.python, "selected d
 assert(dap_stub.adapters.codelldb == nil and dap_stub.configurations.cpp == nil, "unselected debugger configured")
 assert(#installed == 1 and installed[1] == "debugpy", "wrong DAP install selection")
 assert(#warnings == 1 and warnings[1]:find("missing-adapter", 1, true), "unknown Mason package was not reported")
+
+-- Exercise formatter installation without loading conform or installing tools.
+vim.fn.writefile({ 'return { formatters = { "stylua", "missing-formatter" } }' }, settings .. "nvim.local.lua")
+editor_options()
+installed, warnings = {}, {}
+package.loaded.conform = { setup = function() end }
+vim.notify = function(message) table.insert(warnings, message) end
+local format = assert(loadfile(root .. "/config/nvim/lua/plugins/format.lua"))()
+format.config(nil, format.opts)
+vim.notify = notify
+assert(#installed == 1 and installed[1] == "stylua", "wrong formatter install selection")
+assert(#warnings == 1 and warnings[1]:find("missing-formatter", 1, true), "unknown formatter package was not reported")
 
 local parsers = nil
 package.loaded["nvim-treesitter"] = {
