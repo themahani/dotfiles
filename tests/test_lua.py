@@ -62,6 +62,11 @@ assert(options.copilot == false, "local editor settings did not win")
 assert(#options.servers == 2 and options.servers[1] == "clangd" and options.servers[2] == "lua_ls", "server append or deduplication failed")
 vim.fn.writefile({ 'return { servers = {}, formatters = {} }' }, settings .. "nvim.local.lua")
 assert(#editor_options().servers == 0 and #editor_options().formatters == 0, "empty lists failed to disable tools")
+assert(vim.list_contains(base_editor.debuggers, "debugpy"), "base debug adapters changed")
+vim.fn.writefile({ 'return { debuggers = { "codelldb" }, debuggers_extra = { "codelldb", "delve" } }' }, settings .. "nvim.local.lua")
+local debuggers = editor_options().debuggers
+assert(#debuggers == 2 and debuggers[1] == "codelldb" and debuggers[2] == "delve", "debugger append or deduplication failed")
+assert(not schema.validate("nvim", { debuggers = { "" } }), "empty debugger name passed schema validation")
 local notices = {}
 local notify = vim.notify
 vim.notify = function(message) table.insert(notices, message) end
@@ -86,6 +91,27 @@ assert(#mason.ensure_installed == 1 and mason.ensure_installed[1] == "clangd", "
 assert(#mason.automatic_enable == 1 and mason.automatic_enable[1] == "clangd", "unrelated installed LSPs may be enabled")
 assert(mason.handlers == nil, "removed Mason handler API still used")
 vim.lsp.config = original_lsp_config
+
+-- Exercise DAP selection without loading plugins or installing adapters.
+vim.fn.writefile({ 'return { debuggers = { "debugpy", "missing-adapter" } }' }, settings .. "nvim.local.lua")
+editor_options()
+local dap_stub = { adapters = {}, configurations = {} }
+local installed, warnings = {}, {}
+package.loaded.dap = dap_stub
+package.loaded["mason-registry"] = {
+  refresh = function(callback) callback() end,
+  has_package = function(name) return name ~= "missing-adapter" end,
+  is_installed = function() return false end,
+  get_package = function(name) return { install = function() table.insert(installed, name) end } end,
+}
+vim.notify = function(message) table.insert(warnings, message) end
+local dap = assert(loadfile(root .. "/config/nvim/lua/plugins/dap.lua"))()
+dap.config()
+vim.notify = notify
+assert(dap_stub.adapters.debugpy and dap_stub.configurations.python, "selected debugger not configured")
+assert(dap_stub.adapters.codelldb == nil and dap_stub.configurations.cpp == nil, "unselected debugger configured")
+assert(#installed == 1 and installed[1] == "debugpy", "wrong DAP install selection")
+assert(#warnings == 1 and warnings[1]:find("missing-adapter", 1, true), "unknown Mason package was not reported")
 
 local parsers = nil
 package.loaded["nvim-treesitter"] = {

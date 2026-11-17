@@ -15,5 +15,6 @@ local config = {
 		"ruff",
 	},
 	formatters = { "stylua", "prettier" },
+	debuggers = { "debugpy", "codelldb" },
 }
 return config

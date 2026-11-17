@@ -7,6 +7,8 @@
 ---@field servers_extra? string[] Additional server names, e.g. "rust_analyzer". Use lspconfig names, not Mason package names.
 ---@field formatters? string[] Complete replacement list of Mason formatter package names; {} disables automatic formatter installation.
 ---@field formatters_extra? string[] Additional Mason formatter packages, e.g. "shfmt". Configure filetype mappings in nvim.extra.lua.
+---@field debuggers? string[] Complete replacement list of Mason debug adapter package names; {} disables automatic adapter installation/setup.
+---@field debuggers_extra? string[] Additional Mason debug adapter packages, e.g. "delve". Packages without a definition in dap.lua need their adapters and configurations set in nvim.extra.lua.
 
 ---@class (exact) DotfilesMouseConfig
 ---@field name string Exact device name reported by hyprctl devices.
@@ -70,6 +72,8 @@ local fields = {
     servers_extra = { string_list, "a list of server names" },
     formatters = { string_list, "a list of formatter package names" },
     formatters_extra = { string_list, "a list of formatter package names" },
+    debuggers = { string_list, "a list of debug adapter package names" },
+    debuggers_extra = { string_list, "a list of debug adapter package names" },
   },
   hypr = {
     terminal = { nonempty_string, "a command string" },
@@ -124,7 +128,7 @@ function M.merge(base, custom)
   for key, value in pairs(custom) do
     result[key] = copy(value)
   end
-  for _, key in ipairs({ "servers", "formatters", "autostart" }) do
+  for _, key in ipairs({ "servers", "formatters", "debuggers", "autostart" }) do
     local extra = result[key .. "_extra"]
     if extra then
       local list = result[key] or {}

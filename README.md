@@ -127,7 +127,7 @@ outside the checkout. The installer preserves existing local files.
 | `~/.gitconfig_local`                | Git identity, editor, credential helper           |
 | `~/.bashrc.local`                   | Bash environment and aliases                      |
 | `~/.zshrc.local`                    | Zsh environment and aliases                       |
-| `~/.config/dotfiles/nvim.local.lua` | Copilot, language servers, formatters             |
+| `~/.config/dotfiles/nvim.local.lua` | Copilot, language servers, formatters, debuggers  |
 | `~/.config/dotfiles/hypr.local.lua` | Keyboard, mouse, startup commands                 |
 | `~/.config/dotfiles/monitors.lua`   | Monitor layout                                    |
 | `~/.config/dotfiles/workspaces.lua` | Workspace layout                                  |
@@ -173,6 +173,8 @@ override is ignored. Omitted fields keep their base values.
 | `servers_extra`    | Server names to append                            |
 | `formatters`       | Replacement list of Mason formatter package names |
 | `formatters_extra` | Formatter package names to append                 |
+| `debuggers`        | Replacement list of Mason debug adapter names     |
+| `debuggers_extra`  | Debug adapter package names to append             |
 
 | Hyprland field                     | Value                                                      |
 | ---------------------------------- | ---------------------------------------------------------- |
