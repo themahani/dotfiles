@@ -120,7 +120,7 @@ return {
         focusable = true,
         style = "compact",
         border = "rounded",
-        source = "always",
+        source = true,
         header = "",
         prefix = "",
       },
