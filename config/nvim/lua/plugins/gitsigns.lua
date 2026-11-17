@@ -40,9 +40,6 @@ return {
       end, "Diff This ~")
 
       -- blame
-      map("n", "<leader>gbb", function()
-        gs.blame_line({ full = true })
-      end, "Blame Line Commit")
       map("n", "<leader>gbB", gs.blame, "Blame Buffer")
       map("n", "<leader>gbL", gs.toggle_current_line_blame, "Toggle Line Blame")
 
