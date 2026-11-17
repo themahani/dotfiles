@@ -135,6 +135,21 @@ return {
   config = function()
     local dap = require("dap")
 
+    -- Sign column icons (Nerd Font codicons) and their colors. The built-in
+    -- catppuccin has no Diagnostic* groups, so link to core groups it defines.
+    local signs = {
+      DapBreakpoint = { text = "", hl = "Error" }, -- circle_filled
+      DapBreakpointCondition = { text = "", hl = "WarningMsg" }, -- debug_breakpoint_conditional
+      DapLogPoint = { text = "", hl = "Changed" }, -- debug_breakpoint_log
+      DapBreakpointRejected = { text = "", hl = "NonText" }, -- debug_breakpoint_unsupported
+      DapStopped = { text = "", hl = "Added", line = "DapStoppedLine" }, -- debug_stackframe_active
+    }
+    vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
+    for name, sign in pairs(signs) do
+      vim.api.nvim_set_hl(0, name, { default = true, link = sign.hl })
+      vim.fn.sign_define(name, { text = sign.text, texthl = name, linehl = sign.line or "", numhl = "" })
+    end
+
     -- Map out debug adapters by Mason package name. Each entry registers its
     -- adapters and the launch configurations for its filetypes.
     local debuggers = {
