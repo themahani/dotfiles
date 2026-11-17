@@ -27,7 +27,28 @@ return {
   event = "VeryLazy",
   dependencies = {
     "mason-org/mason.nvim", -- Puts Mason's bin directory on PATH
-    { "igorlfs/nvim-dap-view", opts = { auto_toggle = true } }, -- Opens and closes with each session
+    {
+      "rcarriga/nvim-dap-ui",
+      dependencies = { "nvim-neotest/nvim-nio" },
+      config = function()
+        local dap, dapui = require("dap"), require("dapui")
+        dapui.setup()
+
+        -- Open the UI when a session starts and close it when it ends
+        dap.listeners.before.attach.dapui_config = function()
+          dapui.open()
+        end
+        dap.listeners.before.launch.dapui_config = function()
+          dapui.open()
+        end
+        dap.listeners.before.event_terminated.dapui_config = function()
+          dapui.close()
+        end
+        dap.listeners.before.event_exited.dapui_config = function()
+          dapui.close()
+        end
+      end,
+    },
   },
   keys = {
     {
@@ -96,7 +117,7 @@ return {
     {
       "<leader>dv",
       function()
-        require("dap-view").toggle()
+        require("dapui").toggle()
       end,
       desc = "DAP: Toggle [V]iew",
     },
