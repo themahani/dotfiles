@@ -25,7 +25,7 @@ return {
       enabled = true,
       sources = {
         explorer = {
-          layout = { layout = { width = 30, min_width = 30 } },
+          layout = { layout = { width = 25, min_width = 25 } },
         },
       },
     },
