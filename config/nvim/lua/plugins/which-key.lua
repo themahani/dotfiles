@@ -2,7 +2,7 @@ return {
   "folke/which-key.nvim",
   event = "VeryLazy",
   dependencies = {
-    { "nvim-mini/mini.icons", version = false, opts = {} },
+    "nvim-mini/mini.icons",
   },
   opts = {
     -- your configuration comes here
