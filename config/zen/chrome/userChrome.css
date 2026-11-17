@@ -1,0 +1,30 @@
+/* Square corners everywhere in Zen's UI, matching the square Hyprland
+ * windows. Zen sets its radius variables on many elements (tabs, urlbar,
+ * panels), so the overrides go on every element, not just :root. A user
+ * sheet's !important beats Zen's own !important declarations. */
+
+* {
+  --zen-border-radius: 0px !important;
+  --zen-webview-border-radius: 0px !important;
+  --zen-native-inner-radius: 0px !important;
+  --zen-library-radius: 0px !important;
+  --zen-compact-mode-no-padding-radius-fix: 0px !important;
+  --tab-border-radius: 0px !important;
+  --toolbarbutton-border-radius: 0px !important;
+  --button-border-radius: 0px !important;
+  --panel-border-radius: 0px !important;
+  --arrowpanel-menuitem-border-radius: 0px !important;
+  --urlbar-icon-border-radius: 0px !important;
+  --urlbar-inner-border-radius: 0px !important;
+  --border-radius-xsmall: 0px !important;
+  --border-radius-small: 0px !important;
+  --border-radius-medium: 0px !important;
+  --border-radius-large: 0px !important;
+}
+
+/* Some rules hardcode a radius instead of using a variable. */
+*,
+*::before,
+*::after {
+  border-radius: 0 !important;
+}
