@@ -96,6 +96,7 @@ fi
 (( $+commands[lazygit] )) && alias lg="lazygit"
 (( $+commands[lazydocker] )) && alias ld="lazydocker"
 (( $+commands[tailscale] )) && alias ts="tailscale"
+(( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
 
 # Machine-specific overrides (not committed). See .zshrc.local.example.
 [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
