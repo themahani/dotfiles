@@ -29,3 +29,4 @@ export PATH=$PATH:$HOME/.local/share/gem/ruby/3.0.0/bin
 # Machine-specific overrides (not committed). Example: ~/.bashrc.local
 [ -f "$HOME/.bashrc.local" ] && source "$HOME/.bashrc.local"
 
+. "$HOME/.cargo/env"
