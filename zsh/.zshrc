@@ -76,6 +76,11 @@ if [ -d "$HOME/.cargo/bin" ]; then
     export PATH="$HOME/.cargo/bin:$PATH"
 fi
 
+# Add ~/.local/bin to PATH if it exists
+if [ -d "$HOME/.local/bin" ]; then
+    export PATH="$HOME/.local/bin:$PATH"
+fi
+
 # Add /snap/bin to PATH if it exists
 if [ -d "/snap/bin" ]; then
     export PATH="$PATH:/snap/bin"
@@ -100,3 +105,4 @@ fi
 
 # Machine-specific overrides (not committed). See .zshrc.local.example.
 [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
+
