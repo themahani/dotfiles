@@ -5,11 +5,10 @@ import "../components"
 import "../services"
 import "../theme"
 
-// Clock and date; on the primary output also the account, password field,
-// status line and player.
+// Clock, date, account, password field, status line and player. Every output
+// shows the same content, and all password fields share Lock.password.
 Item {
     id: root
-    property bool primary: true
     property string userName: Quickshell.env("USER") || ""
 
     SystemClock { id: clock; precision: SystemClock.Minutes; enabled: !Lock.sleeping }
@@ -27,9 +26,13 @@ Item {
     // Typing goes to the password field whenever no panel holds the focus.
     Connections {
         target: Panels
-        function onOpenChanged() { if (Panels.open === "" && root.primary) password.focusInput(); }
+        function onOpenChanged() { if (Panels.open === "") password.focusInput(); }
     }
-    Component.onCompleted: if (primary) password.focusInput()
+    Component.onCompleted: password.focusInput()
+    // A VT switch, which the kernel also does on suspend, takes the keyboard
+    // away from the lock window. Take the focus back when it returns.
+    readonly property bool windowActive: Window.active
+    onWindowActiveChanged: if (windowActive && Panels.open === "") password.focusInput()
 
     Column {
         anchors.horizontalCenter: parent.horizontalCenter
@@ -53,7 +56,6 @@ Item {
         }
 
         Column {
-            visible: root.primary
             anchors.horizontalCenter: parent.horizontalCenter
             topPadding: 80
             spacing: 12

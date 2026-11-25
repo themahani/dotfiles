@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Effects
 import Quickshell
-import Quickshell.Hyprland
 import Quickshell.Wayland
 import "../bar"
 import "../services"
@@ -9,8 +8,6 @@ import "../theme"
 
 WlSessionLockSurface {
     id: surface
-    // The password field lives on the output that had focus; others show the clock.
-    readonly property bool primary: !Hyprland.focusedMonitor || !screen || Hyprland.focusedMonitor.name === screen.name
     color: Theme.surface
     // Pointer motion on any output starts the fingerprint scan; keys do it
     // in the password field. Qt repeats hover events for a still pointer
@@ -53,6 +50,6 @@ WlSessionLockSurface {
     }
     Rectangle { anchors.fill: parent; color: Theme.scrim; opacity: 0.38 }
 
-    LockContent { anchors.fill: parent; primary: surface.primary }
+    LockContent { anchors.fill: parent }
     BarSurface { anchors.fill: parent; screen: surface.screen; locked: true }
 }
