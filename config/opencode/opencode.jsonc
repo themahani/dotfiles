@@ -10,15 +10,4 @@
     "websearch": "allow",
     "question": "allow"
   },
-  "mcp": {
-    "milo-csound": {
-      "type": "stdio",
-      "command": "python3",
-      "args": ["-m", "milo_csound.server"],
-      "cwd": "/home/ali/Code/side-projects/slow-milo/muse1.3/milo-csound",
-      "env": {
-        "PYTHONPATH": "/home/ali/Code/side-projects/slow-milo/muse1.3/milo-csound/src"
-      }
-    }
-  }
 }
