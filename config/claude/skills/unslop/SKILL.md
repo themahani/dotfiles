@@ -1,9 +1,10 @@
 ---
 name: unslop
 description: Cut AI tells from writing. Use this skill for any prose Claude writes or edits, every time, even when the user doesn't ask for it. That covers chat replies longer than a couple of sentences, emails and messages, docs and READMEs, papers, abstracts, grant text and reports, commit messages, PR descriptions, code comments and docstrings. Also use it whenever the user asks to edit, tighten, proofread, humanize or de-AI any text.
+disable-model-invocation: true
 metadata:
   opencode/slash: "true"
-  opencode/autoinvoke: "true"
+  opencode/autoinvoke: "false"
 ---
 
 # Unslop

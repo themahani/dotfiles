@@ -30,16 +30,6 @@
     "principle-subtract-before-you-add": "off"
   },
   "hooks": {
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo \"Apply the unslop rules from CLAUDE.md to all prose in your reply (chat text, commit/PR messages, docs, comments).\""
-          }
-        ]
-      }
-    ],
     "PostToolUse": [
       {
         "matcher": "Write|Edit|MultiEdit",

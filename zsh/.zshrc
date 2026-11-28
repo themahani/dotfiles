@@ -86,6 +86,10 @@ if [ -d "/snap/bin" ]; then
     export PATH="$PATH:/snap/bin"
 fi
 
+# KX packages
+if [ -d "$HOME/.kx/bin" ]; then
+    export PATH="$HOME/.kx/bin:$PATH"
+fi
 
 
 # Optional apps are not required just to use the shell module.
